@@ -1,0 +1,27 @@
+<td class="p-3">{{ serviceProvider.id }}</td>
+<td class="max-w-[250px] break-words p-3">
+    <img *ngIf="serviceProvider.imageUrl" [src]="serviceProvider.imageUrl" class="w-16 h-12 rounded-lg" />
+</td>
+<td class="p-3">{{ serviceProvider.name }}</td>
+<td class="p-3">{{ serviceProvider.abbreviation || 'N/A' }}</td>
+<td class="p-3">{{ serviceProvider.website || 'N/A' }}</td>
+<td class="p-3">{{ serviceProvider.email || 'N/A' }}</td>
+<td class="p-3">{{ serviceProvider.phone || 'N/A' }}</td>
+<td class="p-3">{{ serviceProvider.address || 'N/A' }}</td>
+<td class="p-3 cursor-pointer">
+  <span 
+    (click)="toggleStatus()" 
+    class="status-label inline-block px-1 rounded-2xl whitespace-nowrap 
+           {{ serviceProvider.deleted ? 'bg-red-500/10 text-red-900 hover:bg-red-600/10' : 'bg-green-500/10 text-green-900 hover:bg-green-600/10' }}">
+    {{ serviceProvider.deleted ? 'Không hoạt động' : 'Hoạt động' }}
+  </span>
+</td>
+<td class="p-3">
+  <div class="flex space-x-2">
+    <button
+      (click)="openDetail(serviceProvider)"
+      class="focus:outline-none text-white bg-blue-500 hover:bg-blue-600 focus:ring-4 focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2 whitespace-nowrap dark:bg-blue-400 dark:hover:bg-blue-500 dark:focus:ring-blue-600">
+      Chi tiết
+    </button>
+  </div>
+</td>

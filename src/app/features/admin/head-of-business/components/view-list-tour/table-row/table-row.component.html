@@ -1,0 +1,75 @@
+<ng-container>
+  <td>
+    {{ tour.name }}
+  </td>
+
+  <td>
+    {{ tour.numberDays }}N{{ tour.numberNight }}Đ
+  </td>
+
+  <td>
+    @if (tour.tourType === 'SIC') {
+    <button type="button"
+      class="rounded-[30px] bg-blue-500/10 px-2 py-0.5 text-xs font-medium text-blue-800 inline-block mt-1">
+      {{ tour.tourType || 'Chưa cập nhật' }}
+    </button>
+    } @else {
+    <button type="button"
+      class="rounded-[30px] bg-lime-500/10 px-2 py-0.5 text-xs font-medium text-lime-800 inline-block mt-1">
+      {{ tour.tourType || 'Chưa cập nhật' }}
+    </button>
+    }
+  </td>
+
+  <td>
+    <span
+      [ngClass]="getStatusClass(tour.tourStatus)"
+      class="px-2 py-1 rounded-[5px] text-xs font-medium "
+    >
+      {{ getVietnameseStatus(tour.tourStatus) }}
+    </span>
+  </td>
+   
+
+  <td class="relative">
+    <div>
+      <!-- Nút trigger để mở/đóng dropdown -->
+      <button (click)="toggleDropdown($event)"
+        class="flex items-center justify-between w-12  text-white font-medium rounded-full text-sm px-4 py-2 focus:outline-none focus:ring-2 focus:ring-green-300 transition-colors duration-200">
+        <svg class="w-4 h-4 transition-transform duration-200 text-green-700 hover:text-green-800" aria-hidden="true"
+          xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 10 6">
+          <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+            d="m1 1 4 4 4-4" />
+        </svg>
+      </button>
+
+      @if (isDropdownOpen) {
+      <div class="absolute right-0 mt-2 w-48 bg-white rounded-md shadow-lg border border-gray-200 z-50">
+        <ul class="py-1 text-sm text-gray-700">
+          <li>
+            <a href="#" class="block px-4 py-2 hover:bg-gray-100 hover:text-gray-900 transition-colors duration-200"
+              (click)="openDetail(tour); isDropdownOpen = false; $event.preventDefault()">Chi tiết</a>
+          </li>
+          <li>
+            <a href="#" class="block px-4 py-2 hover:bg-gray-100 hover:text-gray-900 transition-colors duration-200"
+              (click)="openDiscount(tour); isDropdownOpen = false; $event.preventDefault()">Chiết tính</a>
+          </li>
+          @if(tour.tourStatus === 'APPROVED' && tour.tourType === 'SIC' || tour.tourStatus === 'OPENED' && tour.tourType === 'SIC') {
+          <li>
+            <a href="#" class="block px-4 py-2 hover:bg-gray-100 hover:text-gray-900 transition-colors duration-200"
+              (click)="openSaleTour(tour); isDropdownOpen = false; $event.preventDefault()">Mở bán</a>
+          </li>
+          }
+          @if(tour.tourStatus === 'OPENED' && tour.tourType === 'SIC') {
+            <li>
+              <a href="#" class="block px-4 py-2 hover:bg-gray-100 hover:text-gray-900 transition-colors duration-200"
+                (click)="closeSaleTour(tour); isDropdownOpen = false; $event.preventDefault()">
+                Đóng mở bán</a>
+            </li>
+            }
+        </ul>
+      </div>
+      }
+    </div>
+  </td>
+</ng-container>

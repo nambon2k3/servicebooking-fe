@@ -1,0 +1,169 @@
+<div class="rounded-md p-6 bg-white mt-4">
+  <app-spinner [isLoading]="isLoading"></app-spinner>
+  <h3 class="font-bold text-xl">{{ tourId ? 'Cập nhật Tour' : 'Tạo mới Tour' }}</h3>
+  <form class="space-y-4" [formGroup]="editTourForm">
+    <!-- Hidden field for tour ID -->
+    <input type="hidden" formControlName="id">
+
+    <div class="">
+      <label class="block mb-2 text-sm font-medium text-gray-700">Ảnh tour</label>
+      <div class="flex items-center gap-2 flex-wrap">
+        <!-- Hiển thị danh sách ảnh -->
+        <div *ngFor="let img of imagePreviews; let i = index"
+          class="relative w-20 h-20 flex items-center justify-center bg-gray-300 rounded overflow-hidden group">
+          <!-- Ảnh -->
+          <img *ngIf="img" [src]="img" alt="Ảnh"
+            class="w-full h-full object-cover rounded transition duration-300 group-hover:opacity-50">
+
+          <!-- Nút X -->
+          <button (click)="removeImage(i)"
+            class="absolute top-1 right-1 bg-red-500 text-white w-5 h-5 flex items-center justify-center rounded-full opacity-0 group-hover:opacity-100 transition duration-300">
+            ✕
+          </button>
+        </div>
+
+
+        <!-- Nút mở modal chọn ảnh -->
+        <button type="button" class="bg-black text-white px-4 py-2 rounded" data-modal-target="previewModal"
+          data-modal-toggle="previewModal">
+          Thêm ảnh
+        </button>
+      </div>
+
+      <!-- Modal Xem trước ảnh -->
+      <div id="previewModal" tabindex="-1" aria-hidden="true"
+        class="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-50 hidden">
+        <div class="bg-gray-200 p-4 rounded-lg w-2/3 max-w-lg">
+          <h2 class="text-lg font-bold text-center">Xem trước hình ảnh</h2>
+          <div class="relative inline-block mx-auto">
+            <!-- Input file ẩn -->
+            <input #fileInput type="file" multiple (change)="onFilesSelected($event)" accept="image/*" class="hidden">
+
+            <!-- Nút chọn ảnh -->
+            <button type="button" (click)="fileInput.click()"
+              class="bg-green-700 mx-auto text-white px-4 py-2 rounded-lg shadow hover:bg-green-800 transition">
+              Chọn ảnh
+            </button>
+          </div>
+          <div class="flex justify-center p-4">
+            <img *ngIf="previewImage" [src]="previewImage" class="max-w-full h-64 object-contain">
+          </div>
+          <div class="flex justify-center gap-4">
+            <button class="border border-black px-4 py-2 rounded" data-modal-hide="previewModal">
+              Đóng
+            </button>
+            <button class="bg-black text-white px-4 py-2 rounded" (click)="confirmImage()"
+              data-modal-hide="previewModal">
+              Xác nhận
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="flex space-x-4">
+      <div class="w-1/2">
+        <label class="block mb-1 font-bold">Tên tour</label>
+        <input type="text" formControlName="name" placeholder="Nhập tên tour" class="w-full px-2 py-2 border rounded "
+          [class.bg-gray-100]="tourId"
+          [class.border-red-500]="editTourForm.get('name')?.invalid && editTourForm.get('name')?.touched"
+          [readonly]="tourId">
+        <span *ngIf="editTourForm.get('name')?.invalid && editTourForm.get('name')?.touched"
+          class="text-red-500 text-sm">
+          Tên tour là bắt buộc
+        </span>
+      </div>
+      <div class="w-1/2">
+        <label class="block mb-1 font-bold">Thẻ</label>
+        <ng-multiselect-dropdown formControlName="tagIds" [placeholder]="'Chọn thẻ'" [settings]="dropdownTagSettings"
+          [data]="dropdownTagList" idField="id" textField="name">
+        </ng-multiselect-dropdown>
+        <span *ngIf="editTourForm.get('tagIds')?.invalid && editTourForm.get('tagIds')?.touched"
+          class="text-red-500 text-sm">
+          Vui lòng chọn ít nhất một thẻ
+        </span>
+      </div>
+    </div>
+
+    <div class="flex space-x-4">
+      <div class="w-1/2">
+        <label class="block mb-1 font-bold">Điểm khởi hành</label>
+        <ng-select class="custom bg-white border border-gray-300 rounded-md" formControlName="departLocationId"
+          [items]="dropdownList" bindLabel="name" bindValue="id" placeholder="Chọn địa điểm" [searchable]="true"
+          (search)="onSearch($event)">
+        </ng-select>
+        <span *ngIf="editTourForm.get('departLocationId')?.invalid && editTourForm.get('departLocationId')?.touched"
+          class="text-red-500 text-sm">
+          Vui lòng chọn địa điểm
+        </span>
+      </div>
+      <div class="w-1/2">
+        <label class="block mb-1 font-bold">Điểm đến</label>
+        <ng-multiselect-dropdown formControlName="locationIds" [placeholder]="'Chọn địa điểm'" idField="id"
+          textField="name" [settings]="dropdownSettings" [data]="dropdownList" (onFilterChange)="onSearch($event)">
+        </ng-multiselect-dropdown>
+        <span *ngIf="editTourForm.get('locationIds')?.invalid && editTourForm.get('locationIds')?.touched"
+          class="text-red-500 text-sm">
+          Vui lòng chọn ít nhất một địa điểm
+        </span>
+      </div>
+    </div>
+
+    <div class="flex space-x-4">
+      <div class="w-1/2">
+        <label class="block mb-1 font-bold">Số ngày</label>
+        <input type="number" formControlName="numberDays" placeholder="Nhập số ngày" class="w-full p-2 border rounded"
+          [class.border-red-500]="editTourForm.get('numberDays')?.invalid && editTourForm.get('numberDays')?.touched"
+          (input)="updateNumberNights($event)" />
+        <span *ngIf="editTourForm.get('numberDays')?.invalid && editTourForm.get('numberDays')?.touched"
+          class="text-red-500 text-sm">
+          Số ngày là bắt buộc
+        </span>
+      </div>
+
+      <div class="w-1/2 mb-6">
+        <label class="block mb-1 font-bold">Số đêm</label>
+        <input readonly type="number" formControlName="numberNights" placeholder="Nhập số đêm"
+          class="w-full p-2 border rounded bg-gray-100"
+          [class.border-red-500]="editTourForm.get('numberNights')?.invalid && editTourForm.get('numberNights')?.touched" />
+        <span *ngIf="editTourForm.get('numberNights')?.invalid && editTourForm.get('numberNights')?.touched"
+          class="text-red-500 text-sm">
+          Số đêm là bắt buộc
+        </span>
+      </div>
+      <!-- Hiển thị lỗi nếu số ngày <= số đêm -->
+      <span *ngIf="editTourForm.errors?.['daysMustBeGreater']" class="text-red-500 text-sm">
+        Số ngày phải lớn hơn số đêm
+      </span>
+    </div>
+
+    <div>
+      <label class="block mb-1 font-bold">Điểm nổi bật</label>
+      <app-blog-content [content]="highlight" formControlName="highlights"></app-blog-content>
+      <span *ngIf="editTourForm.get('highlights')?.invalid && editTourForm.get('highlights')?.touched"
+        class="text-red-500 text-sm">
+        Điểm nổi bật là bắt buộc
+      </span>
+    </div>
+
+    <div>
+      <label class="block mb-1 font-bold">Ghi chú</label>
+      <textarea formControlName="note" class="w-full p-2 border rounded" rows="3"
+        placeholder="Ghi chú ở đây..."></textarea>
+    </div>
+
+    <div class="flex justify-end space-x-4">
+      <button type="button" (click)="onCancel()" class="px-4 py-2 bg-gray-500 hover:bg-gray-600 text-white rounded">
+        Hủy bỏ
+      </button>
+      <button type="submit" *ngIf="tourId"
+        class="px-4 py-2 bg-blue-700 hover:bg-blue-800 text-white rounded cursor-pointer" (click)="onApprove()">
+        {{ tour?.tourType === 'PRIVATE' ? 'Mở bán' : 'Gửi duyệt tour' }}
+      </button>
+      <button type="submit" class="px-4 py-2 bg-green-700 hover:bg-green-800 text-white rounded cursor-pointer"
+        (click)="onSubmit()">
+        {{ tourId ? 'Cập nhật tour' : 'Tạo tour' }}
+      </button>
+    </div>
+  </form>
+</div>

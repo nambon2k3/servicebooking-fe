@@ -1,0 +1,180 @@
+<div class="relative">
+  <!-- Popup Notification -->
+  <div  *ngIf="showPopup" class="fixed top-24 left-[45%] right-0 z-50 max-w-sm p-4 rounded-lg shadow-lg transition-all duration-300"
+       [ngClass]="{'bg-green-100 text-green-800': isSuccess, 'bg-red-100 text-red-800': !isSuccess}">
+    <div class="flex items-center">
+      <svg *ngIf="isSuccess" class="w-5 h-5 mr-2" fill="currentColor" viewBox="0 0 20 20">
+        <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd" />
+      </svg>
+      <svg *ngIf="!isSuccess" class="w-5 h-5 mr-2" fill="currentColor" viewBox="0 0 20 20">
+        <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zM8.707 7.293a1 1 0 00-1.414 1.414L8.586 10l-1.293 1.293a1 1 0 101.414 1.414L10 11.414l1.293 1.293a1 1 0 001.414-1.414L11.414 10l1.293-1.293a1 1 0 00-1.414-1.414L10 8.586 8.707 7.293z" clip-rule="evenodd" />
+      </svg>
+      <span class="text-sm font-medium">{{ popupMessage }}</span>
+    </div>
+  </div>
+
+  <!-- Spinner Component -->
+  <app-spinner [isLoading]="isLoading"></app-spinner>
+
+  <div class="p-6 bg-white rounded-md shadow-md mt-10">
+    <div class="flex justify-between items-center mb-4">
+      <h2 class="text-lg font-semibold">Danh sách dịch vụ</h2>
+      <button data-modal-target="chooseServiceModal" data-modal-toggle="chooseServiceModal"
+        class="bg-green-700 hover:bg-green-800 text-white px-4 py-2 rounded">Thêm
+        dịch vụ</button>
+    </div>
+
+    <ng-container *ngIf="hasAnyService; else noServices">
+      <div class="mt-4 overflow-x-auto bg-white shadow-md rounded-lg">
+        <table class="w-full border-collapse border border-gray-300">
+          <thead class="bg-green-700">
+            <tr>
+              <th class="border border-gray-300 text-white p-2">STT</th>
+              <th class="border border-gray-300 text-white p-2">Tên dịch vụ</th>
+              <th class="border border-gray-300 text-white p-2">Tên nhà cung cấp</th>
+              <th class="border border-gray-300 text-white p-2">Loại dịch vụ</th>
+              <th class="border border-gray-300 text-white p-2">Mã booking</th>
+              <th class="border border-gray-300 text-white p-2">Ngày</th>
+              <th class="border border-gray-300 text-white p-2">Số lượng</th>
+              <th class="border border-gray-300 text-white p-2">Số lượng yêu cầu</th>
+              <th class="border border-gray-300 text-white p-2">Đơn hàng</th>
+              <th class="border border-gray-300 text-white p-2 text-center">Thao tác</th>
+            </tr>
+          </thead>
+          <tbody>
+            <ng-container *ngFor="let group of groupedServices; let groupIndex = index">
+              <tr class="bg-gray-100">
+                <td colspan="10" class="text-left font-semibold p-2">
+                  Mã booking: {{ group.bookingCode }}
+                </td>
+              </tr>
+              <ng-container *ngFor="let day of group.days; let dayIndex = index">
+                <tr class="bg-gray-200">
+                  <td colspan="10" class="text-left font-medium p-2">
+                    Ngày {{ day.dayNumber }}: {{ day.title }}
+                  </td>
+                </tr>
+                <tr *ngFor="let service of day.services; let i = index" class="border border-gray-300">
+                  <td class="border border-gray-300 p-2 text-center">
+                    {{ i + 1 }}
+                  </td>                  
+                  <td class="border border-gray-300 p-2">{{ service.name }}</td>
+                  <td class="border border-gray-300 p-2">{{ service.providerName }}</td>
+                  <td class="border border-gray-300 p-2">{{ service.type }}</td>
+                  <td class="border border-gray-300 p-2">{{ service.bookingCode }}</td>
+                  <td class="border border-gray-300 p-2">{{ service.date !== 'Chưa đặt' ? (service.date | formatDate) : 'Chưa đặt' }}</td>
+                  <td class="border border-gray-300 p-2 text-center">{{ service.quantity }}</td>
+                  <td class="border border-gray-300 p-2 text-center">{{ service.requestQuantity }}</td>
+                  <td class="p-2 relative">
+                    <button id="dropdownOrderButton-{{ service.uniqueId }}"
+                      class="cursor-pointer rounded-[30px] px-2 py-0.5 text-xs font-medium inline-block mt-1 {{ getStatusColor(service.order) }}"
+                      type="button">
+                      {{ service.order }}
+                    </button>
+
+                    <div id="dropdownOrder-{{ service.uniqueId }}"
+                      class="z-10 hidden absolute bg-white divide-y divide-gray-100 rounded-lg shadow w-36 dark:bg-white">
+                      <ul class="py-2 text-sm text-gray-700 dark:text-gray-200">
+                        <li *ngIf="service.status === 'Đang kiểm tra' || service.requestQuantity > 0">
+                          <button (click)="openOrderModal(service)"
+                            class="mx-auto w-fit cursor-pointer rounded-[30px] bg-yellow-500/20 px-2 py-0.5 text-xs font-medium text-yellow-800 flex mt-1">
+                            Đặt Dịch vụ
+                          </button>
+                        </li>
+                        <li >
+                          <button *ngIf="service.status === 'Có sẵn'" (click)="openPayModal(service)"
+                            class="mx-auto w-fit cursor-pointer rounded-[30px] bg-green-500/20 px-2 py-0.5 text-xs font-medium text-green-800 flex mt-3">
+                            Thanh toán
+                          </button>
+                        </li>
+                        <li *ngIf="service.status === 'Đã phê duyệt'">
+                          <button (click)="openTourGuidePayModal(service)"
+                            class="mx-auto w-fit cursor-pointer rounded-[30px] bg-yellow-500/20 px-2 py-0.5 text-xs font-medium text-yellow-800 flex mt-3">
+                            Hướng dẫn viên thanh toán
+                          </button>
+                        </li>
+                        <li *ngIf="service.status !== 'Bị hủy'">
+                          <button (click)="openDeleteModal(service.bookingServiceId)"
+                            class="mx-auto w-fit cursor-pointer rounded-[30px] bg-red-500/20 px-2 py-0.5 text-xs font-medium text-red-800 flex mt-3">
+                            Hủy đơn hàng
+                          </button>
+                        </li>
+                      </ul>
+                    </div>
+                    <div id="deleteTourPaxModal-{{service.bookingServiceId}}" tabindex="-1"
+                      aria-hidden="true"
+                      class="fixed hidden inset-0 z-50 flex items-center justify-center w-full h-full bg-black bg-opacity-50">
+                      <div class="relative w-96 max-w-md max-h-full">
+                        <div class="relative bg-white rounded-lg shadow dark:bg-gray-700">
+                          <div class="flex items-center justify-between p-4 md:p-5 border-b rounded-t dark:border-gray-600">
+                            <h3 class="text-xl font-semibold text-gray-900 dark:text-white">
+                              Hủy dịch vụ
+                            </h3>
+                            <button type="button" (click)="closeDeleteModal(service.bookingServiceId)"
+                              class="text-gray-400 bg-transparent hover:bg-gray-200 hover:text-gray-900 rounded-lg text-sm w-8 h-8 ms-auto inline-flex justify-center items-center dark:hover:bg-gray-600 dark:hover:text-white">
+                              <svg class="w-3 h-3" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 14 14">
+                                <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="m1 1 6 6m0 0 6 6M7 7l6-6M7 7l-6 6" />
+                              </svg>
+                              <span class="sr-only">Close modal</span>
+                            </button>
+                          </div>
+                          <div class="p-4 md:p-5">
+                            <p class="text-base leading-relaxed text-gray-500 dark:text-gray-400">
+                              Bạn có chắc chắn muốn hủy dịch vụ này không?
+                            </p>
+                          </div>
+                          <div class="flex items-center justify-end p-4 md:p-5 border-t border-gray-200 rounded-b dark:border-gray-600">
+                            <button type="button" (click)="closeDeleteModal(service.bookingServiceId)"
+                              class="text-gray-500 mr-4 bg-white hover:bg-gray-100 focus:ring-4 focus:outline-none focus:ring-blue-300 rounded-lg border border-gray-200 text-sm font-medium px-5 py-2.5 hover:text-gray-900 focus:z-10 dark:bg-gray-700 dark:text-gray-300 dark:border-gray-500 dark:hover:text-white dark:hover:bg-gray-600 dark:focus:ring-gray-600">
+                              Hủy
+                            </button>
+                            <button type="button" (click)="deleteService(service.bookingServiceId); closeDeleteModal(service.bookingServiceId)"
+                              class="text-white bg-red-600 hover:bg-red-800 focus:ring-4 focus:outline-none focus:ring-red-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center dark:bg-red-600 dark:hover:bg-red-700 dark:focus:ring-red-800">
+                              Xác nhận
+                            </button>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  </td>
+
+                  <td class="p-2 text-center">
+                    <button *ngIf="service.status !== 'Bị hủy'" class="text-white px-2 py-1 rounded-md" (click)="openServiceDetail(service)">
+                      <svg class="w-6 h-6 text-green-700 dark:text-green-700" aria-hidden="true"
+                        xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none" viewBox="0 0 24 24">
+                        <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                          d="m14.304 4.844 2.852 2.852M7 7H4a1 1 0 0 0-1 1v10a1 1 0 0 0 1 1h11a1 1 0 0 0 1-1v-4.5m2.409-9.91a2.017 2.017 0 0 1 0 2.853l-6.844 6.844L8 14l.713-3.565 6.844-6.844a2.015 2.015 0 0 1 2.852 0Z" />
+                      </svg>
+                    </button>
+                    <app-service-detail (serviceChange)="onServiceChange($event)" [service]="service" #changeServiceModal></app-service-detail>
+                  </td>
+                </tr>
+              </ng-container>
+            </ng-container>
+          </tbody>
+        </table>
+      </div>
+    </ng-container>
+    <ng-template #noServices>
+      <div class="mt-6 p-4 bg-white rounded-md text-center text-gray-500">
+        Không có dịch vụ nào
+      </div>
+    </ng-template>
+  </div>
+
+  <div class="mt-6 bg-gray-300 h-24 p-4 rounded-md grid grid-cols-4 place-items-center text-center">
+    <span><strong>Dịch vụ </strong> <br> {{ totalService }}</span>
+    <span><strong>Đã thanh toán </strong> <br> {{ paid | currencyVnd }}</span>
+    <span><strong>Còn lại </strong> <br> {{ remain | currencyVnd }}</span>
+    <span><strong>Tổng chi phí </strong><br> {{ totalCost | currencyVnd }}</span>
+  </div>
+</div>
+
+<app-post-service [scheduleId]="scheduleId" (serviceAdded)="onServiceAdded($event)" [tourDays]="tourDays" [minPax]="minPax"
+  #chooseServiceModal></app-post-service>
+<app-tour-guide-pay [selectedService]="selectedService" [tourGuide]="tourGuide" (sendRequest)="onPaymentSent($event)"
+  #tourGuidePayModal></app-tour-guide-pay>
+<app-pay-service [selectedService]="selectedService" (sendRequest)="onPaymentSent($event)"
+  #paymentModal></app-pay-service>
+<app-order-service (emailSent)="onEmailSent($event)" [selectedService]="selectedService"
+  #orderModal></app-order-service>

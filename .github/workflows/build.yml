@@ -1,0 +1,40 @@
+name: Build Project
+run-name: Start build branch ${{ github.ref_name }} by @${{ github.actor }}
+
+on:
+  push:
+    branches:
+      - '**' # Run build on all branch
+
+permissions:
+  contents: read
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  build:
+    runs-on: self-hosted
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v2
+        
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+
+      # Cache npm dependencies
+      - name: Cache npm modules
+        uses: actions/cache@v3
+        with:
+          path: ~/.npm
+          key: ${{ runner.os }}-node-${{ hashFiles('**/package-lock.json') }}
+          restore-keys: |
+            ${{ runner.os }}-node-
+
+      - name: Install, build and lint project
+        run: |
+          export NODE_OPTIONS=--max-old-space-size=4096
+          npm install
+          npm run build:prod --verbose --if-present

@@ -1,0 +1,39 @@
+<ng-container>
+  <td>{{ tour.tourName }}</td>
+
+  <td>
+    {{ tour.startDate | formatDate }}
+  </td>
+
+  <td class="text-center">
+    {{ tour.availableSeats }} / {{ tour.maxPax}}
+  </td>
+
+  <td>
+    <span [ngClass]="tour.operator ? 'text-blue-700 bg-blue-100 px-2 py-1 rounded-[5px] text-xs font-medium' : 'text-gray-700 bg-gray-100 px-2 py-1 rounded-[5px] text-xs font-medium'">
+      {{ tour.operator ? tour.operator : 'Chưa cập nhật' }}
+    </span>
+  </td>
+
+  <td>
+    <span [ngClass]="getStatusClass(tour.status)" class="px-2 py-1 rounded-[5px] text-xs font-medium">
+      {{ getVietnameseStatus(tour.status) }}
+    </span>
+  </td>
+
+  <td>
+    <span [ngClass]="tour.tourGuide ? 'text-blue-700 bg-blue-100 px-2 py-1 rounded-[5px] text-xs font-medium' : 'text-gray-700 bg-gray-100 px-2 py-1 rounded-[5px] text-xs font-medium'">
+      {{ tour.tourGuide ? tour.tourGuide : 'Chưa cập nhật' }}
+    </span>
+  </td>
+
+  <td>
+    <div class="text-center flex justify-center items-center">
+      <button type="button"
+        class="text-white w-24 bg-blue-700 hover:bg-blue-800 focus:outline-none focus:ring-4 focus:ring-blue-300 font-medium rounded-full text-sm px-5 py-2.5 text-center me-2 mb-2 dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800"
+        (click)="openDetail(tour)">
+        Chi tiết
+      </button>
+    </div>
+  </td>
+</ng-container>

@@ -1,0 +1,79 @@
+<div *ngIf="showPopup" class="popup-message" [ngClass]="{'success': isSuccess, 'error': !isSuccess}">
+  {{ popupMessage }}
+</div>
+
+<div class="w-full p-6 bg-white rounded-md shadow-md" *ngIf="requestDetail">
+  <!-- Tiêu đề -->
+  <div class="flex items-center justify-between border-b pb-4">
+    <div class="flex items-center gap-3">
+      <span class="w-10 h-10 flex items-center justify-center bg-gray-200 rounded-full">
+        <img src="https://cellphones.com.vn/sforum/wp-content/uploads/2023/10/avatar-trang-4.jpg" alt="Người dùng"
+          class="w-full h-full rounded-full">
+      </span>
+      <div>
+        <p class="font-semibold text-lg">{{ requestDetail.proposer }}</p>
+        <p class="text-gray-500 text-sm">{{ requestDetail.updatedAt | date:'dd/MM/yyyy HH:mm:ss' }}</p>
+      </div>
+    </div>
+  </div>
+
+  <!-- Yêu cầu dịch vụ -->
+  <div class="mt-6">
+    <h2 class="text-lg font-bold">Danh sách yêu cầu dịch vụ</h2>
+    <p class="text-sm text-gray-600">Mã ID: {{ requestDetail.tourBookingServiceId }}  |  Mã đặt chỗ: {{
+      requestDetail.bookingCode }}</p>
+    <p class="text-lg font-bold mt-6">{{ requestDetail.tourName }}</p>
+    <p class="text-sm text-gray-600">Loại Tour: {{ requestDetail.tourType }}</p>
+    <p class="text-sm text-gray-600">Ngày bắt đầu: {{ requestDetail.startDate | formatDate }}</p>
+    <p class="text-sm text-gray-600">Ngày kết thúc: {{ requestDetail.endDate | formatDate }}</p>
+  </div>
+
+  <!-- Bảng -->
+  <div class="mt-8">
+    <table class="w-full border-collapse border rounded-lg overflow-hidden text-sm">
+      <thead>
+        <tr class="bg-gray-200 text-gray-700">
+          <th class="p-2 border">Thứ tự</th>
+          <th class="p-2 border">Nội dung yêu cầu</th>
+          <th class="p-2 border">Đơn giá</th>
+          <th class="p-2 border">Số lượng hiện tại</th>
+          <th class="p-2 border">Số lượng yêu cầu</th>
+          <th class="p-2 border">Tổng cộng</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr class="text-center">
+          <td class="p-2 border">1</td>
+          <td class="p-2 border">{{ requestDetail.serviceName }}</td>
+          <td class="p-2 border">{{ requestDetail.nettPrice | currencyVnd }}</td>
+          <td class="p-2 border">{{ requestDetail.currentQuantity }}</td>
+          <td class="p-2 border">{{ requestDetail.requestQuantity }}</td>
+          <td class="p-2 border">{{ requestDetail.totalPrice | currencyVnd }}</td>
+        </tr>
+      </tbody>
+      <tfoot>
+        <tr class="bg-gray-200 font-bold text-center">
+          <td colspan="5" class="p-2 border">Tổng giá</td>
+          <td class="p-2 border">{{ requestDetail.totalPrice | currencyVnd }}</td>
+        </tr>
+      </tfoot>
+    </table>
+  </div>
+
+  <!-- Lý do -->
+  <!-- Ghi chú dịch vụ -->
+  <div class="bg-gray-100 p-3 rounded-md mt-8">
+    <p class="font-semibold text-gray-700">Lý do:</p>
+    <p class="text-gray-600 text-sm">{{ requestDetail.reason }}</p>
+  </div>
+
+  <!-- Nút điều khiển -->
+  <div class="flex justify-end gap-3 mt-4">
+    <button (click)="onCanceled()" class="bg-gray-300 text-black px-4 py-2 rounded-md hover:bg-gray-400">Hủy</button>
+    <button (click)="onRejected()" class="bg-red-600 text-white px-4 py-2 rounded-md hover:bg-red-700">Từ chối</button>
+    <button (click)="onApproved()" class="bg-green-700 text-white px-4 py-2 rounded-md hover:bg-green-800">Phê
+      duyệt</button>
+  </div>
+</div>
+
+<app-spinner [isLoading]="isLoading"></app-spinner>

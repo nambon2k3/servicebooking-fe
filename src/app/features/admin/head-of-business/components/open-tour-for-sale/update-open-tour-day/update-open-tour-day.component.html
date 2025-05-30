@@ -1,0 +1,34 @@
+<div *ngIf="showPopup" class="popup-message" [ngClass]="{'success': isSuccess, 'error': !isSuccess}">
+    {{ popupMessage }}
+  </div>
+  
+  <div id="updateOpenTourDayModal" tabindex="-1" aria-hidden="true"
+      class="hidden fixed inset-0 bg-gray-600 bg-opacity-50 flex items-center justify-center z-50">
+      <div class="bg-white p-6 rounded shadow-lg w-2/5">
+          <h3 class="text-lg font-semibold mb-4">Cập nhật chỗ ngồi</h3>
+          <form>
+              <div class="mb-4">
+                  <label class="block mb-1">Tên Tour:</label>
+                  <input type="text" name="tourName" ngModel [(ngModel)]="name" value="Đà Nẵng - Huế - Bà Nà - Hội An"
+                      class="w-full p-2 border rounded" readonly>
+              </div>
+              <div class="mb-4">
+                  <label class="block mb-1">Ngày đi:</label>
+                  <input type="date" name="openDate" ngModel [(ngModel)]="selectedDate"
+                      (ngModelChange)="onSelectedDateChange($event)" class="w-full p-2 border rounded">
+              </div>
+              <div class="flex justify-end space-x-4">
+                  <button type="button" (click)="close()"
+                      class="px-4 py-2 bg-gray-500 text-white rounded">Huỷ</button>
+                  <button type="button" (click)="deleteDay()" class="px-4 py-2 bg-red-600 text-white rounded">Xoá
+                      ngày</button>
+                  <button type="button" (click)="viewListBooking()"
+                      class="px-4 py-2 bg-blue-600 hover:bg-blue-800 text-white rounded">
+                      Xem danh sách đặt chỗ
+                  </button>
+                  <button type="submit" (click)="updateTourSaleDay()"
+                      class="px-4 py-2 bg-green-700 hover:bg-green-800 text-white rounded">Lưu</button>
+              </div>
+          </form>
+      </div>
+  </div>

@@ -1,0 +1,119 @@
+<div class="min-h-screen bg-gray-100 flex items-center justify-center p-4 sm:p-6">
+  @if (tourDetail) {
+  <div class="w-full max-w-8xl bg-white rounded-2xl shadow-lg p-6 sm:p-8 relative">
+    <!-- Header với thông tin người đề xuất -->
+    <div class="flex items-center justify-between mb-6">
+      <div class="flex items-center space-x-4">
+        <div class="w-14 h-14 bg-indigo-100 rounded-full flex items-center justify-center">
+          <span class="text-indigo-600 text-xl font-bold">{{ getInitials(tourDetail.createdBy) }}</span>
+        </div>
+        <div>
+          <p class="text-sm text-gray-500">Khách hàng</p>
+          <h2 class="text-2xl font-bold text-gray-800">{{ tourDetail.customerName || 'Không có thông tin' }}</h2>
+        </div>
+      </div>
+    </div>
+
+    <!-- Phần chi tiết tour -->
+    <div class="border-t border-gray-200 pt-6 mb-6">
+      <h3 class="text-xl font-semibold text-gray-800 mb-4">Chi tiết tour</h3>
+      <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+        <div class="flex items-center space-x-2">
+          <span class="text-gray-600 font-medium text-sm w-32">Tên tour:</span>
+          <span class="text-gray-800 font-bold text-sm">{{ tourDetail.name }}</span>
+        </div>
+        <div class="flex items-center space-x-2">
+          <span class="text-gray-600 font-medium text-sm">Mã booking:</span>
+          <span class="text-gray-800 text-sm">{{ tourDetail.bookingCode }}</span>
+        </div>
+        <div class="flex items-center space-x-2">
+          <span class="text-gray-600 font-medium text-sm">Ngày bắt đầu:</span>
+          <span class="text-gray-800 font-bold text-sm">{{ tourDetail.startDate | date: 'dd/MM/yyyy' }}</span>
+        </div>
+        <div class="flex items-center space-x-2">
+          <span class="text-gray-600 font-medium text-sm">Ngày kết thúc:</span>
+          <span class="text-gray-800 font-bold text-sm">{{ tourDetail.endDate | date: 'dd/MM/yyyy' }}</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- Danh sách giao dịch -->
+    <div class="border-t border-gray-200 pt-6 mb-6">
+      <h3 class="text-xl font-semibold text-gray-800 mb-4">Danh sách giao dịch</h3>
+      <div class="overflow-x-auto">
+        <table class="min-w-full bg-white border border-gray-200 rounded-lg">
+          <thead>
+            <tr class="bg-gray-100 text-gray-700 text-sm font-semibold text-left">
+              <th class="px-4 py-3 border-b">STT</th>
+              <th class="px-4 py-3 border-b text-left">Người trả</th>
+              <th class="px-4 py-3 border-b text-left">Người nhận</th>
+              <th class="px-4 py-3 border-b text-center">Loại phiếu</th>
+              <th class="px-4 py-3 border-b text-center">Số tiền</th>
+              <th class="px-4 py-3 border-b">Ghi chú</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr *ngFor="let tran of transactions; let i = index" class="hover:bg-gray-50 text-sm">
+              <td class="px-4 py-2 border-b">{{ i + 1 }}</td>
+              <td class="px-4 py-2 border-b">{{ tran.paidBy || 'Không có' }}</td>
+              <td class="px-4 py-2 border-b">{{ tran.receivedBy || 'Không có' }}</td>
+              <td class="border-b text-center">
+                <span
+                  class="px-2 py-1 rounded-full"
+                  [ngClass]="{
+                    'bg-yellow-100 text-yellow-800': tran.transactionType === 'RECEIPT',
+                    'bg-green-100 text-green-800': tran.transactionType === 'PAYMENT'
+                  }"
+                >
+                  {{ tran.transactionType === 'RECEIPT' ? 'Phiếu thu' : 'Phiếu chi' }}
+                </span>
+              </td>
+              <td class="px-4 py-2 border-b text-center">{{ tran.amount | currencyVnd }}</td>
+              <td class="px-4 py-2 border-b">{{ tran.notes || 'Không có' }}</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+    <!-- Phần ghi chú -->
+    <div class="border-t border-gray-200 pt-6 mb-6">
+      <h3 class="text-xl font-semibold text-gray-800 mb-4">Ghi chú</h3>
+      <div class="bg-gray-50 p-4 rounded-lg">
+        <p class="text-gray-800 text-sm">{{ tourDetail.note || 'Không có' }}</p>
+      </div>
+    </div>
+
+    <!-- Nút điều khiển -->
+    <div class="flex justify-end space-x-3">
+      <button (click)="onCancel()"
+        class="px-5 py-2.5 bg-gray-200 text-gray-700 rounded-lg hover:bg-gray-300 transition-colors duration-200">
+        Quay lại
+      </button>
+      <button (click)="onReject()"
+        class="px-5 py-2.5 bg-red-600 text-white rounded-lg hover:bg-red-700 transition-colors duration-200">
+        Từ chối
+      </button>
+      <button (click)="onApprove()"
+        class="px-5 py-2.5 bg-green-600 text-white rounded-lg hover:bg-green-700 transition-colors duration-200">
+        Phê duyệt
+      </button>
+    </div>
+
+    <!-- Message Display -->
+    @if (message) {
+      <div class="mt-4 rounded-lg bg-white text-sm"
+           [ngClass]="{
+             'text-green-600': message.includes('thành'),
+             'text-red-600': message.includes('Lỗi') || message.includes('Error') || message.includes('No tour ID')
+           }">
+        {{ message }}
+      </div>
+    }
+  </div>
+  } @else {
+  <div class="flex justify-center items-center h-64">
+    <p class="text-gray-500 text-lg">Đang tải thông tin...</p>
+  </div>
+  }
+</div>

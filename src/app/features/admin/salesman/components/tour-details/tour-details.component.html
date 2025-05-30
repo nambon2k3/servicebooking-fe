@@ -1,0 +1,102 @@
+<div class="rounded-md p-6 bg-white mt-4 ">
+  <app-spinner [isLoading]="isLoading"></app-spinner>
+  <h3 class="font-bold text-xl mb-12">{{ tourId ? 'Thông tin tour' : 'Tạo mới Tour' }}</h3>
+  <div class="grid grid-cols-3 gap-4">
+    <div class="col-span-1">
+      <div class="flex flex-col items-center gap-2 flex-wrap">
+        <!-- Hiển thị danh sách ảnh -->
+        <div *ngFor="let img of imagePreviews; let i = index"
+          class="relative w-96 h-50 flex items-center justify-center bg-gray-300 rounded overflow-hidden group">
+          <!-- Ảnh -->
+          <img *ngIf="img" [src]="img" alt="Ảnh"
+            class="w-full h-full object-cover rounded transition duration-300 group-hover:opacity-50">
+        </div>
+      </div>
+    </div>
+
+    <div class="col-span-2">
+      <div class="flex space-x-8">
+        <div class="w-2/3">
+          <label class="block mb-1 font-bold">Tên tour</label>
+          <p>
+            {{tourData?.name}}
+          </p>
+        </div>
+        <div class="w-1/2">
+          <label class="block mb-1 font-bold">Thẻ</label>
+          <span *ngFor="let tag of tags"
+            class="rounded-[30px] bg-yellow-500/10 px-2 py-0.5 text-xs font-medium text-yellow-800 inline-block mt-1">
+            {{ tag.name }}
+          </span>
+        </div>
+      </div>
+
+      <div class="flex space-x-4 mt-5">
+        <div class="w-2/3">
+          <label class="block mb-1 font-bold">Điểm khởi hành</label>
+          <span
+            class="rounded-[30px] bg-yellow-500/10 px-2 py-0.5 text-xs font-medium text-yellow-800 inline-block mt-1">
+            {{tourData?.departLocation?.name}}
+          </span>
+        </div>
+        <div class="w-1/2">
+          <label class="block mb-1 font-bold">Điểm đến</label>
+          <span *ngFor="let destination of tourData?.locations"
+            class="rounded-[30px] bg-yellow-500/10 px-2 py-0.5 text-xs font-medium text-yellow-800 inline-block mt-1">
+            {{ destination.name }}
+
+          </span>
+        </div>
+      </div>
+
+      <div class="flex space-x-4 mt-5">
+        <div class="w-1/2">
+          <label class="block mb-1 font-bold">Thời lượng</label>
+          <span>
+            {{ tourData?.numberDays }} ngày {{ tourData?.numberNight }} đêm
+          </span>
+
+        </div>
+        <!-- Hiển thị lỗi nếu số ngày <= số đêm -->
+        <span *ngIf="editTourForm.errors?.['daysMustBeGreater']" class="text-red-500 text-sm">
+          Số ngày phải lớn hơn số đêm
+        </span>
+      </div>
+
+      <div class="mt-5">
+        <label class="block mb-1 font-bold">Điểm nổi bật</label>
+        <p [innerHTML]="tourData?.highlights"></p>
+      </div>
+
+      @for (day of tourData?.tourDays; track $index) {
+        <div class=" mt-5 border border-gray-200 p-3 shadow-sm rounded-md bg-gray-50 dark:bg-gray-800 dark:border-gray-700">
+          <p class="flex flex-col">
+            <span class="text-left"><strong>Ngày {{ day.dayNumber }}: {{ day.title }} </strong></span>
+            <span class="text-left"> 🍽️ {{ day.mealPlan }}</span>
+          </p>
+          <div class="p-5 dark:border-gray-700 dark:bg-gray-900">
+            <div [innerHTML]="isExpanded[day.dayNumber] ? day.content : getTruncatedContent(day.content)"></div>
+            <a href="#" class="text-blue-500 hover:underline mt-2 inline-block"
+               (click)="toggleContent(day.dayNumber, $event)">
+              {{ isExpanded[day.dayNumber] ? 'Thu gọn' : 'Xem thêm' }}
+            </a>
+          </div>
+        </div>  
+
+        
+      }
+
+      <div class="mt-5">
+        <label class="block mb-1 font-bold">Ghi chú</label>
+        <p>
+          {{ tourData?.note }}
+        </p>
+      </div>
+      <div class="flex justify-end space-x-4">
+        <button type="button" (click)="onCancel()" class="px-4 py-2 bg-gray-500 hover:bg-gray-600 text-white rounded">
+          Quay lại
+        </button>
+      </div>
+    </div>
+  </div>
+</div>

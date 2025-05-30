@@ -1,0 +1,42 @@
+<div class="mt-4 overflow-x-auto bg-white shadow-md rounded-lg">
+  <app-spinner [isLoading]="isLoading"></app-spinner>
+
+  <ng-container *ngIf="listCustomers?.length > 0; else noCustomer">
+    <table class="w-full border-collapse border border-gray-300">
+      <thead class="bg-green-700">
+        <tr>
+          <th class="border border-gray-300 text-white p-2">STT</th>
+          <th class="border border-gray-300 text-white p-2">Họ và tên</th>
+          <th class="border border-gray-300 text-white p-2">Điện thoại</th>
+          <th class="border border-gray-300 text-white p-2">Email</th>
+          <th class="border border-gray-300 text-white p-2">Ngày sinh</th>
+          <th class="border border-gray-300 text-white p-2">Giới tính</th>
+          <th class="border border-gray-300 text-white p-2">Điểm đón</th>
+        </tr>
+      </thead>
+      <tbody>
+        <ng-container *ngFor="let group of listCustomers">
+          <tr class="bg-gray-100">
+            <td colspan="8" class="text-left font-semibold p-2">
+              Mã booking: {{ group.tourBookingCode }} |
+              Loại booking: {{ group.tourBookingCategory || 'TRỰC TIẾP' }}
+            </td>
+          </tr>
+          <tr *ngFor="let customer of group.listCustomer; let i = index" class="border border-gray-300">
+            <td class="border border-gray-300 p-2 text-center">{{ i + 1 }}</td>
+            <td class="border border-gray-300 p-2">{{ customer.fullName }}</td>
+            <td class="border border-gray-300 p-2">{{ customer.phoneNumber || 'Không có' }}</td>
+            <td class="border border-gray-300 p-2">{{ customer.email || 'Không có' }}</td>
+            <td class="border border-gray-300 p-2">{{ customer.dateOfBirth | birthDate }}</td>
+            <td class="border border-gray-300 p-2">{{ customer.gender === 'MALE' ? 'Nam' : 'Nữ' }}</td>
+            <td class="border border-gray-300 p-2">{{ customer.pickUpLocation }}</td>
+          </tr>
+        </ng-container>
+      </tbody>
+    </table>
+  </ng-container>
+
+  <ng-template #noCustomer>
+    <div class="text-center text-gray-500 py-6">Không có khách hàng nào</div>
+  </ng-template>
+</div>

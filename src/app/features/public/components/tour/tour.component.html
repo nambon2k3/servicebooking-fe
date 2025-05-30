@@ -1,0 +1,177 @@
+<div class="mt-24 container mx-auto px-4 py-6 pb-0">
+    <div class="mx-auto w-11/12 bg-gray-200 p-10 rounded-lg flex *:justify-center items-center md:items-center">
+        <div *ngIf="getDestinationName()" id="map" (click)="openMap()"
+            class="relative z-10 w-1/3 h-56 flex items-center justify-center font-bold text-lg rounded-lg shadow">
+        </div>
+        <div class="mt-4 mx-auto w-2/3">
+            <h1 class="mx-auto text-center font-bold text-green-700 text-3xl mb-4">
+                {{ getDestinationName() ? 'Tất cả các tour du lịch tại ' + getDestinationName() : 'Những tour du lịch tuyệt vời' }}
+            </h1>
+            <p class="mx-auto max-w-6xl text-center text-md leading-relaxed text-gray-800">
+                {{
+                  getDestinationDescription() ? getDestinationDescription() : 
+                  'Việt Nam – điểm đến lý tưởng cho những ai yêu thích khám phá thiên nhiên kỳ vĩ, văn hóa đặc sắc và nền ẩm thực phong phú.' + 
+                  'Từ những bãi biển trong xanh như Phú Quốc, Nha Trang đến cao nguyên hùng vĩ Sapa hay di sản thế giới Vịnh Hạ Long, ' + 
+                  'mỗi vùng miền đều mang đến những trải nghiệm độc đáo. Không chỉ sở hữu cảnh quan tuyệt đẹp, Việt Nam còn gây ấn tượng' +
+                  ' với du khách bởi lòng hiếu khách, nền văn hóa lâu đời và các hoạt động du lịch đa dạng. Hãy cùng chúng tôi khám phá' + 
+                  ' Việt Nam và tận hưởng những hành trình đáng nhớ!'
+                }}
+              </p>              
+        </div>
+    </div>
+
+    <div class="flex justify-start items-center mx-20 mt-10 h-fit">
+        <div class="flex gap-1">
+            <p class="font-bold">{{ totalItems }}</p>
+            <p>tour du lịch tại {{ getDestinationName() }}</p>
+        </div>
+    </div>
+
+    <div class="flex flex-col md:flex-row gap-7 container mx-auto px-14 py-6">
+        <div class="flex flex-col md:flex-row gap-6 w-1/5">
+            <div class="w-full max-w-md sticky top-40 self-start h-fit bg-white shadow-lg p-4 rounded-lg">
+                <h3 class="font-semibold text-lg">Lọc Tour</h3>
+                <h2 class="font-bold mb-4">Khoảng giá</h2>
+
+                <div class="relative mt-4 slider-container">
+                    <input type="range" min="0" max="200000000" [(ngModel)]="minPrice" (input)="updateSliderUI()"
+                        class="absolute w-full opacity-0 z-10">
+                    <input type="range" min="0" max="200000000" [(ngModel)]="maxPrice" (input)="updateSliderUI()"
+                        class="absolute w-full opacity-0 z-10">
+
+                    <div class="relative w-full h-2 bg-gray-200  rounded-md">
+                        <div class="absolute h-2 bg-gradient-to-r from-green-900 to-green-400 rounded-md"
+                            [style.left.%]="minPercent" [style.right.%]="100 - maxPercent"></div>
+                    </div>
+                </div>
+
+                <div class="flex justify-between mt-3 text-gray-600">
+                    <span>{{ minPrice | currencyVnd }}</span>
+                    <span>{{ maxPrice | currencyVnd }}</span>
+                </div>
+
+                <!-- Dropdown Điểm khởi hành với ng-select -->
+                <p class="font-bold mt-4">Điểm khởi hành</p>
+                <ng-select [(ngModel)]="departLocationId" [items]="locations()" bindLabel="name" bindValue="id"
+                    placeholder="Chọn điểm khởi hành" (change)="applyFilters()" [searchable]="true"
+                    class="mt-2 custom bg-white border border-gray-300 rounded-md">
+                </ng-select>
+
+                <!-- Dropdown Điểm đến với ng-select -->
+                <p class="font-bold mt-4">Điểm đến</p>
+                <ng-select [(ngModel)]="keyword" [items]="locations()" bindLabel="name" bindValue="id"
+                    placeholder="Chọn điểm đến" (change)="applyFilters()" [searchable]="true"
+                    class="mt-2 custom bg-white border border-gray-300 rounded-md">
+                </ng-select>
+
+                <div class="mt-4">
+                    <div class="font-bold mt-4">Thời lượng (Ngày):
+                        <input type="number" id="tourDuration"
+                            class="w-full font-normal p-2 border rounded-md focus:ring focus:ring-green-300" min="1"
+                            (input)="onDurationChange($event)" [value]="duration">
+                    </div>
+
+                    <div class="font-bold mt-4">Ngày khởi hành:
+                        <input type="date" id="tourDate"
+                            class="w-full font-normal p-2 border rounded-md focus:ring focus:ring-green-300"
+                            (change)="onDateChange($event)" [value]="fromDate ? (fromDate | date: 'yyyy-MM-dd') : ''">
+                    </div>
+
+                    <button class="bg-white border border-black-500 text-black px-4 py-2 rounded-lg mt-4 w-full"
+                        (click)="clearFilters()">Xóa tất cả bộ lọc</button>
+
+                    <button class="bg-green-700 hover:bg-green-800 text-white px-4 py-2 rounded-lg mt-4 w-full"
+                        (click)="updateSlider()">Lọc</button>
+                </div>
+            </div>
+        </div>
+
+        <div class="w-full md:w-5/6">
+            @for (tour of filteredTours(); track $index){
+            <div class="rounded-lg flex items-start gap-4 mb-6">
+                <div class="max-w-5xl mx-auto bg-white hover:shadow-xl rounded-lg overflow-hidden flex cursor-pointer">
+                    <div class="relative w-2/5 overflow-clip">
+                        <img [src]="tour.tourImages[0]?.imageUrl" alt="Ảnh Tour"
+                            class="w-[700px] h-72 object-cover overflow-hidden rounded-l-lg" />
+                        <button (click)="addToWishlist(tour.id)" data-modal-toggle="wishlistModal"
+                            data-modal-target="wishlistModal"
+                            class="absolute top-2 left-2 bg-white p-2 rounded-full shadow-md">
+                            <svg class="w-6 h-6 text-gray-800 dark:text-white" aria-hidden="true"
+                                xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none"
+                                viewBox="0 0 24 24">
+                                <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"
+                                    stroke-width="2"
+                                    d="M12.01 6.001C6.5 1 1 8 5.782 13.001L12.011 20l6.23-7C23 8 17.5 1 12.01 6.002Z" />
+                            </svg>
+                        </button>
+                    </div>
+
+                    <div class="w-3/5 p-6 border border-gray-300 rounded-r-lg">
+                        <h2 class="text-xl font-bold">{{ tour.name | truncate : 50 }}</h2>
+
+                        <div class="mt-3 text-gray-700 space-y-2">
+                            <p class="flex items-center gap-2">
+                                <span>⏳</span> Thời lượng: <strong>{{ tour.numberDays }}N{{ tour.numberNight
+                                    }}Đ</strong>
+                            </p>
+                            <p class="flex items-center gap-2">
+                                <span>📅</span> Thời gian khởi hành:
+                                <span class="flex gap-2">
+                                  <button *ngFor="let date of getUpcomingSchedules(tour)"
+                                          (click)="viewDetails(tour.id)"
+                                          class="border hover:bg-red-500 hover:text-white border-red-500 text-red-500 px-3 py-1 rounded">
+                                    {{ date.startDate | date: 'dd/MM' }}
+                                  </button>
+                                </span>
+                              </p>                                                         
+                            <p class="flex items-center gap-2">
+                                <span>📍</span> Địa điểm khởi hành: <strong
+                                    class="text-green-700">{{tour.departLocation.name}}</strong>
+                            </p>
+                            <span *ngFor="let tag of tour.tags" class="rounded-[30px] bg-green-500/10 px-2 py-0.5 text-xs font-medium text-green-800 inline-block mt-1">
+                                {{ tag.name }}
+                            </span>
+                        </div>
+
+                        <div class="flex items-center justify-between gap-14 ml-2">
+                            <div class="mt-4 text-md">
+                                <span class="text-gray-700">Giá từ: </span>
+                                <span class="text-red-600 font-bold text-xl">{{ tour.priceFrom | currencyVnd }}</span>
+                            </div>
+
+                            <div class="mt-4 right-0">
+                                <button (click)="viewDetails(tour.id)"
+                                    class="bg-green-700 hover:bg-green-800 text-white px-5 py-2 rounded text-lg">Xem Chi
+                                    tiết</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            }
+
+            <div class="py-8 mt-4 text-center">
+                <ul class="inline-flex space-x-2">
+                    <li *ngIf="currentPage > 0">
+                        <a (click)="changePage(currentPage - 1)"
+                            class="px-3 py-2 rounded-md border cursor-pointer">«</a>
+                    </li>
+
+                    <li *ngFor="let page of [].constructor(totalPages); let i = index">
+                        <a (click)="changePage(i)" class="px-3 py-2 rounded-md border cursor-pointer"
+                            [class.bg-black]="i === currentPage" [class.text-white]="i === currentPage">
+                            {{ i + 1 }}
+                        </a>
+                    </li>
+
+                    <li *ngIf="currentPage < totalPages - 1">
+                        <a (click)="changePage(currentPage + 1)"
+                            class="px-3 py-2 rounded-md border cursor-pointer">»</a>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </div>
+</div>
+<app-footer></app-footer>
+<app-wishlist #wishlistModal></app-wishlist>

@@ -1,0 +1,38 @@
+<div class="flex justify-center items-center h-full min-h-screen p-4" style="background-image: url(https://cdn.pixabay.com/photo/2017/10/12/03/03/view-2843338_1280.jpg); 
+           background-repeat: no-repeat; 
+           background-size: cover;">
+    <div class="max-w-md w-full mx-auto">
+        <div class="bg-white p-6 rounded-lg shadow-md w-full max-w-md text-center bg-opacity-70">
+            <div *ngIf="isLoading">
+                <div class="flex justify-center items-center">
+                    <svg class="animate-spin h-8 w-8 text-blue-600" xmlns="http://www.w3.org/2000/svg" fill="none"
+                        viewBox="0 0 24 24">
+                        <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4">
+                        </circle>
+                        <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8v8H4z"></path>
+                    </svg>
+                </div>
+                <p class="text-blue-600 mt-4">Đang tạo tài khoản của bạn, vui lòng chờ...</p>
+            </div>
+
+            <div *ngIf="!isLoading && !errorMessage" class="text-gray-600">
+                <svg class="h-16 w-16 mx-auto" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"
+                    stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7" />
+                </svg>
+                <p class="text-lg font-semibold mt-4">
+                    Cảm ơn bạn đã đăng ký, vui lòng kiểm tra email để hoàn tất xác minh.
+                </p>
+            </div>
+
+            <div *ngIf="!isLoading && errorMessage" class="text-gray-600">
+                <svg class="h-16 w-16 mx-auto" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"
+                    stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
+                </svg>
+                <p class="text-lg font-semibold mt-4">{{ errorMessage }}</p>
+            </div>
+
+        </div>
+    </div>
+</div>

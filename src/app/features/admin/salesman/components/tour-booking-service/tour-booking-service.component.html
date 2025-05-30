@@ -1,0 +1,519 @@
+<div class="flex flex-col min-h-screen bg-gray-200 gap-4">
+
+    <app-spinner [isLoading]="isLoading"></app-spinner>
+
+    <div class="col-span-12 bg-white h-fit">
+        <div class="flex items-center justify-between mt-4 px-5 py-4">
+            <!-- Left: Title -->
+            <h2 class="text-lg font-semibold text-gray-700">Chi tiết đơn hàng</h2>
+
+            <!-- Right: Actions -->
+            <div class="flex space-x-2">
+                <a [routerLink]=" ['/salesman/booking-detail/', tourBookingId]"
+                    class="flex items-center px-4 py-2 bg-gray-200 text-gray-700 text-sm rounded hover:bg-gray-300">
+                    &lt; Quay lại danh sách
+                </a>
+
+
+
+                @if(tourType !== 'SIC' && hasNotOrdered) {
+                <button class="flex items-center px-4 py-2 bg-blue-600 text-white text-sm rounded hover:bg-blue-700"
+                    (click)="checkingService()">
+                    Kiểm tra dịch vụ
+                </button>
+                }
+
+
+            </div>
+        </div>
+    </div>
+
+
+    <div class="flex w-full gap-4 p-4">
+        <div class="w-[75%] flex flex-col gap-8 p-4">
+            @for(dayService of dayServices; track $index) {
+            <div class="flex flex-col bg-white">
+
+                <div class="flex items-center justify-between bg-white border-green-500 px-4 py-3 rounded-md mb-5">
+
+                    <div class="flex items-center space-x-3">
+                        <div class="text-green-600 font-semibold text-base">Ngày {{dayService?.tourDay?.dayNumber}}:
+                        </div>
+                        <div class="text-lg font-bold text-gray-800">
+                            {{dayService?.tourDay?.title}}
+                        </div>
+                    </div>
+
+
+                </div>
+                <div class="px-4">
+                    <table class="w-full mt-4 m-auto border-collapse px-4">
+                        <thead class="bg-green-50">
+                            <tr class="text-left font-semibold border-b">
+                                <th class="p-2">STT</th>
+                                <th class="p-2">Loại dịch vụ</th>
+                                <th class="p-2">Nhà cung cấp</th>
+                                <th class="p-2">Dịch vụ</th>
+                                <th class="p-2">Số lượng</th>
+                                <th class="p-2 text-center min-w-[150px]">Trạng thái</th>
+                                <th class="p-2 text-center">Hành động</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+
+                            @for(bookingService of dayService?.bookingServices; track $index) {
+                            <tr class="border-t">
+                                <td class="p-2">
+                                    {{$index + 1}}
+                                </td>
+                                <td class="p-2">
+                                    {{serviceCategoryMap[bookingService?.service?.serviceCategory?.categoryName]}}
+                                </td>
+                                <td class="p-2">
+                                    {{bookingService?.service?.serviceProvider?.name}}
+                                </td>
+                                <td class="p-2">
+                                    {{bookingService?.service?.name}}
+                                </td>
+                                <td class="p-2">
+                                    {{bookingService?.currentQuantity}}
+
+                                    @if(bookingService?.requestedQuantity > 0) {
+                                    <span class="text-sm text-gray-500"> -> {{bookingService?.requestedQuantity}}</span>
+                                    <span
+                                        class="inline-flex items-center text-blue-800 text-xs font-medium px-2.5 py-0.5 rounded-full dark:bg-green-900 dark:text-green-300">
+                                        <span>
+                                            Yêu cầu thay đổi
+                                        </span>
+                                    </span>
+                                    }
+
+                                </td>
+
+                                <td class="p-2 text-center">
+                                    @if(bookingService?.status === 'PENDING') {
+                                    <span
+                                        class="inline-flex items-center bg-gray-100 text-gray-800 text-xs font-medium px-2.5 py-0.5 rounded-full dark:bg-green-900 dark:text-green-300">
+                                        <span class="w-2 h-2 me-1 bg-gray-500 rounded-full"></span>
+                                        <span>
+                                            Chờ xử lí
+                                        </span>
+                                    </span>
+                                    }
+                                    @if(bookingService?.status === 'PAID') {
+                                    <span
+                                        class="inline-flex items-center bg-green-100 text-green-800 text-xs font-medium px-2.5 py-0.5 rounded-full dark:bg-green-900 dark:text-green-300">
+                                        <span class="w-2 h-2 me-1 bg-green-500 rounded-full"></span>
+                                        <span>
+                                            Đã thanh toán
+                                        </span>
+                                    </span>
+                                    }
+                                    @if(bookingService?.status === 'NOT_ORDERED') {
+                                    <span
+                                        class="inline-flex items-center bg-gray-100 text-gray-800 text-xs font-medium px-2.5 py-0.5 rounded-full dark:bg-green-900 dark:text-green-300">
+                                        <span class="w-2 h-2 me-1 bg-gray-500 rounded-full"></span>
+                                        <span>
+                                            Chưa đặt dịch vụ
+                                        </span>
+                                    </span>
+                                    }
+                                    @if(bookingService?.status === 'NOT_AVAILABLE') {
+                                    <span
+                                        class="inline-flex items-center bg-gray-100 text-gray-800 text-xs font-medium px-2.5 py-0.5 rounded-full dark:bg-green-900 dark:text-green-300">
+                                        <span class="w-2 h-2 me-1 bg-gray-500 rounded-full"></span>
+                                        <span>
+                                            Không khả dụng
+                                        </span>
+                                    </span>
+                                    }
+
+                                    @if(bookingService?.status === 'CANCELLED') {
+                                    <span
+                                        class="inline-flex items-center bg-red-100 text-red-800 text-xs font-medium px-2.5 py-0.5 rounded-full dark:bg-green-900 dark:text-green-300">
+                                        <span class="w-2 h-2 me-1 bg-red-500 rounded-full"></span>
+                                        <span>
+                                            Đã hủy
+                                        </span>
+                                    </span>
+                                    }
+
+                                    @if(bookingService?.status === 'CANCEL_REQUEST') {
+                                    <span
+                                        class="inline-flex items-center bg-red-100 text-red-800 text-xs font-medium px-2.5 py-0.5 rounded-full dark:bg-green-900 dark:text-green-300">
+                                        <span class="w-2 h-2 me-1 bg-red-500 rounded-full"></span>
+                                        <span>
+                                            Yêu cầu hủy
+                                        </span>
+                                    </span>
+                                    }
+
+                                    @if(bookingService?.status === 'REJECTED_BY_OPERATOR') {
+                                    <span
+                                        class="inline-flex items-center bg-red-100 text-red-800 text-xs font-medium px-2.5 py-0.5 rounded-full dark:bg-green-900 dark:text-green-300">
+                                        <span class="w-2 h-2 me-1 bg-red-500 rounded-full"></span>
+                                        <span>
+                                            Điều hành từ chối
+                                        </span>
+                                    </span>
+                                    }
+
+                                    @if(bookingService?.status === 'CHECKING') {
+                                    <span
+                                        class="inline-flex items-center bg-blue-100 text-blue-800 text-xs font-medium px-2.5 py-0.5 rounded-full dark:bg-green-900 dark:text-green-300">
+                                        <span class="w-2 h-2 me-1 bg-blue-500 rounded-full"></span>
+                                        <span>
+                                            Chờ xác thực
+                                        </span>
+                                    </span>
+                                    }
+
+                                    @if(bookingService?.status === 'AVAILABLE') {
+                                    <span
+                                        class="inline-flex items-center bg-green-100 text-green-800 text-xs font-medium px-2.5 py-0.5 rounded-full dark:bg-green-900 dark:text-green-300">
+                                        <span class="w-2 h-2 me-1 bg-green-500 rounded-full"></span>
+                                        <span>
+                                            Đã xác thực
+                                        </span>
+                                    </span>
+                                    }
+
+                                </td>
+                                <Td class="p-2 text-center">
+                                    <button type="button" data-modal-target="service-modal"
+                                        *ngIf="bookingService?.status !== 'PAID' && bookingService?.status !== 'CHECKING' && bookingService?.status !== 'PENDING'"
+                                        data-modal-toggle="service-modal" (click)="openModal(bookingService)">
+                                        <svg class="w-6 h-6 text-gray-800 dark:text-white" aria-hidden="true"
+                                            xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none"
+                                            viewBox="0 0 24 24">
+                                            <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"
+                                                stroke-width="2"
+                                                d="M10.779 17.779 4.36 19.918 6.5 13.5m4.279 4.279 8.364-8.643a3.027 3.027 0 0 0-2.14-5.165 3.03 3.03 0 0 0-2.14.886L6.5 13.5m4.279 4.279L6.499 13.5m2.14 2.14 6.213-6.504M12.75 7.04 17 11.28" />
+                                        </svg>
+
+                                    </button>
+                                </Td>
+                            </tr>
+                            }
+
+                        </tbody>
+                    </table>
+                </div>
+
+            </div>
+            }
+        </div>
+        <div class="w-[25%] flex flex-col gap-4 p-4">
+            <div class="bg-white px-5 py-4 w-full">
+                <h2 class="text-lg font-semibold text-center mb-4 border-b pb-5 text-gray-700">Thông tin Dịch vụ</h2>
+
+                <table class="w-full border-collapse">
+                    <tbody class="space-y-4">
+                        <tr class="pb-4">
+                            <td class="p-2 font-semibold">Số lượng ngày: </td>
+                            <td class="p-2">
+                                {{dayServices?.length}}
+                            </td>
+                        </tr>
+                        <tr class="pb-4">
+                            <td class="p-2 font-semibold">Số lượng dịch vụ:</td>
+                            <td class="p-2">
+                                {{totalServices}}
+                            </td>
+                        </tr>
+                        <tr *ngFor="let key of statusKeys()" class="pb-4">
+                            <td [class]="{
+                                'text-yellow-500': key === 'PENDING',
+                                'text-green-600': key === 'AVAILABLE',
+                                'text-red-500': key === 'CANCELLED',
+                                'text-blue-500': key === 'CHECKING',
+                                'text-gray-500': key === 'NOT_ORDERED',
+                                'text-red-800': key === 'REJECTED_BY_OPERATOR',
+                                'text-red-600': key === 'CANCEL_REQUEST',
+                                'text-red-700': key === 'NOT_AVAILABLE'
+                              }" class="p-2 font-semibold">{{ statusLabels[key] }}</td>
+                            <td [class]="{
+                                'text-yellow-600': key === 'PENDING',
+                                'text-green-600': key === 'AVAILABLE',
+                                'text-blue-600': key === 'CHECKING',
+                                'text-red-600': key === 'CANCELLED',
+                                'text-gray-600': key === 'NOT_ORDERED',
+                                'text-red-800': key === 'REJECTED_BY_OPERATOR',
+                                'text-red-700': key === 'CANCEL_REQUEST',
+                                'text-red-900': key === 'NOT_AVAILABLE'
+                              }" class="p-2 font-semibold">
+                                {{ getStatusCount(key) }}
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+<div id="service-modal" tabindex="-1" aria-hidden="true"
+    class="hidden overflow-y-auto overflow-x-hidden fixed top-0 right-0 left-0 z-50 justify-center items-center w-full md:inset-0 h-[calc(100%-1rem)] max-h-full">
+    <div class="relative p-4 w-full max-w-2xl max-h-full">
+        <!-- Modal content -->
+        <div class="relative bg-white rounded-lg shadow-sm dark:bg-gray-700">
+            <!-- Modal header -->
+            <div
+                class="flex items-center justify-between p-4 md:p-5 border-b rounded-t dark:border-gray-600 border-gray-200">
+                <h3 class="text-xl font-semibold text-gray-900 dark:text-white">
+                    Thay đổi dịch vụ
+                </h3>
+                <button type="button" (click)="closeServiceModal()"
+                    class="text-gray-400 bg-transparent hover:bg-gray-200 hover:text-gray-900 rounded-lg text-sm w-8 h-8 ms-auto inline-flex justify-center items-center dark:hover:bg-gray-600 dark:hover:text-white"
+                    data-modal-hide="service-modal">
+                    <svg class="w-3 h-3" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none"
+                        viewBox="0 0 14 14">
+                        <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                            d="m1 1 6 6m0 0 6 6M7 7l6-6M7 7l-6 6" />
+                    </svg>
+                    <span class="sr-only">Close modal</span>
+                </button>
+            </div>
+            <!-- Modal body -->
+            <div class="p-4 md:p-5 space-y-4">
+                <form [formGroup]="bookingServiceForm" (ngSubmit)="onSubmit()" class="space-y-4 p-4 ">
+                    <div>
+                        <label class="block mb-1 font-semibold">Tên dịch vụ</label>
+                        <input type="text" readonly [value]="selectedTourBookingService?.service?.name"
+                            class="w-full border px-3 py-2 rounded" />
+                    </div>
+
+                    <div>
+                        <label class="block mb-1 font-semibold">Giá nett: </label>
+                        <input type="number" readonly [value]="selectedTourBookingService?.service?.nettPrice"
+                            class="w-full border px-3 py-2 rounded" />
+                    </div>
+
+                    <div>
+                        <label class="block mb-1 font-semibold">Loại dịch vụ</label>
+                        <input type="text" readonly
+                            [value]="serviceCategoryMap[selectedTourBookingService?.service?.serviceCategory?.categoryName] || 'Không xác định'"
+                            class="w-full border px-3 py-2 rounded" />
+                    </div>
+
+                    <div>
+                        <label class="block mb-1 font-semibold">Nhà cung cấp</label>
+                        <input type="text" readonly [value]="selectedTourBookingService?.service?.serviceProvider?.name"
+                            class="w-full border px-3 py-2 rounded" />
+                    </div>
+
+                    <div>
+                        <label class="block mb-1  font-semibold">Số lượng hiện tại</label>
+                        <input type="number" min="1" formControlName="currentQuantity" readonly
+                            class="w-full border px-3 py-2 rounded" />
+                    </div>
+
+                    <div>
+                        <label class="block mb-1 font-semibold">Số lượng mới</label>
+                        <input type="number" min="1" formControlName="requestedQuantity"
+                            class="w-full border px-3 py-2 rounded" />
+
+                        <p *ngIf="
+                                    bookingServiceForm.get('requestedQuantity')?.invalid &&
+                                    bookingServiceForm.get('requestedQuantity')?.touched
+                                  " class="text-red-500 w-full text-left text-sm">
+                            Không hợp lệ
+                        </p>
+                    </div>
+
+                    <div>
+                        <label class="block mb-1 font-semibold">Lý do</label>
+                        <textarea class="w-full mt-2 border rounded p-2 text-sm" rows="4"
+                            placeholder="Nhập lí do thay đổi" formControlName="reason"></textarea>
+
+                        <p *ngIf="
+                            bookingServiceForm.get('reason')?.invalid &&
+                            bookingServiceForm.get('reason')?.touched
+                          " class="text-red-500 w-full text-left text-sm">
+                            Thông tin bắt buộc
+                        </p>
+                    </div>
+
+                </form>
+            </div>
+            <!-- Modal footer -->
+            <div
+                class="flex justify-end items-center p-4 gap-4 border-t border-gray-200 rounded-b dark:border-gray-600">
+
+                @if(selectedTourBookingService?.status === 'NOT_ORDERED') {
+                <button type="button"
+                    class="text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center">
+                    Đặt dịch vụ
+                </button>
+
+                <button type="button" (click)="submitBooking('SAVE')"
+                    class="text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center">
+                    Lưu
+                </button>
+
+                }
+                @if(selectedTourBookingService?.status === 'AVAILABLE' || selectedTourBookingService?.status ===
+                'REJECTED_BY_OPERATOR') {
+                <button data-modal-hide="service-modal" type="button" (click)="chekingSICService()"
+                    class="text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center">
+                    Yêu cầu thay đổi
+                </button>
+                }
+
+                @if(selectedTourBookingService?.status === 'REJECTED_BY_OPERATOR') {
+                <button data-modal-hide="service-modal" type="button" (click)="updateStatus()"
+                    class="text-white bg-green-700 hover:bg-green-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center">
+                    Hủy yêu cầu
+                </button>
+                }
+
+                <button type="button" (click)="cancelSICService()" *ngIf="selectedTourBookingService?.status !== 'REJECTED_BY_OPERATOR' && selectedTourBookingService?.status !== 'CANCEL_REQUEST'"
+                    class="text-red-700 hover:text-white border border-red-700 hover:bg-red-800 focus:ring-4  focus:outline-none focus:ring-red-300 font-medium rounded text-sm px-5 py-2.5 text-center">
+                    Hủy dịch vụ
+                </button>
+                <button data-modal-hide="service-modal" type="button" (click)="closeServiceModal()"
+                    class="py-2.5 px-5 ms-3 text-sm font-medium text-gray-900 focus:outline-none bg-white rounded-lg border border-gray-200 hover:bg-gray-100 hover:text-blue-700 focus:z-10 focus:ring-4 focus:ring-gray-100">
+                    Đóng
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+
+
+<div id="service-not-order-modal" tabindex="-1"
+    class="hidden overflow-y-auto overflow-x-hidden fixed top-0 right-0 left-0 z-50 justify-center items-center w-full md:inset-0 h-[calc(100%-1rem)] max-h-full">
+    <div class="relative p-4 w-full max-w-2xl max-h-full">
+        <!-- Modal content -->
+        <div class="relative bg-white rounded-lg shadow-sm dark:bg-gray-700">
+            <!-- Modal header -->
+            <div
+                class="flex items-center justify-between p-4 md:p-5 border-b rounded-t dark:border-gray-600 border-gray-200">
+                <h3 class="text-xl font-semibold text-gray-900 dark:text-white">
+                    Thông tin dịch vụ
+                </h3>
+                <button type="button" (click)="closeServiceNotOrderModal()"
+                    class="text-gray-400 bg-transparent hover:bg-gray-200 hover:text-gray-900 rounded-lg text-sm w-8 h-8 ms-auto inline-flex justify-center items-center dark:hover:bg-gray-600 dark:hover:text-white"
+                    data-modal-hide="service-not-order-modal">
+                    <svg class="w-3 h-3" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 14 14">
+                        <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                            d="m1 1 6 6m0 0 6 6M7 7l6-6M7 7l-6 6" />
+                    </svg>
+                    <span class="sr-only">Close modal</span>
+                </button>
+            </div>
+            <!-- Modal body -->
+            <div class="p-4 md:p-5 space-y-4">
+                <form [formGroup]="bookingServiceNotOrderForm" (ngSubmit)="onSubmit()" class="space-y-4 p-4 ">
+                    <div>
+                        <label class="block mb-1 font-semibold">Tên dịch vụ</label>
+                        <input type="text" readonly [value]="selectedTourBookingService?.service?.name"
+                            class="w-full border px-3 py-2 rounded" />
+                    </div>
+
+                    <div>
+                        <label class="block mb-1  font-semibold">Giá nett: </label>
+                        <input type="number" readonly [value]="selectedTourBookingService?.service?.nettPrice"
+                            class="w-full border px-3 py-2 rounded" />
+                    </div>
+
+                    <div>
+                        <label class="block mb-1 font-semibold">Loại dịch vụ</label>
+                        <input type="text" readonly
+                            [value]="serviceCategoryMap[selectedTourBookingService?.service?.serviceCategory?.categoryName] || 'Không xác định'"
+                            class="w-full border px-3 py-2 rounded" />
+                    </div>
+
+                    <div>
+                        <label class="block mb-1  font-semibold">Nhà cung cấp</label>
+                        <input type="text" readonly [value]="selectedTourBookingService?.service?.serviceProvider?.name"
+                            class="w-full border px-3 py-2 rounded" />
+                    </div>
+
+                    <div>
+                        <label class="block mb-1  font-semibold">Số lượng hiện tại</label>
+                        <input min="1" [class]="selectedTourBookingService?.status === 'CANCELLED' ? 'bg-gray-100' : ''"
+                            type="number" formControlName="currentQuantity"
+                            [readonly]="selectedTourBookingService?.status === 'CANCELLED'"
+                            class="w-full border px-3 py-2 rounded" />
+
+
+                        <p *ngIf="
+                            bookingServiceNotOrderForm.get('currentQuantity')?.invalid &&
+                            bookingServiceNotOrderForm.get('currentQuantity')?.touched
+                          " class="text-red-500 w-full text-left text-sm">
+                            Không hợp lệ
+                        </p>
+                    </div>
+
+                </form>
+            </div>
+            <!-- Modal footer -->
+            <div
+                class="flex justify-end items-center p-4 gap-4 border-t border-gray-200 rounded-b dark:border-gray-600">
+
+                @if(selectedTourBookingService?.status !== 'CANCELLED') {
+                <button type="button" (click)="cancelService()"
+                    class="text-red-700 hover:text-white border border-red-700 hover:bg-red-800 focus:ring-4  focus:outline-none focus:ring-red-300 font-medium rounded text-sm px-5 py-2.5 text-center">
+                    Hủy dịch vụ
+                </button>
+                @if(selectedTourBookingService?.status !== 'CHECKING') {
+                <button (click)="submitBooking('SAVE')" type="button"
+                    class="text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center">
+                    Lưu
+                </button>
+                @if(selectedTourBookingService?.status !== 'AVAILABLE') {
+                <button (click)="submitBooking('CHECKING')" type="button"
+                    class="text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center">
+                    Xác thực dịch vụ
+                </button>
+                }
+                }
+                }
+
+                <button data-modal-hide="service-not-order-modal" type="button" (click)="closeServiceNotOrderModal()"
+                    class="py-2.5 px-5 ms-3 text-sm font-medium text-gray-900 focus:outline-none bg-white rounded-lg border border-gray-200 hover:bg-gray-100 hover:text-blue-700 focus:z-10 focus:ring-4 focus:ring-gray-100">
+                    Đóng
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+<div id="popup-modal" tabindex="-1"
+    class="hidden overflow-y-auto overflow-x-hidden fixed top-0 right-0 left-0 z-50 justify-center items-center w-full md:inset-0 h-[calc(100%-1rem)] max-h-full">
+    <div class="relative p-4 w-full max-w-md max-h-full">
+        <div class="relative bg-white rounded-lg shadow-sm dark:bg-gray-700">
+            <button type="button"
+                class="absolute top-3 end-2.5 text-gray-400 bg-transparent hover:bg-gray-200 hover:text-gray-900 rounded-lg text-sm w-8 h-8 ms-auto inline-flex justify-center items-center dark:hover:bg-gray-600 dark:hover:text-white"
+                data-modal-hide="popup-modal">
+                <svg class="w-3 h-3" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none"
+                    viewBox="0 0 14 14">
+                    <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                        d="m1 1 6 6m0 0 6 6M7 7l6-6M7 7l-6 6" />
+                </svg>
+                <span class="sr-only">Close modal</span>
+            </button>
+            <div class="p-4 md:p-5 text-center">
+                <svg class="mx-auto mb-4 text-gray-400 w-12 h-12 dark:text-gray-200" aria-hidden="true"
+                    xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 20 20">
+                    <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                        d="M10 11V6m0 8h.01M19 10a9 9 0 1 1-18 0 9 9 0 0 1 18 0Z" />
+                </svg>
+                <h3 class="mb-5 text-lg font-normal text-gray-500 dark:text-gray-400">Xác nhận hủy dịch vụ?</h3>
+                <button (click)="submitBooking('CANCEL')" data-modal-hide="popup-modal" type="button"
+                    class="text-white bg-red-600 hover:bg-red-800 focus:ring-4 focus:outline-none focus:ring-red-300 dark:focus:ring-red-800 font-medium rounded-lg text-sm inline-flex items-center px-5 py-2.5 text-center">
+                    Xác nhận
+                </button>
+                <button data-modal-hide="popup-modal" type="button"
+                    class="py-2.5 px-5 ms-3 text-sm font-medium text-gray-900 focus:outline-none bg-white rounded-lg border border-gray-200 hover:bg-gray-100 hover:text-blue-700 focus:z-10 focus:ring-4 focus:ring-gray-100">
+                    Hủy bỏ
+                </button>
+            </div>
+        </div>
+    </div>
+</div>

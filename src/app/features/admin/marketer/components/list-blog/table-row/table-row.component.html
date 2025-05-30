@@ -1,0 +1,56 @@
+<ng-container>
+  <td>{{ blog.id }}</td>
+  <td>
+    <div class="flex items-center gap-2.5">
+      <img
+        alt="Hình ảnh thu nhỏ của bài viết"
+        class="h-16 w-32 shrink-0 rounded-lg object-cover bg-gray-200"
+        [src]="blog.thumbnailImageUrl" />
+    </div>
+  </td>
+
+  <td>
+    {{ blog.title }}
+  </td>
+
+  <td>
+    {{ blog.description | truncate:20}}
+  </td>
+
+  <td>{{ blog.author.fullName }}</td>
+  
+  <td class="space-x-1">
+    @for (tag of blog.tags; track $index) {
+    <span class="rounded-[30px] bg-yellow-500/10 px-2 py-0.5 text-xs font-medium text-yellow-800 inline-block mt-1">
+      {{ tag.name }}
+    </span>
+    }
+  </td>
+  <td>
+    @if (blog.deleted) {
+      <button 
+        type="button" 
+        class="rounded-[30px] bg-red-900/10 px-2 py-0.5 text-xs font-medium text-red-600 inline-block mt-1"
+        (click)="showBlog()">
+        Đã vô hiệu hóa
+      </button>
+    } @else {
+      <button 
+        type="button" 
+        class="rounded-[30px] bg-green-500/10 px-2 py-0.5 text-xs font-medium text-green-800 inline-block mt-1"
+        (click)="hideBlog()">
+        Đã kích hoạt
+      </button>
+    }
+  </td>
+  <td>
+    <div class="text-center flex justify-center items-center">
+      <button 
+        type="button" 
+        class="text-white w-24 bg-blue-700 hover:bg-blue-800 focus:outline-none focus:ring-4 focus:ring-blue-300 font-medium rounded-full text-sm px-5 py-2.5 text-center me-2 mb-2 dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800"
+        (click)="openDetail(blog)">
+        Chi tiết
+      </button>
+    </div>
+  </td>
+</ng-container>

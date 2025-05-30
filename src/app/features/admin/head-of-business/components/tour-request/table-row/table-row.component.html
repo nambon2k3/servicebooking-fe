@@ -1,0 +1,59 @@
+<ng-container>
+  
+  <td>
+    {{ tourBookingDetail?.tourBooking?.bookingCode }}
+  </td>
+
+  <td class="max-w-[300px]">
+    {{ tourBookingDetail?.tourBooking?.tour?.name }}
+  </td>
+
+  <td >
+    <span [ngClass]="{
+      'bg-blue-100 text-blue-800 font-semibold': tourBookingDetail?.tourBooking?.tour?.tourType === 'SIC',
+      'bg-green-100 text-green-800 font-semibold': tourBookingDetail?.tourBooking?.tour?.tourType === 'PRIVATE'
+    }" class="px-2 py-1 rounded-full">
+      {{ tourBookingDetail?.tourBooking?.tour?.tourType === 'Private' ? 'Tour đặt riêng' :
+      tourBookingDetail?.tourBooking?.tour?.tourType }}
+      
+    </span>
+  </td>
+
+  <td>
+    {{ tourBookingDetail?.tourBooking?.tourSchedule?.startDate | date: 'dd/MM/yyyy' }}
+  </td>
+
+  <td >
+    <span class="px-2 py-1 rounded-md text-sm font-medium"
+      [ngClass]="getBookingStatusLabel(tourBookingDetail?.tourBooking?.status).class">
+      {{ getBookingStatusLabel(tourBookingDetail?.tourBooking?.status).label }}
+    </span>
+  </td>
+
+  <td class="space-x-1">
+    {{ tourBookingDetail?.bookedCustomer?.fullName }}
+  </td>
+  <td>
+    <button type="button" (click)="openDetail(tourBookingDetail?.tourBooking?.id)">
+      <svg class="w-6 h-6 text-gray-800 dark:text-white" aria-hidden="true" xmlns="http://www.w3.org/2000/svg"
+        width="24" height="24" fill="none" viewBox="0 0 24 24">
+        <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+          d="M10 3v4a1 1 0 0 1-1 1H5m4 6 2 2 4-4m4-8v16a1 1 0 0 1-1 1H6a1 1 0 0 1-1-1V7.914a1 1 0 0 1 .293-.707l3.914-3.914A1 1 0 0 1 9.914 3H18a1 1 0 0 1 1 1Z" />
+      </svg>
+
+    </button>
+  </td>
+</ng-container>
+
+
+@if(showError) {
+<!-- Warning Notification (Only One at a Time) -->
+<div class="fixed top-[5rem] left-1/2 transform -translate-x-1/2 z-50 w-80">
+  <div class="flex items-center bg-white shadow-md border border-gray-200 rounded-md p-3 animate-slide-in">
+    <span class="text-red-500 text-xl mr-2">X</span>
+    <p class="text-red-800 text-sm">
+      Nhận booking thất bại. Vui lòng thử lại sau.
+    </p>
+  </div>
+</div>
+}

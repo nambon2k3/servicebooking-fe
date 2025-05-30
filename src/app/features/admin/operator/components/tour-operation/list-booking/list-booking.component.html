@@ -1,0 +1,61 @@
+<div class="mt-4 overflow-x-auto bg-white shadow-md rounded-lg">
+  <app-spinner [isLoading]="isLoading"></app-spinner>
+
+  <ng-container *ngIf="listBookings?.length > 0 ; else noBooking">
+    <table class="w-full border-collapse border border-gray-300">
+      <thead class="bg-green-700">
+        <tr>
+          <th class="border border-gray-300 text-white p-2">Mã booking</th>
+          <th class="border border-gray-300 text-white p-2">Khách hàng</th>
+          <th class="border border-gray-300 text-white p-2">Số chỗ</th>
+          <th class="border border-gray-300 text-white p-2">Tạo bởi</th>
+          <th class="border border-gray-300 text-white p-2">Thanh toán</th>
+          <th class="border border-gray-300 text-white p-2">Ngày tạo</th>
+          <th class="border border-gray-300 text-white p-2">Trạng thái</th>
+          <th class="border border-gray-300 text-white p-2">Nhân viên</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr *ngFor="let booking of listBookings; let i = index" class="border border-gray-300">
+          <td class="border border-gray-300 p-2">{{ booking.bookingCode }}</td>
+          <td class="border border-gray-300 p-2">{{ booking.bookedBy }}</td>
+          <td class="border border-gray-300 p-2">
+            Tổng: {{ booking.customerCount }} chỗ<br>
+            Người lớn: {{ booking.adultCount }} chỗ<br>
+            Trẻ em: {{ booking.childCount }} chỗ
+          </td>
+          <td class="border border-gray-300 p-2">{{ booking.bookingCategory }}</td>
+          <td class="border border-gray-300 p-2">
+            <span class="text-gray-700">Tổng: </span>
+            <span class="text-green-600 font-bold">{{ booking.totalAmount | currencyVnd }}</span><br>
+
+            <span class="text-gray-700">Đã nhận: </span>
+            <span class="text-green-500 font-bold">{{ booking.receiptAmount | currencyVnd }}</span><br>
+
+            <span class="text-gray-700">Còn lại: </span>
+            <span [ngClass]="booking.remainingAmount > 0 ? 'text-red-500 font-bold' : 'text-green-500'">
+              {{ booking.remainingAmount | currencyVnd }}
+            </span><br>
+
+            <span class="text-gray-700">HDV thu: </span>
+            <span [ngClass]="booking.collectionAmount > 0 ? 'text-red-500 font-bold' : 'text-green-500'">
+              {{ booking.collectionAmount | currencyVnd }}
+            </span>
+          </td>
+          <td class="border border-gray-300 p-2">{{ booking.bookedAt | date: 'dd/MM/yyyy' }}</td>
+          <td class="border border-gray-300 p-2">
+            <span class="px-2 py-1 rounded-md text-sm font-medium"
+              [ngClass]="getBookingStatusLabel(booking.bookingStatus).class">
+              {{ getBookingStatusLabel(booking.bookingStatus).label }}
+            </span>
+          </td>
+          <td class="border border-gray-300 p-2">{{ booking.saleName || 'N/A' }}</td>
+        </tr>
+      </tbody>
+    </table>
+  </ng-container>
+
+  <ng-template #noBooking>
+    <div class="text-center text-gray-500 py-6">Không có booking nào</div>
+  </ng-template>
+</div>

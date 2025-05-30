@@ -1,0 +1,208 @@
+<div class="max-w-7xl mx-auto p-6 bg-white rounded-lg dark:bg-gray-800">
+    <div class="flex max-w-4xl m-auto justify-between mb-6">
+        @for (step of steps; track $index) {
+        <div class="flex flex-col items-center">
+            <div class="w-10 h-10 flex items-center justify-center rounded-full"
+                [class.bg-blue-500]="currentStep === $index" [class.text-white]="currentStep === $index"
+                [class.bg-gray-300]="currentStep !== $index">
+                {{ $index + 1 }}
+            </div>
+            <span class="mt-2 text-sm">{{ step }}</span>
+        </div>
+        }
+    </div>
+
+    <div>
+        @if (currentStep === 0) {
+        <form>
+            <h2 class="text-xl font-bold mb-4">Bước 1: {{steps[currentStep]}}</h2>
+            <div class="grid grid-cols-2 gap-4 mb-4">
+                <div>
+                    <label class="block font-semibold text-gray-700">Mã đặt chỗ</label>
+                    <input type="text" value="65" class="w-full p-2 border bg-gray-200 rounded-md" disabled>
+                </div>
+                <div>
+                    <label class="block font-semibold text-gray-700">Tên đặt chỗ</label>
+                    <input type="text" value="Tour Cái Chiên - Đầu Rồng" class="w-full p-2 border rounded-md">
+                </div>
+            </div>
+
+            <label class="block font-semibold text-gray-700 mb-2">Liên hệ khách hàng</label>
+            <div class="flex items-center gap-2 mb-4">
+                <input type="text" placeholder="Nhấn Enter để tìm kiếm khách hàng" class="w-full p-2 border rounded-md">
+                <button class="p-2 bg-gray-300 rounded-md">
+                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5"
+                        stroke="currentColor" class="w-5 h-5">
+                        <path stroke-linecap="round" stroke-linejoin="round"
+                            d="M15.75 9V5.25m0 0V9m0-3.75h3.75m-3.75 0h-3.75M9 15.75H5.25m0 0H9m-3.75 0v3.75m0-3.75v-3.75" />
+                    </svg>
+                </button>
+            </div>
+
+            <div class="grid grid-cols-2 gap-4 mb-4">
+                <div>
+                    <label class="block font-semibold text-gray-700">Email</label>
+                    <input type="email" value="lanthan2003@dfgh.com" class="w-full p-2 border rounded-md">
+                </div>
+                <div>
+                    <label class="block font-semibold text-gray-700">Điện thoại</label>
+                    <input type="text" value="4378658347" class="w-full p-2 border rounded-md">
+                </div>
+            </div>
+
+            <div class="mb-4">
+                <label class="block font-semibold text-gray-700">Địa chỉ</label>
+                <input type="text" value="Viet Yen, Bac Giang" class="w-full p-2 border rounded-md">
+            </div>
+
+            <div class="mb-4">
+                <label class="block font-semibold text-gray-700">Thanh toán</label>
+                <select class="w-full p-2 border rounded-md ">
+                    <option>Tiền mặt</option>
+                    <option>VNPay</option>
+                </select>
+            </div>
+
+            <div class="mb-4">
+                <label class="block font-semibold text-gray-700">Ghi chú</label>
+                <textarea class="w-full p-2 border rounded-md">Khách hàng sẽ...</textarea>
+            </div>
+        </form>
+        }
+
+        @if (currentStep === 1) {
+        <form>
+            <h2 class="text-xl font-bold mb-4">Bước 2: {{steps[currentStep]}}</h2>
+            <div class="bg-white p-6 rounded-lg w-full ">
+                <label class="block font-semibold text-gray-700 mb-2">Chọn tour mẫu</label>
+                <div class="mb-4">
+                    <input type="text" placeholder="Nhấn Enter để tìm kiếm Tour" class="w-full p-2 border rounded-md">
+                </div>
+
+                <div class="bg-gray-200 p-4 rounded-md">
+                    <table class="w-full">
+                        <thead>
+                            <tr class="text-left font-semibold">
+                                <th class="p-2">Tên tour</th>
+                                <th class="p-2">Thời lượng</th>
+                                <th class="p-2"></th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr class="border-t">
+                                <td class="p-2">Tour Cái Chiên - Đầu Rồng</td>
+                                <td class="p-2">4N3Đ</td>
+                                <td class="p-2 text-center">
+                                    <button class="p-1 bg-gray-300 rounded-md">+</button>
+                                </td>
+                            </tr>
+                            <tr class="border-t">
+                                <td class="p-2">Tour Cái Chiên - Đầu Rồng</td>
+                                <td class="p-2">4N3Đ</td>
+                                <td class="p-2 text-center">
+                                    <button class="p-1 bg-gray-300 rounded-md">+</button>
+                                </td>
+                            </tr>
+                            <tr class="border-t">
+                                <td class="p-2">Tour Cái Chiên - Đầu Rồng</td>
+                                <td class="p-2">4N3Đ</td>
+                                <td class="p-2 text-center">
+                                    <button class="p-1 bg-gray-300 rounded-md">+</button>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+
+                <div class="mt-4">
+                    <label class="block font-semibold text-gray-700">Tên tour</label>
+                    <input type="text" class="w-full p-2 border rounded-md">
+                </div>
+
+                <div class="grid grid-cols-3 gap-4 mt-4">
+                    <div>
+                        <label class="block font-semibold text-gray-700">Ngày bắt đầu</label>
+                        <div class="relative">
+                            <input type="text" value="01/02/2025" class="w-full p-2 border rounded-md">
+                        </div>
+                    </div>
+                    <div>
+                        <label class="block font-semibold text-gray-700">Ngày kết thúc</label>
+                        <div class="relative">
+                            <input type="text" value="01/02/2025" class="w-full p-2 border rounded-md">
+                        </div>
+                    </div>
+                    <div>
+                        <label class="block font-semibold text-gray-700">Thời lượng</label>
+                        <input type="text" value="4N3Đ" class="w-full p-2 border rounded-md bg-gray-200" disabled>
+                    </div>
+                </div>
+
+                <div class="grid grid-cols-2 gap-4 mt-4">
+                    <div>
+                        <label class="block font-semibold text-gray-700">Người lớn</label>
+                        <input type="text" value="4N3Đ" class="w-full p-2 border rounded-md bg-gray-200" disabled>
+                    </div>
+                    <div>
+                        <label class="block font-semibold text-gray-700">Trẻ em</label>
+                        <input type="text" value="4N3Đ" class="w-full p-2 border rounded-md bg-gray-200" disabled>
+                    </div>
+                </div>
+
+                <div class="mt-4 bg-gray-200 p-4 rounded-md">
+                    <label class="block font-semibold text-gray-700 mb-2">Giá tour</label>
+                    <table class="w-full">
+                        <thead>
+                            <tr class="text-left font-semibold">
+                                <th class="p-2">Đơn giá</th>
+                                <th class="p-2">Số lượng</th>
+                                <th class="p-2">Tổng giá</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr class="border-t">
+                                <td class="p-2">5.000.000</td>
+                                <td class="p-2">1</td>
+                                <td class="p-2">5.000.000</td>
+                            </tr>
+                            <tr class="border-t">
+                                <td class="p-2">2.500.000</td>
+                                <td class="p-2">1</td>
+                                <td class="p-2">2.500.000</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                    <div class="text-right font-semibold mt-2">Tổng giá: 7.500.000</div>
+                </div>
+
+                <div class="mt-4">
+                    <label class="block font-semibold text-gray-700">Ghi chú</label>
+                    <textarea class="w-full p-2 border bg-gray-200 rounded-md" disabled>Khách hàng sẽ...</textarea>
+                </div>
+            </div>
+        </form>
+        }
+
+        @if (currentStep === 2) {
+        <div>
+            <h2 class="text-xl font-bold mb-4">Bước 3: {{steps[currentStep]}}</h2>
+            <p class="text-gray-500 dark:text-gray-400">Vui lòng xem lại thông tin trước khi gửi.</p>
+        </div>
+        }
+    </div>
+
+    <div class="flex justify-between mt-6">
+        <button *ngIf="currentStep > 0" (click)="prevStep()"
+            class="px-4 py-2 bg-gray-200 text-gray-700 rounded-md hover:bg-gray-300 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-gray-500 dark:bg-gray-700 dark:text-white dark:hover:bg-gray-600">
+            Quay lại
+        </button>
+        <button *ngIf="currentStep < steps.length - 1" (click)="nextStep()"
+            class="px-4 py-2 bg-blue-500 text-white rounded-md hover:bg-blue-600 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500">
+            Tiếp theo
+        </button>
+        <button *ngIf="currentStep === steps.length - 1" (click)="submitForm()"
+            class="px-4 py-2 bg-green-500 text-white rounded-md hover:bg-green-600 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-green-500">
+            Gửi
+        </button>
+    </div>
+</div>

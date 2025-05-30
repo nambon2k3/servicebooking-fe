@@ -1,0 +1,53 @@
+<ng-container>
+    <td>{{ staff.id }}</td>
+
+    <td>
+        {{ staff.fullName }}
+    </td>
+
+    <td>
+        {{ staff.email }}
+    </td>
+
+    <td>
+        {{ staff.gender }}
+    </td>
+
+    <td>
+        {{ staff.phone }}
+    </td>
+
+    <td class="space-x-1">
+        @for (role of staff.roleNames; track $index) {
+        <span class="rounded-[30px] bg-yellow-500/10 px-2 py-0.5 text-xs font-medium text-yellow-800 inline-block mt-1">
+            {{ role }}
+        </span>
+        }
+    </td>
+
+    <td>
+        @if (staff.deleted) {
+        <button type="button"
+            class="rounded-[30px] bg-red-900/10 px-2 py-0.5 text-xs font-medium text-red-600 inline-block mt-1"
+            (click)="recoverStaff()">
+            Đã vô hiệu hoá
+        </button>
+        } @else {
+        <button type="button"
+            class="rounded-[30px] bg-green-500/10 px-2 py-0.5 text-xs font-medium text-green-800 inline-block mt-1"
+            (click)="deleteStaff()">
+            Đã kích hoạt
+        </button>
+        }
+    </td>
+
+    <td>
+        <div class="text-center flex justify-start items-center">
+            <button type="button"
+                class="text-white bg-blue-700 hover:bg-blue-800 focus:outline-none focus:ring-4 focus:ring-blue-300 font-medium rounded-full text-sm px-5 py-2.5 text-center me-2 mb-2 dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800"
+                (click)="openDetail(staff)">
+                Chi tiết
+            </button>
+        </div>
+    </td>
+</ng-container>

@@ -1,0 +1,289 @@
+<div class="mb-2 flex justify-between">
+
+
+  <div class="inline-block">
+    <h3 class="text-foreground font-semibold">Kế toán</h3>
+    <div class="text-muted-foreground space-x-1 text-xs font-medium">
+      <a href="" class="hover:text-primary">Tất cả phiếu chi:</a>
+      <span class="text-foreground">{{ totalItems }}</span>
+    </div>
+  </div>
+  <div class="inline-block space-x-4">
+    <button
+      class="focus:outline-none text-white bg-green-700 hover:bg-green-800 focus:ring-4 focus:ring-green-300 font-medium rounded-lg text-sm px-5 py-2.5 me-2 mb-2 dark:bg-green-600 dark:hover:bg-green-700 dark:focus:ring-green-800"
+      (click)="openModal()">
+      Thêm phiếu chi
+    </button>
+  </div>
+  <!-- <app-spinner [isLoading]="!isLoading"></app-spinner> -->
+</div>
+
+<app-spinner [isLoading]="isLoading"></app-spinner>
+
+<div class="border-muted/20 bg-background flex min-w-full flex-col rounded-xl border p-2 bg-white">
+  <app-table-action [totalItems]="totalItems" [size]="size" (searchFilters)="onSearch($event)">"></app-table-action>
+  <div
+    class="scrollbar-thumb-rounded scrollbar-track-rounded scrollbar-thin scrollbar-track-transparent scrollbar-thumb-muted grow overflow-x-auto px-5">
+    <table
+      class="text-muted-foreground table w-full table-auto border-collapse border-0 text-left align-middle leading-5">
+      <thead class="border-muted/20 text-muted-foreground border text-xs">
+        <tr app-table-header></tr>
+      </thead>
+      <tbody>
+        @for (payment of payments; track $index) {
+        <tr class="hover:bg-card/50" app-table-row [payment]="payment" [index]="$index"></tr>
+        } @empty {
+        <tr>
+          <td class="py-4 text-center text-sm" colspan="9">Không tìm thấy phiếu chi nào</td>
+        </tr>
+        }
+      </tbody>
+    </table>
+  </div>
+  <app-table-footer [totalPages]="totalPages()" [currentPage]="page" (pageChange)="onPageChange($event)"
+    (pageSizeChange)="onPageSizeChange($event)"></app-table-footer>
+</div>
+
+<div>
+  <div id="create-payment-modal" tabindex="-1"
+    class="hidden overflow-y-auto overflow-x-hidden fixed top-0 right-0 left-0 z-50 justify-center items-center w-full md:inset-0 h-[calc(100%-1rem)] max-h-full">
+    <div class="relative p-4 w-full max-w-6xl max-h-full">
+      <!-- Modal content -->
+      <form [formGroup]="receiptForm" (ngSubmit)="onSubmit()" class="max-w-6xl mx-auto p-6 bg-white  space-y-6">
+        <div class="relative bg-white rounded-lg dark:bg-gray-700">
+          <!-- Modal header -->
+          <div
+            class="flex items-center justify-between p-4 md:p-5 border-b rounded-t dark:border-gray-600 border-gray-200">
+            <h3 class="text-xl font-semibold text-gray-900 dark:text-white">
+              Thêm Phiếu Chi
+            </h3>
+            <button type="button"
+              class="text-gray-400 bg-transparent hover:bg-gray-200 hover:text-gray-900 rounded-lg text-sm w-8 h-8 ms-auto inline-flex justify-center items-center dark:hover:bg-gray-600 dark:hover:text-white"
+              data-modal-hide="create-payment-modal">
+              <svg class="w-3 h-3" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none"
+                viewBox="0 0 14 14">
+                <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                  d="m1 1 6 6m0 0 6 6M7 7l6-6M7 7l-6 6" />
+              </svg>
+              <span class="sr-only">Close modal</span>
+            </button>
+          </div>
+          <!-- Modal body -->
+          <div class="p-4 md:p-5 space-y-4">
+            <div class="grid grid-cols-2 gap-4">
+
+
+              <div class="col-span-2">
+                <label class="block text-sm font-medium">Booking Code * </label>
+                <div class="flex flex-col  items-center space-x-2">
+                  <div class="flex items-center w-full">
+                    <input type="text" placeholder="Tìm Mã booking" class="flex-1 border rounded px-3 py-1.5"
+                      formControlName="bookingCode">
+                  </div>
+                  <p *ngIf="
+                      receiptForm.get('bookingCode')?.invalid &&
+                      receiptForm.get('bookingCode')?.touched
+                    " class="text-red-500 w-full text-left text-sm">
+                    Thông tin bắt buộc
+                  </p>
+                </div>
+
+                <ul
+                  *ngIf="!isBookingLoading && bookingCode?.value?.length >= 2 && selectedBooking?.bookingCode != bookingCode?.value "
+                  class="absolute bg-white shadow rounded w-full z-50 mt-1 max-h-60 overflow-y-auto">
+                  <li *ngFor="let booking of bookings" (click)="selectBooking(booking)"
+                    class="px-3 py-2 hover:bg-gray-100 cursor-pointer">
+                    {{ booking?.bookingCode }} ({{ booking?.bookedPerson?.fullName }})
+                  </li>
+
+                  <li *ngIf="bookings.length === 0" class="px-3 py-2 text-gray-500 italic">
+                    Không tìm thấy booking
+                  </li>
+                </ul>
+
+              </div>
+
+              <div>
+                <label class="block text-gray-600">Thanh toán cho *:</label>
+                <select class="w-full border border-gray-300 rounded px-2 py-2" formControlName="receivedBy">
+                  <option value="" disabled selected>Chọn Nhà Cung Cấp</option>
+                  <option *ngFor="let provider of providers" [value]="provider.name">
+                    {{ provider.name }}
+                  </option>
+                </select>
+
+                <p *ngIf="
+                              receiptForm.get('receivedBy')?.invalid &&
+                              receiptForm.get('receivedBy')?.touched
+                            " class="text-red-500 w-full text-left text-sm">
+                  Thông tin bắt buộc
+                </p>
+
+              </div>
+
+              <div>
+                <label class="block text-gray-600">Người nộp tiền *:</label>
+                <input type="text" formControlName="paidBy" class="w-full border px-3 py-2 rounded-lg bg-white">
+                <p *ngIf="
+                              receiptForm.get('paidBy')?.invalid &&
+                              receiptForm.get('paidBy')?.touched
+                            " class="text-red-500 w-full text-left text-sm">
+                  Thông tin bắt buộc
+                </p>
+              </div>
+
+              <div class="">
+                <label class="block text-gray-600">Ngày tạo:</label>
+                <p class="w-full  px-3 py-2 rounded-lg">
+                  {{ getCurrentDate() | date: 'dd/MM/yyyy' }}
+                </p>
+              </div>
+
+
+
+              <div>
+                <label class="block text-gray-600">Loại:</label>
+
+                <p class="w-full py-2 rounded-lg">
+
+                  <select formControlName="category" class="w-full border px-3 py-2 rounded-lg">
+                    <option value="PAYMENT">Phiếu chi</option>
+                    <option value="ADVANCED">Phiếu tạm ứng</option>
+                  </select>
+                </p>
+              </div>
+
+              <div>
+                <label class="block text-gray-600">Phương thức *:</label>
+                <select formControlName="paymentMethod" class="w-full border px-3 py-2 rounded-lg">
+                  <option value="CASH">Tiền mặt</option>
+                  <option value="BANKING">Chuyển khoản</option>
+                </select>
+              </div>
+
+              <div class="col-span-2">
+                <label class="block text-gray-600">Ghi chú:</label>
+                <textarea formControlName="notes" class="w-full border px-3 py-2 rounded-lg bg-white"></textarea>
+              </div>
+            </div>
+
+            <div class="mt-6 text-sm">
+              <table class="w-full border border-gray-300 rounded-lg overflow-hidden">
+                <thead class="bg-gray-200">
+                  <tr>
+                    <th class="p-2 border">STT</th>
+                    <th class="p-2 border">Nội dung *</th>
+                    <th class="p-2 border w-[250px]">Số tiền *</th>
+                    <th class="p-2 border w-[100px]">Số Lượng *</th>
+                    <th class="p-2 border w-[150px]">Trạng Thái</th>
+                    <th class="p-2 border w-[100px]">Hành động</th>
+                  </tr>
+                </thead>
+                <tbody formArrayName="costAccounts">
+                  <tr class="border" *ngFor="let row of costAccounts.controls; let i = index; let first = first" [formGroupName]="i">
+                    <td class="p-2 text-center">{{ i + 1 }}</td>
+                    <td class="p-2">
+                      <input type="text" formControlName="content" placeholder="Nhập nội dung"
+                        class="w-full px-2 py-1 border rounded">
+                      <p *ngIf="
+                              costAccounts.at(i).get('content')?.invalid &&
+                              costAccounts.at(i).get('content')?.touched
+                            " class="text-red-500 w-full text-left text-sm">
+                        Thông tin bắt buộc
+                      </p>
+                    </td>
+                    <td class="p-2 text-right">
+                      <input type="number" formControlName="amount" placeholder="0"
+                        class="w-full px-2 py-1 border rounded text-right">
+                        <p *ngIf="
+                              costAccounts.at(i).get('amount')?.invalid &&
+                              costAccounts.at(i).get('amount')?.touched
+                            " class="text-red-500 w-full text-left text-sm">
+                        Không hợp lệ
+                      </p>
+                    </td>
+                    <td class="p-2 text-right">
+                      <input type="number" formControlName="quantity" placeholder="1" min="1" max="1000"
+                        class="w-full px-2 py-1 border rounded text-right">
+                      <p *ngIf="
+                              costAccounts.at(i).get('quantity')?.invalid &&
+                              costAccounts.at(i).get('quantity')?.touched
+                            " class="text-red-500 w-full text-left text-sm">
+                        Không hợp lệ
+                      </p>
+                    </td>
+                    <td>
+                      <select formControlName="status" class="w-full border px-2 py-1 rounded">
+                        <option value="PENDING">Chưa thanh toán</option>
+                        <option value="PAID">Đã thanh toán</option>
+                      </select>
+                    </td>
+                    <td class="p-2 text-center">
+                      @if((row.get('status')?.value !== 'PAID' || costAccounts.at(i).get('id')?.value === null) && !first) {
+                      <button type="button" (click)="deleteCostAccount(i)"
+                        class="text-red-600 hover:text-red-800">❌</button>
+                      }
+                    </td>
+                  </tr>
+                </tbody>
+                <tfoot>
+                  <tr>
+                    <td colspan="6" class="p-2 font-semibold text-right">Tổng tiền: {{ getTotalAmount() |
+                      currencyVnd }}</td>
+                  </tr>
+                </tfoot>
+              </table>
+            </div>
+
+            <div class="mt-4 flex items-center text-blue-600 ">
+              <div (click)="addCostAccount()" class="cursor-pointer">
+                <span class="text-xl">➕</span>
+                <span class="ml-2">Thêm dòng</span>
+              </div>
+            </div>
+
+
+          </div>
+          <!-- Modal footer -->
+          <div class="flex justify-end items-center p-4 md:p-5 border-t border-gray-200 rounded-b dark:border-gray-600">
+            <div>
+              <button type="submit"
+                class="text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center ">
+                Lưu
+              </button>
+              <button data-modal-hide="create-payment-modal" type="button"
+                class="py-2.5 px-5 ms-3 text-sm font-medium text-gray-900 focus:outline-none bg-white rounded-lg border border-gray-200 hover:bg-gray-100 hover:text-blue-700 focus:z-10 focus:ring-4 focus:ring-gray-100">
+                Hủy
+              </button>
+            </div>
+
+          </div>
+        </div>
+      </form>
+    </div>
+  </div>
+</div>
+
+
+@if(showSuccess) {
+<!-- Warning Notification (Only One at a Time) -->
+<div class="fixed top-[5rem] left-1/2 transform -translate-x-1/2 z-50 w-80">
+  <div class="flex items-center bg-white shadow-md border border-gray-200 rounded-md p-3 animate-slide-in">
+    <span class="text-green-500 text-xl mr-2">✔</span>
+    <p class="text-green-800 text-sm">
+      Tạo phiếu chi thành công
+    </p>
+  </div>
+</div>
+}
+
+@if(showError) {
+<!-- Warning Notification (Only One at a Time) -->
+<div class="fixed top-[5rem] left-1/2 transform -translate-x-1/2 z-50 w-80">
+  <div class="flex items-center bg-white shadow-md border border-gray-200 rounded-md p-3 animate-slide-in">
+    <span class="text-red-500 text-xl mr-2">X</span>
+    <p class="text-red-800 text-sm">
+      Tạo phiếu chi thất bại
+  </div>
+</div>
+}

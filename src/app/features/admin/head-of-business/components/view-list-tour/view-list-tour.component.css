@@ -1,0 +1,9 @@
+.scrollbar-container {
+    overflow-x: auto;
+    overflow-y: visible;
+  }
+  
+  .scroll-container {
+    overflow-y: visible !important; /* nếu đang dùng auto/hidden */
+  }
+    

@@ -1,0 +1,165 @@
+<div class="min-h-screen bg-gray-100 flex items-center justify-center p-4 sm:p-6">
+    @if (tourDetail) {
+    <div class="w-full max-w-8xl bg-white rounded-2xl shadow-lg p-6 sm:p-8">
+      <!-- Header với thông tin người đề xuất -->
+      <div class="flex items-center justify-between mb-6">
+        <div class="flex items-center space-x-4">
+          <div class="w-14 h-14 bg-indigo-100 rounded-full flex items-center justify-center">
+            <span class="text-indigo-600 text-xl font-bold">{{ getInitials(tourDetail.createdBy) }}</span>
+          </div>
+          <div>
+            <p class="text-sm text-gray-500">Người đề xuất</p>
+            <h2 class="text-2xl font-bold text-gray-800">{{ tourDetail.createdBy || 'Không có thông tin' }}</h2>
+          </div>
+        </div>
+      </div>
+  
+      <!-- Phần chi tiết tour -->
+      <div class="border-t border-gray-200 pt-6 mb-6">
+        <h3 class="text-xl font-semibold text-gray-800 mb-4">Chi tiết tour</h3>
+        <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+          <div class="flex items-center space-x-2">
+            <span class="text-gray-600 font-medium text-sm">Mã tour:</span>
+            <span class="text-gray-800 text-sm">{{ tourDetail.id }}</span>
+          </div>
+          <div class="flex items-center space-x-2">
+            <span class="text-gray-600 font-medium text-sm">Tên tour:</span>
+            <span class="text-gray-800 font-bold text-sm">{{ tourDetail.name }}</span>
+          </div>
+          <div class="flex items-center space-x-2">
+            <span class="text-gray-600 font-medium text-sm">Loại tour:</span>
+            <span class="text-gray-800 text-sm">{{ tourDetail.tourType }}</span>
+          </div>
+          <div class="flex items-center space-x-2">
+            <span class="text-gray-600 font-medium text-sm">Số ngày:</span>
+            <span class="text-gray-800 text-sm">{{ tourDetail.numberDays || 'Không có' }}</span>
+          </div>
+          <div class="flex items-center space-x-2">
+            <span class="text-gray-600 font-medium text-sm">Số đêm:</span>
+            <span class="text-gray-800 text-sm">{{ tourDetail.numberNights || 'Không có' }}</span>
+          </div>
+          <div class="flex items-center space-x-2">
+            <span class="text-gray-600 font-medium text-sm">Trạng thái:</span>
+            <span class="text-sm px-3 py-1 rounded-full" [ngClass]="{
+                      'bg-green-100 text-green-800': tourDetail.tourStatus === 'APPROVED',
+                      'bg-red-100 text-red-800': tourDetail.tourStatus === 'REJECTED',
+                      'bg-yellow-100 text-yellow-800': tourDetail.tourStatus === 'PENDING',
+                      'bg-gray-100 text-gray-800': tourDetail.tourStatus !== 'APPROVED' && tourDetail.tourStatus !== 'REJECTED' && tourDetail.tourStatus !== 'PENDING'
+                    }">
+              {{ getStatusDisplay(tourDetail.tourStatus) }}
+            </span>
+          </div>
+          <div class="flex items-center space-x-2">
+            <span class="text-gray-600 font-medium text-sm">Điểm xuất phát:</span>
+            <span class="text-gray-800 text-sm">{{ tourDetail.departLocation.name || 'Không có' }}</span>
+          </div>
+        </div>
+      </div>
+  
+      <!-- Phần mô tả nổi bật -->
+      <div class="border-t border-gray-200 pt-6 mb-6">
+        <h3 class="text-xl font-semibold text-gray-800 mb-4">Mô tả nổi bật</h3>
+        <div class="bg-gray-50 p-4 rounded-lg">
+          <p class="text-gray-800 text-sm" [innerHTML]="getSanitizedHighlights()"></p>
+        </div>
+      </div>
+  
+      <!-- Phần ghi chú -->
+      <div class="border-t border-gray-200 pt-6 mb-6">
+        <h3 class="text-xl font-semibold text-gray-800 mb-4">Ghi chú</h3>
+        <div class="bg-gray-50 p-4 rounded-lg">
+          <p class="text-gray-800 text-sm">{{ tourDetail.note || 'Không có' }}</p>
+        </div>
+      </div>
+  
+      <!-- Bảng chi tiết tour days -->
+      <div class="border-t border-gray-200 pt-6 mb-6">
+        <h3 class="text-xl font-semibold text-gray-800 mb-4">Bảng chi tiết hành trình</h3>
+        <div class="overflow-x-auto">
+          <table class="w-full text-left text-sm border border-gray-200 rounded-lg">
+            <thead class="bg-gray-50">
+              <tr>
+                <th class="p-3 text-gray-700 font-semibold border-b border-gray-200">Ngày</th>
+                <th class="p-3 text-gray-700 font-semibold border-b border-gray-200">Tiêu đề</th>
+                <th class="p-3 text-gray-700 font-semibold border-b border-gray-200">Hành động</th>
+              </tr>
+            </thead>
+            <tbody>
+              @for (tourDay of tourDetail.tourDays; track $index) {
+              <tr class="border-b border-gray-200 hover:bg-gray-50 transition-colors">
+                <td class="p-3">{{ tourDay.dayNumber }}</td>
+                <td class="p-3">{{ tourDay.title }}</td>
+                <td class="p-3">
+                  <button (click)="viewTourDayDetail(tourDay.id)"
+                    class="text-blue-600 hover:underline">Xem chi tiết</button>
+                </td>
+              </tr>
+              }
+            </tbody>
+          </table>
+        </div>
+      </div>
+  
+      <!-- Pop-up hiển thị chi tiết ngày tour -->
+      @if (showPopup && selectedTourDay) {
+      <div class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
+        <div class="bg-white rounded-lg p-6 w-full max-w-lg">
+          <h3 class="text-xl font-semibold text-gray-800 mb-4">Chi tiết ngày tour</h3>
+          <div class="space-y-4 h-[60vh] overflow-y-auto">
+            <div class="flex items-center space-x-2">
+              <span class="font-semibold text-sm">Ngày:</span>
+              <span class="text-gray-800 text-sm">{{ selectedTourDay.dayNumber }}</span>
+            </div>
+            <div class="space-x-2">
+              <span class="font-semibold text-sm">Tiêu đề:</span>
+              <span class="text-gray-800 text-sm">{{ selectedTourDay.title }}</span>
+            </div>
+            <div class="space-x-2">
+              <span class="font-semibold text-sm">Nội dung:</span>
+              <span class="text-gray-800 text-sm" [innerHTML]="selectedTourDay.content || 'Không có'"></span>
+            </div>
+            <div class="flex items-center space-x-2">
+              <span class="font-semibold text-sm">Kế hoạch bữa ăn:</span>
+              <span class="text-gray-800 text-sm">{{ selectedTourDay.mealPlan || 'Không có' }}</span>
+            </div>
+            <div class="flex items-center space-x-2">
+              <span class="font-medium text-sm">Địa điểm:</span>
+              <span class="text-gray-800 text-sm">{{ selectedTourDay.location.name || 'Không có' }}</span>
+            </div>
+            <div class="flex items-center space-x-2">
+              <span class="font-medium text-sm">Trạng thái:</span>
+              <span class="text-gray-800 text-sm bg-green-200 text-green-800 px-2 py-1 rounded">{{ selectedTourDay.deleted === true ? 'Đã xóa' : 'Hoạt động' }}</span>
+            </div>
+          </div>
+          <div class="flex justify-end mt-6">
+            <button (click)="closePopup()"
+              class="px-5 py-2.5 bg-gray-200 text-gray-700 rounded-lg hover:bg-gray-300 transition-colors duration-200">
+              Đóng
+            </button>
+          </div>
+        </div>
+      </div>
+      }
+  
+      <!-- Nút điều khiển -->
+      <div class="flex justify-end space-x-3">
+        <button (click)="onCancel()"
+          class="px-5 py-2.5 bg-gray-200 text-gray-700 rounded-lg hover:bg-gray-300 transition-colors duration-200">
+          Quay lại
+        </button>
+        <button (click)="onReject()" *ngIf="tourDetail.tourStatus === 'PENDING'"
+          class="px-5 py-2.5 bg-red-600 text-white rounded-lg hover:bg-red-700 transition-colors duration-200">
+          Từ chối
+        </button> 
+        <button (click)="onApprove()" *ngIf="tourDetail.tourStatus === 'PENDING'"
+          class="px-5 py-2.5 bg-green-600 text-white rounded-lg hover:bg-green-700 transition-colors duration-200">
+          Phê duyệt
+        </button>
+      </div>
+    </div>
+    } @else {
+    <div class="flex justify-center items-center h-64">
+      <p class="text-gray-500 text-lg">Đang tải thông tin...</p>
+    </div>
+    }
+  </div>

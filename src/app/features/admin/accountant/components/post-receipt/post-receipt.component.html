@@ -1,0 +1,240 @@
+<div class="w-full p-6 bg-white rounded-lg shadow-lg">
+    <h2 class="text-xl font-semibold mb-4">Phiếu Dịch Vụ / Chi Tiết Phiếu</h2>
+
+    <app-spinner [isLoading]="isLoading"></app-spinner>
+
+    <form [formGroup]="receiptForm" [class]="{ 'opacity-50': isLoading }">
+        <div class="grid grid-cols-2 gap-4">
+            <div class="col-span-2">
+                <label class="block text-gray-600">Booking Code:</label>
+                <p class="w-full italic px-3 py-2 rounded-lg">
+                    {{ transaction?.booking?.bookingCode }}
+                </p>
+            </div>
+
+            <div>
+                <label class="block text-gray-600">Thanh toán cho: </label>
+                <input type="text" formControlName="receivedBy" class="w-full border px-3 py-2 rounded-lg bg-white"
+                    [readOnly]="transaction?.category === 'PAYMENT'"
+                    [class]="transaction?.category === 'PAYMENT' ? '!bg-gray-100' : ''" />
+
+                <p *ngIf="
+            receiptForm.get('receivedBy')?.invalid &&
+            receiptForm.get('receivedBy')?.touched
+          " class="text-red-500 w-full text-left text-sm">
+                    Thông tin bắt buộc
+                </p>
+            </div>
+
+            <div>
+                <label class="block text-gray-600">Người nộp tiền:</label>
+                <input type="text" formControlName="paidBy" class="w-full border px-3 py-2 rounded-lg bg-white" />
+                <p *ngIf="
+            receiptForm.get('paidBy')?.invalid &&
+            receiptForm.get('paidBy')?.touched
+          " class="text-red-500 w-full text-left text-sm">
+                    Thông tin bắt buộc
+                </p>
+            </div>
+
+            <div class="">
+                <label class="block text-gray-600">Ngày tạo:</label>
+                <p class="w-full px-3 py-2 rounded-lg">
+                    {{ transaction?.createdAt | date : "dd/MM/yyyy" }}
+                </p>
+            </div>
+
+            <div class="">
+                <label class="block text-gray-600">Tình Trạng:</label>
+
+                <p class="w-full py-2 rounded-lg">
+                    @if(transaction?.transactionStatus === 'PENDING') {
+                    <span class="bg-yellow-200 text-yellow-800 px-3 py-0.5 rounded text-xs">
+                        Đang xử lý
+                    </span>
+                    } @if(transaction?.transactionStatus === 'CANCELLED') {
+                    <span class="bg-red-200 text-red-800 px-3 py-0.5 rounded text-xs">
+                        Đã hủy
+                    </span>
+                    } @if(transaction?.transactionStatus === 'COMPLETED') {
+                    <span class="bg-green-200 text-green-800 px-3 py-0.5 rounded text-xs">
+                        Hoàn thành
+                    </span>
+                    }
+                </p>
+            </div>
+
+            <div>
+                <label class="block text-gray-600">Loại:</label>
+
+                <p class="w-full py-2 rounded-lg">
+                    @if(transaction?.category === 'RECEIPT') {
+                    <span class="bg-green-200 text-green-800 px-3 py-2 rounded text-xs">
+                        Phiếu thu
+                    </span>
+
+                    } @else if(transaction?.category === 'PAYMENT'){
+                    <span class="bg-yellow-200 text-yellow-800 px-3 py-2 rounded text-xs">
+                        Phiếu chi
+                    </span>
+                    } @else if(transaction?.category === 'COLLECTION'){
+                    <span class="bg-yellow-200 text-yellow-800 px-3 py-2 rounded text-xs">
+                        HDV Thu hộ
+                    </span>
+                    } @else if(transaction?.category === 'ADVANCED'){
+                    <span class="bg-yellow-200 text-yellow-800 px-3 py-2 rounded text-xs">
+                        Tạm ứng
+                    </span>
+                    }
+                </p>
+            </div>
+
+            <div>
+                <label class="block text-gray-600">Phương thức:</label>
+                <select formControlName="paymentMethod" class="w-full border px-3 py-2 rounded-lg">
+                    <option value="CASH">Tiền mặt</option>
+                    <option value="BANKING">Chuyển khoản</option>
+                </select>
+            </div>
+
+            <div class="col-span-2">
+                <label class="block text-gray-600">Ghi chú:</label>
+                <textarea formControlName="notes" class="w-full border px-3 py-2 rounded-lg bg-white"></textarea>
+            </div>
+        </div>
+
+        <div class="mt-6 text-sm">
+            <table class="w-full border border-gray-300 rounded-lg overflow-hidden">
+                <thead class="bg-gray-200">
+                    <tr>
+                        <th class="p-2 border">STT</th>
+                        <th class="p-2 border">Nội dung *</th>
+                        <th class="p-2 border w-[250px]">Số tiền *</th>
+                        <th class="p-2 border w-[250px]" *ngIf="
+                transaction?.category === 'PAYMENT' || transaction?.category === 'ADVANCED' ||
+                transaction?.category === 'REFUND'
+              ">
+                            Số lượng
+                        </th>
+                        <th class="p-2 border w-[150px]" *ngIf="transaction?.category === 'REFUND'">
+                            Chiết Khấu (%)
+                        </th>
+                        <th class="p-2 border w-[250px]">Trạng Thái</th>
+                        <th class="p-2 border w-[250px]">Thành tiền</th>
+                        <th class="p-2 border w-[100px]">Hành động</th>
+                    </tr>
+                </thead>
+                <tbody formArrayName="costAccounts">
+                    <tr class="border" *ngFor="let row of costAccounts.controls; let i = index; let first = first" [formGroupName]="i">
+                        <td class="p-2 text-center">{{ i + 1 }}</td>
+                        <td class="p-2">
+                            <input type="text" formControlName="content" placeholder="Nhập nội dung"
+                                class="w-full px-2 py-1 border rounded" />
+                            <p *ngIf="
+                  costAccounts.at(i).get('content')?.invalid &&
+                  costAccounts.at(i).get('content')?.touched
+                " class="text-red-500 w-full text-left text-sm">
+                                Thông tin bắt buộc
+                            </p>
+                        </td>
+                        <td class="p-2 text-right">
+                            <input type="number" formControlName="amount" placeholder="0"
+                                class="w-full px-2 py-1 border rounded text-right" />
+                            <p *ngIf="
+                              costAccounts.at(i).get('amount')?.invalid &&
+                              costAccounts.at(i).get('amount')?.touched
+                            " class="text-red-500 w-full text-left text-sm">
+                                Không hợp lệ
+                            </p>
+                        </td>
+                        <td class="p-2 text-right" *ngIf="
+                transaction?.category === 'PAYMENT' || transaction?.category === 'ADVANCED' ||
+                transaction?.category === 'REFUND'
+              ">
+                            <input type="number" formControlName="quantity" placeholder="0"
+                                class="w-full px-2 py-1 border rounded text-right" />
+                                <p *ngIf="
+                              costAccounts.at(i).get('quantity')?.invalid &&
+                              costAccounts.at(i).get('quantity')?.touched
+                            " class="text-red-500 w-full text-left text-sm">
+                        Không hợp lệ
+                      </p>
+                        </td>
+                        <td class="p-2 text-right" *ngIf="transaction?.category === 'REFUND'">
+                            <input type="number" formControlName="discount" placeholder="0"
+                                class="w-full px-2 py-1 border rounded text-right" />
+                                <p *ngIf="
+                              costAccounts.at(i).get('discount')?.invalid &&
+                              costAccounts.at(i).get('discount')?.touched
+                            " class="text-red-500 w-full text-left text-sm">
+                        Không hợp lệ
+                      </p>
+                        </td>
+                        <td>
+                            <select formControlName="status" class="w-full border px-2 py-1 rounded">
+                                <option value="PENDING">Chưa thanh toán</option>
+                                <option value="PAID">Đã thanh toán</option>
+                                <option value="CANCELLED">Đã hủy</option>
+                            </select>
+                        </td>
+                        <td class="p-2 text-right">
+                            <input type="number" formControlName="finalAmount" placeholder="0" min="0"
+                                class="w-full px-2 py-1 border rounded text-right bg-gray-100" readonly />
+                        </td>
+                        <td class="p-2 text-center">
+                            @if((row.get('status')?.value !== 'PAID' ||
+                            costAccounts.at(i).get('id')?.value === null) && !first) {
+                            <button type="button" (click)="deleteCostAccount(i)"
+                                class="text-red-600 hover:text-red-800">
+                                ❌
+                            </button>
+
+                            }
+                        </td>
+                    </tr>
+                </tbody>
+                <tfoot>
+                    <tr>
+                        <td *ngIf="transaction" [colSpan]="
+                transaction?.category === 'PAYMENT'
+                  ? 6
+                  : transaction?.category === 'REFUND'
+                  ? 8
+                  : 5
+              " class="p-2 font-semibold text-right">
+                            Tổng tiền: {{ getTotalAmount() | currencyVnd }}
+                        </td>
+                    </tr>
+                </tfoot>
+            </table>
+        </div>
+
+        <div class="mt-4 flex items-center text-blue-600">
+            <div (click)="addCostAccount()" class="cursor-pointer">
+                <span class="text-xl">➕</span>
+                <span class="ml-2">Thêm dòng</span>
+            </div>
+        </div>
+
+        <div class="mt-6 flex justify-end space-x-4">
+            <button type="button" class="px-4 py-2 text-gray-700 bg-gray-200 rounded-lg hover:bg-gray-300"
+                (click)="onCancel()">
+                Hủy
+            </button>
+            <button type="submit" class="px-4 py-2 text-white bg-blue-600 rounded-lg hover:bg-blue-700"
+                (click)="onSave()">
+                Lưu
+            </button>
+        </div>
+    </form>
+</div>
+
+@if(showSuccess) {
+<!-- Warning Notification (Only One at a Time) -->
+<div class="fixed top-[5rem] left-1/2 transform -translate-x-1/2 z-50 w-80">
+    <div class="flex items-center bg-white shadow-md border border-gray-200 rounded-md p-3 animate-slide-in">
+        <span class="text-green-500 text-xl mr-2">✔</span>
+        <p class="text-gray-800 text-sm">Chỉnh sửa thành công</p>
+    </div>
+</div>
+}

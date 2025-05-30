@@ -1,0 +1,51 @@
+@if(isLoading) {
+<app-blog-loading></app-blog-loading>
+} @else {
+
+<main class="pt-8 pb-16 lg:pt-16 lg:pb-24 bg-white dark:bg-gray-900 antialiased">
+  <div class="flex justify-between px-4 mx-auto max-w-screen-xl mt-20">
+    <article
+      class="mx-auto w-full h-full max-w-4xl format format-sm sm:format-base lg:format-lg format-blue dark:format-invert">
+      <figure>
+        <img [src]="blog?.thumbnailImageUrl" alt="" />
+      </figure>
+
+      <h1 class="mb-2 mt-5 text-3xl font-extrabold leading-tight text-gray-900 lg:text-4xl dark:text-white">
+        {{ blog?.title }}
+      </h1>
+
+      <h2 class="leading-tight text-gray-900 lg:text-xl dark:text-white">
+        {{blog?.description}}
+      </h2>
+
+      @for (tag of blog?.tags; track $index) {
+      <span class="rounded-[30px] bg-yellow-500/10 px-2 py-0.5 text-xs font-medium text-yellow-800 inline-block mt-1">
+        {{ tag.name }}
+      </span>
+      }
+
+      <div class="mt-5" [innerHTML]="blog?.content"></div>
+
+      <header class="mb-4 lg:mb-6 not-format mt-20">
+        <address class="flex items-center mb-6 not-italic">
+          <div class="inline-flex items-center mr-3 text-sm text-gray-900 dark:text-white">
+            <img class="mr-4 w-16 h-16 rounded-full" [src]="blog?.author?.avatarImage" alt="Jese Leos" />
+            <div>
+              <a href="#" rel="author" class="text-xl font-bold text-gray-900 dark:text-white">{{ blog?.author?.fullName
+                }}</a>
+              <p class="text-base text-gray-500 dark:text-gray-400">
+                {{ blog?.author?.email }}
+              </p>
+              <p class="text-base text-gray-500 dark:text-gray-400">
+                <time pubdate datetime="2022-02-08" title="February 8th, 2022">
+                  {{ blog?.createdAt | date : "mediumDate" }}
+                </time>
+              </p>
+            </div>
+          </div>
+        </address>
+      </header>
+    </article>
+  </div>
+</main>
+}

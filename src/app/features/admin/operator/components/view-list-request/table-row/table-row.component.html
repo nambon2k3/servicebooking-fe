@@ -1,0 +1,35 @@
+<ng-container>
+  <td>{{ request.tourName }}</td>
+
+  <td>
+    {{ request.bookingCode }}
+  </td>
+
+  <td>
+    {{ request.reason | truncate:20}}
+  </td>
+
+  <td>
+    <span [class]="getStatusClass(request.status)">
+      {{ getStatusInVietnamese(request.status) }}
+    </span>
+  </td>
+
+  <td>
+    {{ request.tourType }}
+  </td>
+
+  <td>
+    {{ request.updatedAt | formatDate }}
+  </td>
+
+  <td>
+    <div class="text-center flex justify-center items-center">
+      <button type="button"
+        class="text-white w-24 bg-blue-700 hover:bg-blue-800 focus:outline-none focus:ring-4 focus:ring-blue-300 font-medium rounded-full text-sm px-5 py-2.5 text-center me-2 mb-2 dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800"
+        (click)="openDetail(request)">
+        Chi tiết
+      </button>
+    </div>
+  </td>
+</ng-container>

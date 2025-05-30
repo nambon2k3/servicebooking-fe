@@ -1,0 +1,334 @@
+@import url('https://fonts.googleapis.com/css2?family=Poppins:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&family=Roboto:ital,wght@0,100..900;1,100..900&display=swap');
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+@plugin "flowbite-typography";
+@plugin "flowbite";
+
+#editor a {
+  color: oklch(.546 .245 262.881);
+  font-weight: 500;
+  text-decoration: underline;
+}
+
+.max-w-xl {
+  max-width: 48rem;
+}
+
+.fixed.inset-0.z-50 {
+  z-index: 1050 !important;
+}
+
+:host ::ng-deep .ng-select.custom {
+  background-color: #ffffff;
+  border: 1px solid #d1d5db;
+  border-radius: 0.375rem;
+}
+
+:host ::ng-deep .ng-select.custom .ng-select-container {
+  height: 48px;
+  min-height: 48px;
+  display: flex;
+  align-items: center;
+}
+
+:host ::ng-deep .ng-select.custom .ng-dropdown-panel {
+  background-color: #ffffff;
+  border: 1px solid #d1d5db;
+  border-radius: 0.375rem;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+  z-index: 1000;
+}
+
+:host ::ng-deep .ng-select.custom.ng-select-empty .ng-clear-wrapper {
+  display: none;
+}
+
+:host ::ng-deep .ng-select.custom .ng-dropdown-panel .ng-option {
+  padding: 8px 12px;
+  color: #374151;
+}
+
+:host ::ng-deep .ng-select.custom .ng-dropdown-panel .ng-option.ng-option-selected,
+:host ::ng-deep .ng-select.custom .ng-dropdown-panel .ng-option:hover {
+  background-color: #f3f4f6;
+  color: #1f2937;
+}
+
+#salesman-calendar .fc .fc-toolbar {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin: auto;
+  width: 90%;
+  margin-bottom: 2rem;
+}
+
+#salesman-calendar #fc-dom-1{
+  font-size: 1.5rem;
+}
+
+code {
+  color: oklch(.21 .034 264.665);
+  background-color: oklch(.967 .003 264.542);
+  border-radius: .222222em;
+  padding: .333333em .555556em;
+  font-size: .875em;
+  font-weight: 600
+}
+
+#textSizeDropdown {
+  position: absolute;
+  top: -2rem !important;
+  z-index: 10;
+  inset: 0px auto auto 0px;
+  margin: 0px;
+  transform: translate3d(192.667px, 70.6667px, 0px);
+}
+
+#selector .selected-item {
+  max-width: 250px;
+}
+
+body.modal-open {
+  overflow: hidden;
+}
+
+body {
+  font-family: 'Roboto';
+}
+
+.no-scroll {
+  overflow: hidden;
+}
+
+.overflow-hidden {
+  overflow: hidden;
+}
+
+/* Change background color of events */
+.fc-event {
+  /* background-color: #15803d !important; */
+  border-color: #ff5733 !important;
+  color: white !important;
+  text-align: center;
+}
+
+.fc-event:hover {
+  cursor: pointer;
+  /* background-color: #137236 !important; */
+}
+
+.full-calendar{
+  min-height: 40vh;
+}
+
+/* Remove borders around the entire calendar */
+.fc {
+  border: none !important;
+}
+
+/* Remove borders between cells (days) */
+.fc-daygrid-day-frame {
+  border: none !important;
+}
+
+.fc-daygrid-day-frame:hover {
+  cursor: pointer;
+  border: solid 1px #137236 !important;
+}
+
+/* Remove borders around event boxes */
+.fc-event {
+  border: none !important;
+  box-shadow: none !important;
+}
+
+.fc-daygrid-event-dot,
+.fc-daygrid-block-event,
+.fc-daygrid-event-main {
+  border-radius: 5px !important;
+}
+
+.fc-daygrid-event {
+  margin: 1px 0 !important;
+  /* Bo góc cho tất cả các đoạn của sự kiện */
+  border-radius: 5px !important;
+  height: auto !important;
+  white-space: nowrap !important;
+  overflow: visible !important;
+}
+
+/* Đặt sự kiện ở bottom của ô ngày */
+.fc-daygrid-day-frame {
+  display: flex !important;
+  flex-direction: column !important;
+  justify-content: flex-end !important;
+}
+
+.fc .fc-toolbar {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  width: 60%;
+  margin: auto;
+}
+
+.manage .fc .fc-toolbar {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  width: 80%;
+  margin: auto;
+}
+
+.public .fc-toolbar-title {
+  font-size: 1.75rem;
+  font-weight: 700;
+  margin: 2rem 0;
+  color: #15803d;
+  text-transform: uppercase;
+  display: inline;
+  border: none;
+  background: none;
+  padding: 0;
+  cursor: pointer
+}
+
+.manage .fc-toolbar-title {
+  font-size: 1rem;
+  font-weight: 700;
+  margin: 2rem 0;
+  color: #15803d;
+  text-transform: uppercase;
+  display: inline;
+  border: none;
+  background: none;
+  padding: 0;
+  cursor: pointer
+}
+
+.fc .fc-button-primary {
+  box-shadow: 0 4px 12px rgba(0, 0, 0, .08);
+  border-radius: 50%;
+  padding: 0.5rem;
+  border: none;
+  outline: none;
+  background-color: #fff;
+  color: #171717
+}
+
+
+.fc-theme-standard td,
+.fc-theme-standard th {
+  border: none;
+}
+
+.fc-theme-standard .fc-scrollgrid {
+  border: none;
+}
+
+.fc .fc-day-other .fc-daygrid-day-top {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: .2rem;
+}
+
+.fc .fc-daygrid-day-top {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: .2rem;
+}
+
+.fc-col-header {
+  margin-bottom: 1.5rem;
+}
+
+.fc .fc-daygrid-day-frame {
+  background-color: #faf9f7;
+  border-radius: 5%;
+  width: 60%;
+  aspect-ratio: 1/1;
+  margin: auto;
+}
+
+.fc-event-title {
+  display: flex !important;
+  justify-content: center !important;
+  align-items: center !important;
+  padding: 2px !important;
+}
+
+.fc tr td {
+  padding-bottom: 1.5rem;
+}
+
+.fc .fc-daygrid-day.fc-day-today {
+  background-color: #fff;
+}
+
+.fc .fc-day-future .fc-daygrid-day-frame {
+  background-color: #fff !important;
+}
+
+.fc .fc-scroller-liquid-absolute, .fc .fc-scroller {
+  overflow:  hidden !important;
+}
+
+.custom-scrollbar {
+  scrollbar-width: thin;
+  scrollbar-color: #f1f1f1 transparent;
+}
+
+.custom-scrollbar:hover {
+  scrollbar-color: #f7f4f4 transparent;
+  overflow-y: auto;
+}
+
+.custom-scrollbar::-webkit-scrollbar {
+  width: 6px;
+}
+
+.custom-scrollbar::-webkit-scrollbar-thumb {
+  background-color: #116827;
+  border-radius: 10px;
+}
+
+.custom-scrollbar::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+.popup-message {
+  position: fixed;
+  top: 20px;
+  left: 50%;
+  transform: translateX(-50%);
+  padding: 10px 20px;
+  border-radius: 5px;
+  color: white;
+  font-weight: bold;
+  z-index: 1000;
+  min-width: 300px;
+  text-align: center;
+  opacity: 0;
+  transition: opacity 0.3s ease-in-out;
+}
+
+.popup-message.success {
+  background-color: #4CAF50; /* Green for success */
+  opacity: 1;
+}
+
+.popup-message.error {
+  background-color: #f44336; /* Red for error */
+  opacity: 1;
+}
+
+
+
+
+
+
+

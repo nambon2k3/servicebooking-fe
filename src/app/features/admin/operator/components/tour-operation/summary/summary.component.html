@@ -1,0 +1,78 @@
+<div class="flex flex-wrap gap-6 p-6 mt-6 bg-white rounded-lg shadow-lg">
+
+    <app-spinner [isLoading]="isLoading"></app-spinner>
+    <div class="w-full flex gap-6">
+        <div class="w-1/2 rounded-t-lg overflow-hidden">
+            <table class="w-full">
+                <tbody>
+                    <tr class="mb-2">
+                        <td class="bg-gray-200 border border-gray-300 p-2 font-semibold">Tổng số sẽ thu</td>
+                        <td class="bg-white border border-gray-300 p-2 text-right">{{ totalCollect.total | currencyVnd
+                            }}</td>
+                    </tr>
+                    <tr class="mb-2">
+                        <td class="bg-gray-200 border border-gray-300 p-2 font-semibold">Công ty thu</td>
+                        <td class="bg-white border border-gray-300 p-2 text-right">{{ totalCollect.companyCollect |
+                            currencyVnd }}</td>
+                    </tr>
+                    <tr class="mb-2">
+                        <td class="bg-gray-200 border border-gray-300 p-2 font-semibold">Hướng dẫn viên thu</td>
+                        <td class="bg-white border border-gray-300 p-2 text-right">{{ totalCollect.travelGuideCollect |
+                            currencyVnd }}</td>
+                    </tr>
+                    <tr>
+                        <td class="bg-gray-200 border border-gray-300 p-2 font-semibold">Còn lại</td>
+                        <td class="bg-white border border-gray-300 p-2 text-right">{{ totalCollect.remain | currencyVnd
+                            }}</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+
+        <div class="w-1/2 rounded-t-lg overflow-hidden">
+            <table class="w-full">
+                <tbody>
+                    <tr class="mb-2">
+                        <td class="bg-gray-200 border border-gray-300 p-2 font-semibold">Tổng số sẽ chi</td>
+                        <td class="bg-white border border-gray-300 p-2 text-right">{{ totalPaid.total | currencyVnd }}
+                        </td>
+                    </tr>
+                    <tr class="mb-2">
+                        <td class="bg-gray-200 border border-gray-300 p-2 font-semibold">Công ty đã chi</td>
+                        <td class="bg-white border border-gray-300 p-2 text-right">{{ totalPaid.companyPaid |
+                            currencyVnd }}</td>
+                    </tr>
+                    <tr class="mb-2">
+                        <td class="bg-gray-200 border border-gray-300 p-2 font-semibold">Hướng dẫn viên đã chi</td>
+                        <td class="bg-white border border-gray-300 p-2 text-right">{{ totalPaid.travelGuidePaid |
+                            currencyVnd }}</td>
+                    </tr>
+                    <tr>
+                        <td class="bg-gray-200 border border-gray-300 p-2 font-semibold">Còn lại</td>
+                        <td class="bg-white border border-gray-300 p-2 text-right">{{ totalPaid.remain | currencyVnd }}
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+    <div class="w-full rounded-t-lg overflow-hidden">
+        <table class="w-full">
+            <thead>
+                <tr class="font-semibold mb-2">
+                    <th class="bg-gray-200 border border-gray-300 p-2 text-left">Nội dung</th>
+                    <th class="bg-gray-200 border border-gray-300 p-2 text-center">Thực tế</th>
+                    <th class="bg-gray-200 border border-gray-300 p-2 text-center">Ước tính</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr *ngFor="let item of summary" class="mb-2">
+                    <td class="bg-white border border-gray-300 p-2">{{ item.content }}</td>
+                    <td class="bg-white border border-gray-300 p-2 text-center">{{ item.summary | currencyVnd }}</td>
+                    <td class="bg-white border border-gray-300 p-2 text-center">{{ item.estimate | currencyVnd }}</td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+</div>

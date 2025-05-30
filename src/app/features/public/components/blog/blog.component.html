@@ -1,0 +1,175 @@
+<section class="mt-20 py-8 lg:py-12">
+    <div class="max-w-[1280px] mx-auto px-4">
+        <div class="relative rounded-lg h-[500px] overflow-hidden">
+            <div class="absolute inset-0 transition-transform duration-700"
+                [style.transform]="'translateX(-' + currentIndex * 100 + '%)'" style="display: flex; width: 300%;">
+
+                <div *ngFor="let article of randomBlogs" class="min-w-full bg-cover bg-center"
+                    [style.backgroundImage]="'url(' + article.thumbnailImageUrl + ')'">
+                    <div (click)="openBlogDetail(article?.id)"
+                        class="bg-gradient-to-t from-black to-transparent h-full w-full p-8 flex flex-col justify-end">
+                        <h2 class="text-3xl font-bold text-white mb-2">{{ article.title }}</h2>
+                        <p class="text-white mb-4">{{ article.description }}</p>
+                        <button class="bg-white w-40 text-blue-600 px-4 py-2 rounded-md font-semibold">
+                            Đọc thêm
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+            <button
+                class="absolute left-4 top-1/2 transform -translate-y-1/2 w-10 h-10 text-white text-xl bg-black/30 cursor-pointer hover:bg-black/50 rounded-full p-2 transition-colors duration-300"
+                (click)="prevArticle()">
+                &#9664;
+            </button>
+            <button
+                class="absolute right-4 top-1/2 transform -translate-y-1/2 w-10 h-10 text-white text-xl bg-black/30 cursor-pointer hover:bg-black/50 rounded-full p-2 transition-colors duration-300"
+                (click)="nextArticle()">
+                &#9654;
+            </button>
+
+        </div>
+    </div>
+</section>
+<section class="py-12">
+    <div class="max-w-[1280px] mx-auto px-4 text-center">
+        <h2 class="text-3xl font-bold mb-2">Đồ ăn và thức uống</h2>
+        <p class="text-gray-600 mb-8">Khám phá những nhà hàng và quán bar tốt nhất, ẩm thực đường phố và các điểm nóng ẩm thực trên khắp thế giới. Ai đang đói bụng?</p>
+
+        <div *ngIf="foodAndDrinkBlogs.length > 0; else noData"
+            class="grid grid-cols-1 sm:grid-cols-12 gap-4 h-[400px] sm:h-[500px]">
+            <div (click)="openBlogDetail(foodAndDrinkBlogs[0].id)"
+                class="relative bg-gray-300 cursor-pointer rounded-xl flex items-end  justify-center text-base sm:text-md font-semibold col-span-1 sm:col-span-8 row-span-1">
+                <img [src]="foodAndDrinkBlogs[0].thumbnailImageUrl" alt="{{foodAndDrinkBlogs[0].title}}"
+                    class="w-full h-full object-cover rounded-xl">
+                <div class="absolute bg-black bg-opacity-50 text-white p-2 rounded-md bottom-10">
+                    {{ foodAndDrinkBlogs[0].title }}
+                </div>
+            </div>
+
+            <div class="grid grid-cols-1 sm:grid-cols-1 gap-4 col-span-1 sm:col-span-4">
+                <div *ngFor="let blog of foodAndDrinkBlogs.slice(1, 3)" (click)="openBlogDetail(blog.id)"
+                    class="bg-gray-300 cursor-pointer rounded-xl flex items-end justify-center text-base sm:text-md font-semibold relative">
+                    <img [src]="blog.thumbnailImageUrl" alt="{{blog.title}}"
+                        class="w-full h-full object-cover rounded-xl">
+                    <div class="absolute bg-black bg-opacity-50 text-white p-2 rounded-md bottom-10">
+                        {{ blog.title }}
+                    </div>
+                </div>
+            </div>
+        </div>
+        <ng-template #noData>
+            <p>Không có blog về đồ ăn và thức uống nào.</p>
+        </ng-template>
+    </div>
+</section>
+
+<section class="mt-8 text-center py-16">
+    <h2 class="text-3xl font-bold mb-2">Những địa điểm nên ghé thăm</h2>
+    <p class="text-gray-600 mb-8">
+        Những điểm đến, trải nghiệm thú vị nhất, những viên ngọc ẩn và những địa điểm yêu thích của du khách để khám phá ngay bây giờ.
+    </p>
+    <div class="max-w-[1280px] mx-auto flex flex-wrap gap-4">
+        <div class="bg-gray-300 cursor-pointer rounded-lg h-[350px] flex-1 mt-32 max-w-[350px] flex items-center justify-center text-white font-bold relative"
+            *ngIf="adventureBlogs[0]" [style.backgroundImage]="'url(' + adventureBlogs[0].thumbnailImageUrl + ')'"
+            (click)="openBlogDetail(adventureBlogs[0].id)" style="background-size: cover; background-position: center;">
+            <div class="absolute inset-0 bg-black bg-opacity-50 rounded-lg"></div>
+            <span class="relative">{{ adventureBlogs[0].title }}</span>
+        </div>
+
+        <div class="flex flex-col gap-4">
+            <div class="bg-gray-300 cursor-pointer rounded-lg h-[300px] max-w-[320px] flex items-center justify-center text-white font-bold relative"
+                *ngIf="adventureBlogs[1]" [style.backgroundImage]="'url(' + adventureBlogs[1].thumbnailImageUrl + ')'"
+                style="background-size: cover; background-position: center;"
+                (click)="openBlogDetail(adventureBlogs[1].id)">
+                <div class="absolute inset-0 bg-black bg-opacity-50 rounded-lg"></div>
+                <span class="relative">{{ adventureBlogs[1].title }}</span>
+            </div>
+
+            <div class="bg-gray-300 cursor-pointer rounded-lg h-[300px] max-w-[320px] flex items-center justify-center text-white font-bold relative"
+                *ngIf="adventureBlogs[2]" [style.backgroundImage]="'url(' + adventureBlogs[2].thumbnailImageUrl + ')'"
+                style="background-size: cover; background-position: center;"
+                (click)="openBlogDetail(adventureBlogs[2].id)">
+                <div class="absolute inset-0 bg-black bg-opacity-50 rounded-lg"></div>
+                <span class="relative">{{ adventureBlogs[2].title }}</span>
+            </div>
+        </div>
+
+        <div class="flex flex-col gap-4">
+            <div class="bg-gray-300 cursor-pointer rounded-lg h-[300px] max-w-[320px] flex items-center justify-center text-white font-bold relative"
+                *ngIf="adventureBlogs[3]" [style.backgroundImage]="'url(' + adventureBlogs[3].thumbnailImageUrl + ')'"
+                style="background-size: cover; background-position: center;"
+                (click)="openBlogDetail(adventureBlogs[3].id)">
+                <div class="absolute inset-0 bg-black bg-opacity-50 rounded-lg"></div>
+                <span class="relative">{{ adventureBlogs[3].title }}</span>
+            </div>
+
+            <div class="bg-gray-300 cursor-pointer rounded-lg h-[300px] max-w-[320px] flex items-center justify-center text-white font-bold relative"
+                *ngIf="adventureBlogs[4]" [style.backgroundImage]="'url(' + adventureBlogs[4].thumbnailImageUrl + ')'"
+                style="background-size: cover; background-position: center;"
+                (click)="openBlogDetail(adventureBlogs[4].id)">
+                <div class="absolute inset-0 bg-black bg-opacity-50 rounded-lg"></div>
+                <span class="relative">{{ adventureBlogs[4].title }}</span>
+            </div>
+        </div>
+
+        <div class="bg-gray-300 cursor-pointer rounded-lg h-[350px] flex-1 max-w-[320px] mt-32 flex items-center justify-center text-white font-bold relative"
+            *ngIf="adventureBlogs[5]" [style.backgroundImage]="'url(' + adventureBlogs[5].thumbnailImageUrl + ')'"
+            style="background-size: cover; background-position: center;" (click)="openBlogDetail(adventureBlogs[5].id)">
+            <div class="absolute inset-0 bg-black bg-opacity-50 rounded-lg"></div>
+            <span class="relative">{{ adventureBlogs[5].title }}</span>
+        </div>
+    </div>
+</section>
+
+<section class="max-w-6xl mx-auto mt-16 sm:mt-32 text-center">
+    <h2 class="text-2xl sm:text-3xl font-bold">Hộ chiếu. Chìa khóa. Ví tiền.</h2>
+    <p class="text-base sm:text-lg text-gray-600 mt-4 sm:mt-6">
+        Ngắm nhìn một địa điểm mới từ ghế lái
+    </p>
+
+    <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8 sm:gap-12 mt-10 sm:mt-32">
+        <div *ngFor="let blog of culturalBlogs"
+            class="bg-gray-200 h-[200px] sm:h-[280px] flex cursor-pointer justify-center items-center text-base sm:text-xl font-semibold rounded-xl relative"
+            (click)="openBlogDetail(blog?.id)" [style.backgroundImage]="'url(' + blog.thumbnailImageUrl + ')'"
+            style="background-size: cover; background-position: center;">
+            <div class="absolute inset-0 bg-black bg-opacity-50 rounded-xl"></div>
+            <span class="relative text-white">{{ blog.title }}</span>
+        </div>
+    </div>
+</section>
+
+<section class="max-w-6xl mx-auto mt-16 sm:mt-32 text-center">
+    <h2 class="text-2xl sm:text-3xl font-bold">Tiếp tục khám phá</h2>
+    <div class="flex flex-wrap justify-center gap-6 max-w-[1200px] mx-auto mt-10 sm:mt-32">
+        <div *ngFor="let articl of newestBlogs; index as i" (click)="openBlogDetail(articl?.id)"
+            class="relative bg-gray-300 rounded-lg w-[350px] overflow-hidden h-[450px] cursor-pointer">
+            <img [src]="articl.thumbnailImageUrl" alt="{{ articl.title }}" class="w-full h-full object-cover" />
+
+            <div class="absolute bottom-0 left-0 w-full bg-gradient-to-t from-black to-transparent text-white p-4">
+                <p class="text-lg font-bold">{{ articl.title }}</p>
+            </div>
+        </div>
+    </div>
+
+    <div class="py-8 mt-4 text-center">
+        <ul class="inline-flex space-x-2">
+            <li *ngIf="currentPage > 0">
+                <a (click)="changePage(currentPage - 1)" class="px-3 py-2 rounded-md border cursor-pointer">«</a>
+            </li>
+
+            <li *ngFor="let page of [].constructor(totalPages); let i = index">
+                <a (click)="changePage(i)" class="px-3 py-2 rounded-md border cursor-pointer"
+                    [class.bg-black]="i === currentPage" [class.text-white]="i === currentPage">
+                    {{ i + 1 }}
+                </a>
+            </li>
+
+            <li *ngIf="currentPage < totalPages - 1">
+                <a (click)="changePage(currentPage + 1)" class="px-3 py-2 rounded-md border cursor-pointer">»</a>
+            </li>
+        </ul>
+    </div>
+</section>
+
+<app-footer></app-footer>

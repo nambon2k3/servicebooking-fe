@@ -1,0 +1,37 @@
+<div class="mt-6 p-6 bg-white rounded-md">
+
+  <app-spinner [isLoading]="isLoading"></app-spinner>
+  <div class="rounded-md">
+    <table class="w-full text-left bg-white rounded-md">
+      <thead class="bg-gray-200">
+        <tr>
+          <th class="p-2">STT</th>
+          <th class="p-2">Người trả</th>
+          <th class="p-2">Người nhận</th>
+          <th class="p-2">Loại phiếu</th>
+          <th class="p-2">Ngày</th>
+          <th class="p-2">Giá tiền</th>
+          <th class="p-2">Trạng thái</th>
+          <th class="p-2">Nội dung</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr *ngFor="let transaction of listTransactions; let i = index" class="border-b">
+          <td class="p-2">{{ i + 1 }}</td>
+          <td class="p-2">{{ transaction.paidBy }}</td>
+          <td class="p-2">{{ transaction.receivedBy }}</td>
+          <td class="p-2">{{ transaction.category === 'RECEIPT' ? 'Phiếu thu' : transaction.category === 'COLLECTION' ? 'HDV Thu hộ' : transaction.category === 'ADVANCED' ? 'Tạm ứng' : 'Phiếu chi' }}</td>
+          <td class="p-2">{{ transaction.createdAt | formatDate }}</td>
+          <td class="p-2">{{ transaction.amount | currencyVnd }}</td><td class="p-2">
+            <span 
+              class="px-2 py-1 rounded text-sm font-medium"
+              [ngClass]="getPaymentStatusClass(transaction.paymentStatus)">
+              {{ mapPaymentStatus(transaction.paymentStatus) }}
+            </span>
+          </td>          
+          <td class="p-2">{{ transaction.costAccount.content | truncate : 30 }}</td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+</div>

@@ -1,0 +1,45 @@
+.manage .fc {
+  max-width: 100%;
+}
+
+.fc-daygrid-day-number {
+  @apply text-sm;
+}
+
+.fc .fc-daygrid-day.fc-day-today {
+  @apply bg-blue-100;
+}
+
+.fc-event {
+  background-color: #E6F4EA !important;
+  border-color: #E6F4EA !important;
+  border-radius: 4px !important;
+  padding: 2px !important;
+  font-size: 0.8em !important;
+}
+
+/* Modal styling */
+.fixed.inset-0 {
+  z-index: 50;
+}
+
+.bg-gray-600.bg-opacity-50 {
+  backdrop-filter: blur(2px);
+}
+
+.bg-white.p-6.rounded.shadow-lg {
+  z-index: 60;
+}
+
+/* Ensure the calendar header matches the Figma design */
+.fc-header-toolbar {
+  @apply bg-gray-100 p-2 rounded-t;
+}
+
+.fc-button {
+  @apply bg-gray-200 hover:bg-gray-300 text-gray-800 px-2 py-1 rounded;
+}
+
+.fc-button-active {
+  @apply bg-blue-500 text-white;
+}

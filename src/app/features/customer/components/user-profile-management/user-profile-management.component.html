@@ -1,0 +1,228 @@
+<div class="bg-gray-100 min-h-screen p-4">
+    <div class="relative h-[200px] mb-4">
+        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor"
+            class="w-8 h-8 absolute top-4 left-4 cursor-pointer text-white bg-gray-700 rounded-full p-1"
+            (click)="goToHome()">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0l7-7m-7 7h18" />
+        </svg>
+        <img src="https://cdn.pixabay.com/photo/2017/10/12/03/03/view-2843338_1280.jpg" alt="Hình nền"
+            class="w-full h-full object-cover rounded-lg" />
+    </div>
+
+    <div class="bg-white rounded shadow p-4">
+        <div class="flex items-center mb-4">
+            <div class="flex items-center space-x-4 mb-4">
+                <div>
+                    <img [src]="userProfile?.avatarImg || 'https://cellphones.com.vn/sforum/wp-content/uploads/2023/10/avatar-trang-4.jpg'"
+                        alt="Ảnh đại diện"
+                        class="w-40 h-40 rounded-full border-4 border-white shadow-md overflow-clip" />
+                </div>
+
+                <div class="inline-block space-y-4">
+                    <div *ngIf="userProfile">
+                        <h1 class="text-lg font-bold">{{ userProfile.fullName }}</h1>
+                        <p class="text-gray-500">{{ userProfile.email }}</p>
+                    </div>
+                    <div class="flex space-x-8">
+                        <div>
+                            <p class="font-bold">Đánh giá</p>
+                            <p>0</p>
+                        </div>
+                        <div>
+                            <p class="font-bold">Chuyến đi</p>
+                            <p>0</p>
+                        </div>
+                        <div>
+                            <p class="font-bold">Ảnh</p>
+                            <p>1</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="ml-auto relative flex items-center bg-white border rounded">
+                <button (click)="openEditModal()" class="px-2 py-1 flex items-center">
+                    Chỉnh sửa hồ sơ
+                </button>
+
+                <div class="relative inline-block">
+                    <svg (click)="toggleDropdown()" class="w-6 h-6 ml-2 text-gray-800 cursor-pointer"
+                        xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+                        <path stroke="currentColor" stroke-linecap="square" stroke-linejoin="round" stroke-width="2"
+                            d="M10 19H5a1 1 0 0 1-1-1v-1a3 3 0 0 1 3-3h2m10 1a3 3 0 0 1-3 3m3-3a3 3 0 0 0-3-3m3 3h1m-4 3a3 3 0 0 1-3-3m3 3v1m-3-4a3 3 0 0 1 3-3m-3 3h-1m4-3v-1m-2.121 1.879-.707-.707m5.656 5.656-.707-.707m-4.242 0-.707.707m5.656-5.656-.707.707M12 8a3 3 0 1 1-6 0 3 3 0 0 1 6 0Z" />
+                    </svg>
+
+                    <div *ngIf="isDropdownOpen"
+                        class="absolute right-0 mt-2 w-48 bg-white border rounded shadow-lg z-10">
+                        <ul class="py-1">
+                            <li class="px-4 py-2 hover:bg-gray-100 cursor-pointer" (click)="onChangePassword()">
+                                Đổi mật khẩu
+                            </li>
+                            <li class="px-4 py-2 hover:bg-gray-100 cursor-pointer" (click)="onChangeAvatar()">
+                                Đổi ảnh đại diện
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+
+        <nav class="mt-4">
+            <ul class="flex space-x-4">
+                <li>
+                    <a [routerLink]="'/activity-feed'" [class.border-b-2]="isActive('/activity-feed')"
+                        class="pb-1 text-gray-600 hover:border-b-2 hover:border-green-500">
+                        Bảng tin hoạt động
+                    </a>
+                </li>
+                <li>
+                    <a [routerLink]="'/trips'" [class.border-b-2]="isActive('/trips')"
+                        class="pb-1 text-gray-600 hover:border-b-2 hover:border-green-500">
+                        Chuyến đi
+                    </a>
+                </li>
+                <li>
+                    <a [routerLink]="'/photos'" [class.border-b-2]="isActive('/photos')"
+                        class="pb-1 text-gray-600 hover:border-b-2 hover:border-green-500">
+                        Ảnh
+                    </a>
+                </li>
+                <li>
+                    <a [routerLink]="'/reviews'" [class.border-b-2]="isActive('/reviews')"
+                        class="pb-1 text-gray-600 hover:border-b-2 hover:border-green-500">
+                        Đánh giá
+                    </a>
+                </li>
+            </ul>
+        </nav>
+
+    </div>
+
+    <div class="flex mt-6">
+        <div class="inline w-1/3">
+            <div class="w-full bg-white rounded shadow p-7">
+                <div class="my-7 px-10"> Địa điểm: {{ userProfile?.address}} </div>
+                <div class="my-7 px-10">Tham gia vào: {{ userProfile?.createAt | formatDate }} </div>
+            </div>
+            <div class="w-full bg-white rounded shadow p-10 mt-6 h-2/3">
+                <h2 class="text-lg font-bold my-6 ml-4">Chia sẻ lời khuyên du lịch của bạn</h2>
+                <div class="space-y-12">
+                    <div class="flex items-center bg-white border rounded-2xl p-7 mx-4 my-10">
+                        <svg class="w-6 h-6 text-gray-800 dark:text-black" aria-hidden="true"
+                            xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none" viewBox="0 0 24 24">
+                            <path stroke="currentColor" stroke-linejoin="round" stroke-width="2"
+                                d="M4 18V8a1 1 0 0 1 1-1h1.5l1.707-1.707A1 1 0 0 1 8.914 5h6.172a1 1 0 0 1 .707.293L17.5 7H19a1 1 0 0 1 1 1v10a1 1 0 0 1-1 1H5a1 1 0 0 1-1-1Z" />
+                            <path stroke="currentColor" stroke-linejoin="round" stroke-width="2"
+                                d="M15 12a3 3 0 1 1-6 0 3 3 0 0 1 6 0Z" />
+                        </svg>
+                        <div class="ml-4">
+                            <p class="font-bold">Đăng ảnh của bạn</p>
+                        </div>
+                    </div>
+                    <div class="flex items-center bg-white border rounded-2xl p-7 mx-4 my-10">
+                        <svg class="w-6 h-6 text-gray-800 dark:text-black" aria-hidden="true"
+                            xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none" viewBox="0 0 24 24">
+                            <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                d="m4.988 19.012 5.41-5.41m2.366-6.424 4.058 4.058-2.03 5.41L5.3 20 4 18.701l3.355-9.494 5.41-2.029Zm4.626 4.625L12.197 6.61 14.807 4 20 9.194l-2.61 2.61Z" />
+                        </svg>
+                        <div class="ml-4">
+                            <p class="font-bold">Đăng đánh giá của bạn</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="w-2/3 ml-4 bg-white rounded shadow p-4">
+            <div class="flex-1 p-2 items-center justify-between">
+                <!-- Header -->
+                <div class="flex items-center justify-between w-full">
+                    <div class="w-2/3 bg-white p-4 rounded-md shadow">
+                        <input type="text"
+                            class="w-full px-2 rounded-md border-gray-300 focus:outline-none focus:border-none"
+                            placeholder="Tìm kiếm theo tên tour" [(ngModel)]="keyword"
+                            (keyup.enter)="fetchHistoryBooking()">
+
+                    </div>
+
+                    <div class="">
+                        <select name="status" class="border text-muted-foreground w-28! p-2 rounded-md shadow"
+                            [(ngModel)]="paymentStatus" (ngModelChange)="fetchHistoryBooking()">
+                            <option selected value="">Tất cả</option>
+                            <option value="PENDING">Đang chờ</option>
+                            <option value="COMPLETED">Đã hoàn thành</option>
+                            <option value="CANCELLED">Đã hủy</option>
+                            <option value="SUCCESS">Đã phê duyệt</option>
+                        </select>
+
+                        <select name="order" class="border text-muted-foreground w-28! ml-2 p-2 rounded-md shadow"
+                            [(ngModel)]="orderDate" (ngModelChange)="fetchHistoryBooking()">
+                            <option value="desc">Mới nhất</option>
+                            <option value="asc">Cũ nhất</option>
+                        </select>
+                    </div>
+                </div>
+
+                <!-- Tabs -->
+                <div class="flex space-x-4 mt-4 ">
+                    <button class="pb-2 border-b-2 border-blue-500 text-blue-500 font-bold">Danh sách đơn đặt</button>
+                </div>
+
+                <!-- Booking List -->
+                <div class="h-[40vh] overflow-y-auto custom-scrollbar">
+                    <div *ngFor="let booking of bookings" class="mt-6 bg-white p-4 border rounded-lg cursor-pointer"
+                        (click)="goToBookingDetail(booking.bookingCode)">
+                        <p class="text-gray-500">Ngày tạo: {{ booking.bookingDate | formatDate }}</p>
+                        <div class="flex mt-2">
+                            <img class="w-32 h-24 rounded-lg" [src]="booking?.tourImage" alt="Tour Image">
+                            <div class="ml-4 mt-2">
+                                <h3 class="font-bold text-lg max-w-3xl">{{ booking.tourName }}</h3>
+                                <p class="text-gray-600">Mã booking: <span class="font-bold">{{ booking.bookingCode
+                                        }}</span></p>
+                                <p [class]="getStatusClass(booking.bookingStatus)">
+                                    {{ getStatusInVietnamese(booking.bookingStatus) }} </p>
+                            </div>
+                            <div class="ml-auto text-right">
+                                <p class="text-green-600 font-semibold text-xl">{{ booking.bookingTotalAmount |
+                                    currencyVnd}} </p>
+                                <button
+                                    class="mt-4 bg-red-500 hover:bg-red-600 text-right text-white px-4 py-2 rounded-md">Hủy
+                                    đặt chỗ</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="py-2 text-center">
+                <ul class="inline-flex space-x-2">
+                    <li *ngIf="currentPage > 0">
+                        <a (click)="changePage(currentPage - 1)"
+                            class="px-3 py-2 rounded-md border cursor-pointer">«</a>
+                    </li>
+
+                    <li *ngFor="let page of [].constructor(totalPages); let i = index">
+                        <a (click)="changePage(i)" class="px-3 py-2 rounded-md border cursor-pointer"
+                            [class.bg-black]="i === currentPage" [class.text-white]="i === currentPage">
+                            {{ i + 1 }}
+                        </a>
+                    </li>
+
+                    <li *ngIf="currentPage < totalPages - 1">
+                        <a (click)="changePage(currentPage + 1)"
+                            class="px-3 py-2 rounded-md border cursor-pointer">»</a>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </div>
+</div>
+
+<app-edit-profile-modal *ngIf="showEditModal" [userProfile]="userProfile"
+    (closeModal)="closeEditModal()"></app-edit-profile-modal>
+
+<app-change-password *ngIf="showChangePasswordModal" (closeModal)="closeChangePasswordModal()"></app-change-password>
+
+<app-change-avatar *ngIf="showChangeAvatarModal" [userId]="userId"
+    (closeModal)="closeChangeAvatarModal()"></app-change-avatar>

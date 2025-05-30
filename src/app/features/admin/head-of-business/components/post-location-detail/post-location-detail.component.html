@@ -1,0 +1,71 @@
+<div class=" bg-white p-6 rounded-md">
+
+    <app-spinner [isLoading]="isLoading"></app-spinner>
+    <h2 class="text-lg font-bold mb-4">Chỉnh sửa địa điểm</h2>
+
+    <form [formGroup]="editLocationForm">
+
+        <!-- Id -->
+        <input type="hidden" formControlName="id" readonly class="w-full p-2 border rounded-md mb-4"
+            placeholder="Nhập ID" />
+
+        <!-- Hình ảnh thu nhỏ -->
+        <label class="block mb-2 text-sm font-medium text-gray-700">Hình ảnh thu nhỏ</label>
+        <div class="flex flex-col items-center justify-center mb-4">
+            <!-- Xem trước hình ảnh -->
+            <img *ngIf="imagePreview" [src]="imagePreview" alt="Xem trước hình ảnh thu nhỏ"
+                class="w-full h-64 object-cover rounded-md mb-2" />
+            <input type="file" (change)="onFileSelected($event)" accept="image/*" class="w-full" />
+        </div>
+
+        <app-vietnam-map (locationSelected)="onLocationSelected($event)"></app-vietnam-map>
+
+        <!-- Tên -->
+        <label class="block mt-3 mb-2 text-sm font-medium text-gray-700">Tên</label>
+        <input type="text" formControlName="name" class="w-full p-2 border rounded-md mb-4" placeholder="Nhập tên" />
+
+        <!-- Mô tả -->
+        <label class="block mb-2 text-sm font-medium text-gray-700">Mô tả</label>
+        <input type="text" formControlName="description" class="w-full p-2 border rounded-md mb-4"
+            placeholder="Nhập mô tả" />
+
+        <fieldset formGroupName="geoPosition">
+            <!-- Vĩ độ -->
+            <label class="block mb-2 text-sm font-medium text-gray-700">Vĩ độ</label>
+            <input type="text" formControlName="latitude" class="w-full p-2 border rounded-md mb-4"
+                placeholder="Nhập vĩ độ" />
+
+            <!-- Kinh độ -->
+            <label class="block mb-2 text-sm font-medium text-gray-700">Kinh độ</label>
+            <input type="text" formControlName="longitude" class="w-full p-2 border rounded-md mb-4"
+                placeholder="Nhập kinh độ" />
+        </fieldset>
+
+        <!-- Trạng thái -->
+        <label class="block mb-2 text-sm font-medium text-gray-700">Trạng thái</label>
+        <select formControlName="deleted" class="w-full p-2 border rounded-md mb-4">
+            <option [value]="false">Kích hoạt</option>
+            <option [value]="true">Vô hiệu hóa</option>
+        </select>
+
+        <!-- Thông báo lỗi -->
+        <p *ngIf="errorMessage" class="text-red-500 text-sm mb-3">
+            {{ errorMessage }}
+        </p>
+        <p *ngIf="successMessage" class="text-green-500 text-sm mb-3">
+            {{ successMessage }}
+        </p>
+
+        <!-- Nút hành động -->
+        <div class="flex justify-end space-x-2">
+            <button type="button" class="px-4 py-2 text-gray-600 bg-gray-200 rounded-md hover:bg-gray-300"
+                (click)="onCancel()">
+                Hủy
+            </button>
+            <button type="submit" (click)="saveChanges()"
+                class="px-4 py-2 text-white bg-green-500 rounded-md hover:bg-green-600">
+                Lưu thay đổi
+            </button>
+        </div>
+    </form>
+</div>

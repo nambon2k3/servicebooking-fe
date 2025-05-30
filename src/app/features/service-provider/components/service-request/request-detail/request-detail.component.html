@@ -1,0 +1,130 @@
+<div class="min-h-screen bg-gray-100 flex items-center justify-center p-4 sm:p-6">
+  @if (requestDetail) {
+  <div class="w-full max-w-8xl bg-white rounded-2xl shadow-lg p-6 sm:p-8">
+    <!-- Header với thông tin người dùng và ngày cập nhật -->
+    <div class="flex items-center justify-start mb-6">
+      <div class="text-left">
+        <p class="text-gray-600 font-medium text-sm">Ngày gửi đơn:</p>
+        <p class="text-gray-800 text-sm">{{ formatDate(requestDetail.updatedAt) }}</p>
+      </div>
+    </div>
+
+    <!-- Phần chi tiết yêu cầu dịch vụ -->
+    <div class="border-t border-gray-200 pt-6 mb-6">
+      <h3 class="text-xl font-semibold text-gray-800 mb-4">Chi tiết yêu cầu dịch vụ</h3>
+      <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+        <div class="flex items-center space-x-2">
+          <span class="text-gray-600 font-medium text-sm">Mã yêu cầu:</span>
+          <span class="text-gray-800 text-sm">{{ requestDetail.tourBookingServiceId }}</span>
+        </div>
+        <div class="flex items-center space-x-2">
+          <span class="text-gray-600 font-medium text-sm">Mã đặt chỗ:</span>
+          <span class="text-gray-800 text-sm">{{ requestDetail.bookingCode || 'Không có' }}</span>
+        </div>
+        <div class="flex items-center space-x-2">
+          <span class="text-gray-600 font-medium text-sm">Tên tour:</span>
+          <span class="text-gray-800 font-bold text-sm">{{ requestDetail.tourName }}</span>
+        </div>
+        <div class="flex items-center space-x-2">
+          <span class="text-gray-600 font-medium text-sm">Loại tour:</span>
+          <span class="text-gray-800 text-sm">{{ requestDetail.tourType }}</span>
+        </div>
+        <div class="flex items-center space-x-2">
+          <span class="text-gray-600 font-medium text-sm">Tên dịch vụ:</span>
+          <span class="text-gray-800 text-sm">{{ requestDetail.serviceName }}</span>
+        </div>
+        <div class="flex items-center space-x-2">
+          <span class="text-gray-600 font-medium text-sm">Số ngày:</span>
+          <span class="text-gray-800 text-sm">{{ requestDetail.dayNumber || 'Không có' }}</span>
+        </div>
+        <div class="flex items-center space-x-2">
+          <span class="text-gray-600 font-medium text-sm">Ngày bắt đầu:</span>
+          <span class="text-gray-800 text-sm">{{ requestDetail.startDate | date: 'dd/MM/yyyy' }}</span>
+        </div>
+        <div class="flex items-center space-x-2">
+          <span class="text-gray-600 font-medium text-sm">Ngày kết thúc:</span>
+          <span class="text-gray-800 text-sm">{{ requestDetail.endDate | date: 'dd/MM/yyyy' }}</span>
+        </div>
+        <div class="flex items-center space-x-2">
+          <span class="text-gray-600 font-medium text-sm">Trạng thái:</span>
+          <span class="text-sm px-3 py-1 rounded-full" [ngClass]="{
+                    'bg-green-100 text-green-800': requestDetail.status === 'APPROVED',
+                    'bg-red-100 text-red-800': requestDetail.status === 'REJECTED',
+                    'bg-yellow-100 text-yellow-800': requestDetail.status === 'PENDING',
+                    'bg-gray-100 text-gray-800': requestDetail.status !== 'APPROVED' && requestDetail.status !== 'REJECTED' && requestDetail.status !== 'PENDING'
+                  }">
+            {{ getStatusDisplay(requestDetail.status) }}
+          </span>
+        </div>
+        <div class="flex items-center space-x-2">
+          <span class="text-gray-600 font-medium text-sm">Số lượng hiện tại:</span>
+          <span class="text-gray-800 text-sm">{{ requestDetail.currentQuantity }}</span>
+        </div>
+        <div class="flex items-center space-x-2">
+          <span class="text-gray-600 font-medium text-sm">Số lượng yêu cầu:</span>
+          <span class="text-gray-800 text-sm">{{ requestDetail.requestQuantity }}</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- Phần lý do (tách biệt) -->
+    <div class="border-t border-gray-200 pt-6 mb-6">
+      <h3 class="text-xl font-semibold text-gray-800 mb-4">Lý do yêu cầu</h3>
+      <div class="bg-gray-50 p-4 rounded-lg">
+        <p class="text-gray-800 text-sm">{{ requestDetail.reason || 'Không có' }}</p>
+      </div>
+    </div>
+
+    <!-- Bảng chi tiết -->
+    <div class="border-t border-gray-200 pt-6 mb-6">
+      <h3 class="text-xl font-semibold text-gray-800 mb-4">Bảng chi tiết yêu cầu</h3>
+      <div class="overflow-x-auto">
+        <table class="w-full text-left text-sm border border-gray-200 rounded-lg">
+          <thead class="bg-gray-50">
+            <tr>
+              <th class="p-3 text-gray-700 font-semibold border-b border-gray-200">Thứ tự</th>
+              <th class="p-3 text-gray-700 font-semibold border-b border-gray-200">Nội dung yêu cầu</th>
+              <th class="p-3 text-gray-700 font-semibold border-b border-gray-200">Đơn giá</th>
+              <th class="p-3 text-gray-700 font-semibold border-b border-gray-200">Số lượng</th>
+              <th class="p-3 text-gray-700 font-semibold border-b border-gray-200">Tổng cộng</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr class="border-b border-gray-200 hover:bg-gray-50 transition-colors">
+              <td class="p-3">1</td>
+              <td class="p-3">{{ requestDetail.serviceName }}</td>
+              <td class="p-3">{{ formatCurrency(requestDetail.nettPrice) }}</td>
+              <td class="p-3">{{ requestDetail.currentQuantity }}</td>
+              <td class="p-3 font-medium text-gray-800">{{ formatCurrency(requestDetail.totalPrice) }}</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+      <div class="text-right mt-4">
+        <span class="text-lg font-semibold text-gray-800">Tổng giá: {{ formatCurrency(requestDetail.totalPrice)
+          }}</span>
+      </div>
+    </div>
+
+    <!-- Nút điều khiển -->
+    <div class="flex justify-end space-x-3">
+      <button (click)="onCancel()"
+        class="px-5 py-2.5 bg-gray-200 text-gray-700 rounded-lg hover:bg-gray-300 transition-colors duration-200">
+        Hủy
+      </button>
+      <button (click)="onReject()" *ngIf="requestDetail.status === 'PENDING'"
+        class="px-5 py-2.5 bg-red-600 text-white rounded-lg hover:bg-red-700 transition-colors duration-200">
+        Từ chối
+      </button>
+      <button (click)="onApprove()" *ngIf="requestDetail.status === 'PENDING'"
+        class="px-5 py-2.5 bg-green-600 text-white rounded-lg hover:bg-green-700 transition-colors duration-200">
+        Phê duyệt
+      </button>
+    </div>
+  </div>
+  } @else {
+  <div class="flex justify-center items-center h-64">
+    <p class="text-gray-500 text-lg">Đang tải thông tin...</p>
+  </div>
+  }
+</div>

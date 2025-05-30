@@ -1,0 +1,190 @@
+:host ::ng-deep .ng-select.custom {
+    background-color: #ffffff;
+    border: 1px solid #d1d5db;
+    border-radius: 0.375rem;
+}
+
+:host ::ng-deep .ng-select.custom .ng-select-container {
+    height: 48px;
+    min-height: 48px;
+    display: flex;
+    align-items: center;
+}
+
+:host ::ng-deep .ng-select.custom .ng-dropdown-panel {
+    background-color: #ffffff;
+    border: 1px solid #d1d5db;
+    border-radius: 0.375rem;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+    z-index: 1000;
+}
+
+:host ::ng-deep .ng-select.custom.ng-select-empty .ng-clear-wrapper {
+    display: none;
+}
+
+:host ::ng-deep .ng-select.custom .ng-dropdown-panel .ng-option {
+    padding: 8px 12px;
+    color: #374151;
+}
+
+:host ::ng-deep .ng-select.custom .ng-dropdown-panel .ng-option.ng-option-selected,
+:host ::ng-deep .ng-select.custom .ng-dropdown-panel .ng-option:hover {
+    background-color: #f3f4f6;
+    color: #1f2937;
+}
+
+th,
+td {
+    padding: 5px;
+    box-sizing: border-box;
+    /* Ensure padding doesn't affect width */
+}
+
+thead th {
+    position: sticky;
+    top: 0;
+    background-color: #f3f4f6;
+    /* Matches bg-gray-100 */
+    z-index: 10;
+}
+
+/* Ensure column widths align */
+table {
+    table-layout: fixed;
+    border-collapse: collapse;
+}
+
+/* Service List table column widths */
+.service-list-table th:nth-child(1),
+.service-list-table td:nth-child(1) {
+    width: 25%;
+    /* Tên dịch vụ */
+}
+
+.service-list-table th:nth-child(2),
+.service-list-table td:nth-child(2) {
+    width: 20%;
+    /* Loại */
+}
+
+.service-list-table th:nth-child(3),
+.service-list-table td:nth-child(3) {
+    width: 20%;
+    /* Đơn giá */
+}
+
+.service-list-table th:nth-child(4),
+.service-list-table td:nth-child(4) {
+    width: 25%;
+    /* Chi tiết */
+}
+
+.service-list-table th:nth-child(5),
+.service-list-table td:nth-child(5) {
+    width: 10%;
+    /* Hành động */
+}
+
+/* Selected Services table column widths */
+.selected-services-table th:nth-child(1),
+.selected-services-table td:nth-child(1) {
+    width: 25%;
+    /* Dịch vụ */
+}
+
+.selected-services-table th:nth-child(2),
+.selected-services-table td:nth-child(2) {
+    width: 12%;
+    /* Đơn giá */
+}
+
+.selected-services-table th:nth-child(3),
+.selected-services-table td:nth-child(3) {
+    width: 10%;
+    /* Ngày yêu cầu */
+}
+
+.selected-services-table th:nth-child(4),
+.selected-services-table td:nth-child(4) {
+    width: 12%;
+    /* Số lượng */
+}
+
+.selected-services-table th:nth-child(5),
+.selected-services-table td:nth-child(5) {
+    width: 20%;
+    /* Tổng cộng */
+}
+
+.selected-services-table th:nth-child(6),
+.selected-services-table td:nth-child(6) {
+    width: 10%;
+    /* Hành động */
+}
+
+/* Ensure input and buttons fit within the cell */
+.selected-services-table td input,
+.selected-services-table td .inline-flex {
+    width: 100%;
+    box-sizing: border-box;
+}
+
+/* Style for the quantity input */
+.selected-services-table td input[type="number"] {
+    -moz-appearance: textfield;
+    /* Remove arrows in Firefox */
+}
+
+.selected-services-table td input[type="number"]::-webkit-outer-spin-button,
+.selected-services-table td input[type="number"]::-webkit-inner-spin-button {
+    -webkit-appearance: none;
+    /* Remove arrows in Chrome/Safari */
+    margin: 0;
+}
+
+/* Ensure the input and buttons align properly */
+.selected-services-table td .flex {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 0;
+}
+
+/* Match the height of the input with the buttons */
+.selected-services-table td input[type="number"] {
+    height: 36px;
+    /* Match the height of the buttons (w-9 h-9) */
+    border-left: none;
+    border-right: none;
+}
+
+/* Tùy chỉnh thanh cuộn cho toàn bộ modal */
+.overflow-y-auto::-webkit-scrollbar {
+    width: 8px; /* Chiều rộng thanh cuộn */
+}
+
+.overflow-y-auto::-webkit-scrollbar-track {
+    background: #1f2937; /* Màu nền của track */
+    border-radius: 4px;
+}
+
+.overflow-y-auto::-webkit-scrollbar-thumb {
+    background: #888; /* Màu của thanh cuộn */
+    border-radius: 4px;
+}
+
+.overflow-y-auto::-webkit-scrollbar-thumb:hover {
+    background: #555; /* Màu khi hover */
+}
+
+/* Đảm bảo bảng có chiều rộng đầy đủ */
+.service-list-table,
+.selected-services-table {
+    width: 100%;
+}
+
+/* Đảm bảo phần nội dung bảng có chiều cao cố định và scroll hoạt động */
+.scroll-container {
+    position: relative;
+}

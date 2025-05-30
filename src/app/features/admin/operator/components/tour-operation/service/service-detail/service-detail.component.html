@@ -1,0 +1,75 @@
+<div id="changeServiceModal" tabindex="-1" aria-hidden="true"
+    class="hidden fixed inset-0 z-50 flex justify-center items-center w-full h-full bg-gray-900 bg-opacity-50">
+    <div class="max-w-7xl w-11/12 mx-auto bg-white p-6 rounded-lg shadow">
+        <div class="flex justify-between items-center">
+            <h2 class="text-lg font-bold mb-3">Chọn dịch vụ</h2>
+            <button (click)="close()" class="text-gray-500 hover:text-gray-700">✖</button>
+        </div>
+
+        <div class="grid grid-cols-2 gap-4 mb-4">
+            <div>
+                <label class="block text-sm font-semibold">Chọn địa điểm</label>
+                <input type="text" [(ngModel)]="service.location"
+                    class="mt-2 w-full bg-gray-100 border border-gray-300 rounded-md p-2" readonly>
+            </div>
+            <div>
+                <label class="block text-sm font-semibold">Loại dịch vụ</label>
+                <input type="text" [(ngModel)]="service.type"
+                    class="mt-2 w-full bg-gray-100 border border-gray-300 rounded-md p-2" readonly>
+            </div>
+        </div>
+
+        <!-- Service Provider and Customer Selection -->
+        <div class="grid grid-cols-2 gap-4 mb-4">
+            <div>
+                <label class="block text-sm font-semibold">Nhà cung cấp dịch vụ</label>
+                <input type="text" [(ngModel)]="service.providerName"
+                    class="mt-2 w-full bg-gray-100 border border-gray-300 rounded-md p-2" readonly>
+            </div>
+            <div>
+                <label class="block text-sm font-semibold">Khách hàng</label>
+                <input type="text" [(ngModel)]="service.bookingCode"
+                    class="mt-2 w-full bg-gray-100 border border-gray-300 rounded-md p-2" readonly>
+            </div>
+        </div>
+
+        <!-- Service Info -->
+        <div class="grid grid-cols-2 gap-4 mb-4">
+            <div>
+                <label class="block text-sm font-semibold">Dịch vụ</label>
+                <input type="text" [(ngModel)]="service.name" class="mt-2 w-full bg-gray-100 border p-2" readonly>
+            </div>
+            <div>
+                <label class="block text-sm font-semibold">Đơn giá</label>
+                @if(serviceDetail?.serviceCategory === 'Transport'){
+                    <input type="text" [value]="serviceDetail?.sellingPrice / (minPax ?? 1) | currencyVnd"
+                    class="mt-2 w-full bg-gray-100 border p-2" readonly>
+                } 
+                @else {
+                    <input type="text" [value]="serviceDetail?.sellingPrice | currencyVnd"
+                    class="mt-2 w-full bg-gray-100 border p-2" readonly>
+                }
+            </div>
+        </div>
+
+        <!-- Quantity and Total Price -->
+        <div class="flex justify-between items-center">
+            <label class="block text-sm font-semibold">Số lượng</label>
+            <div class="flex">
+                <button class="border px-3 py-1" (click)="updateQuantity(-1)">-</button>
+                <input type="number" [(ngModel)]="tempQuantity" class="w-20 text-center border mx-2" min="1"
+                    (input)="calculateTotal()">
+                <button class="border px-3 py-1" (click)="updateQuantity(1)">+</button>
+            </div>
+        </div>
+        <div class="text-right font-bold mt-2">
+            Tổng giá: {{ totalPrice | currencyVnd }}
+        </div>
+
+        <!-- Action Buttons -->
+        <div class="flex justify-end space-x-2 mt-4">
+            <button class="border px-4 py-2 rounded bg-gray-300" (click)="close()">Hủy</button>
+            <button class="border px-4 py-2 rounded bg-green-700 text-white" (click)="updateService()">Xác nhận</button>
+        </div>
+    </div>
+</div>

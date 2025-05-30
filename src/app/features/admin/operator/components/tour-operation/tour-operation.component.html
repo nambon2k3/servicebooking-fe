@@ -1,0 +1,104 @@
+<div *ngIf="showPopup" class="popup-message" [ngClass]="{'success': isSuccess, 'error': !isSuccess}">
+  {{ popupMessage }}
+</div>
+
+<div class="mt-6 grid grid-cols-3 gap-4">
+  <!-- Thông tin chung -->
+  <div class="col-span-2 bg-white p-6 shadow-md">
+    <h2 class="mt-2 text-lg font-bold">Thông tin chung</h2>
+    <hr class="mt-4 col-span-2 w-full">
+    <div class="mt-4 grid grid-cols-2 gap-x-4 gap-y-7">
+      <p><strong>Loại tour:</strong></p>
+      <p>{{ tour?.tourType === 'SIC' ? 'Tour đoàn' : 'Tour riêng' }}</p>
+
+      <p><strong>Thẻ tag:</strong></p>
+      <p>{{ tags }}</p>
+
+      <p><strong>Thời gian:</strong></p>
+      <p>{{ tour?.numberDays }}N{{ tour?.numberNights }}Đ</p>
+
+      <p><strong>Khởi hành:</strong></p>
+      <p>{{ tour?.departureLocation }}</p>
+
+      <p><strong>Tổng số đặt chỗ:</strong></p>
+      <p>{{ tour?.maxPax }}</p>
+
+      <p><strong>Ngày bắt đầu:</strong></p>
+      <p>{{ tour?.startDate | date: 'dd/MM/yyyy' }}</p>
+
+      <p><strong>Ngày kết thúc:</strong></p>
+      <p>{{ tour?.endDate | date: 'dd/MM/yyyy' }}</p>
+
+      <hr class="my-4 col-span-2 w-full">
+      <p><strong>Ngày tạo:</strong></p>
+      <p>{{ tour?.createdAt | date: 'dd/MM/yyyy' }}</p>
+
+      <p><strong>Người tạo:</strong></p>
+      <p>{{ tour?.createdBy }}</p>
+    </div>
+  </div>
+
+  <!-- Thông tin số chỗ -->
+  <div class="space-y-4">
+    <div class="bg-white p-4 shadow-md">
+      <h3 class="font-bold">Số chỗ còn lại</h3>
+      <hr class="my-4 col-span-2 w-full">
+      <div class="grid grid-cols-2 gap-x-4 gap-y-4">
+        <p><strong>Tổng số:</strong></p>
+        <p>{{ tour?.maxPax }} chỗ</p>
+
+        <p class="text-blue-600"><strong>Đã bán:</strong></p>
+        <p>{{ tour?.soldSeats }} chỗ</p>
+
+        <p class="text-green-600"><strong>Còn lại:</strong></p>
+        <p>{{ tour?.remainingSeats }} chỗ</p>
+
+        <p class="text-red-500"><strong>Đang xử lý:</strong></p>
+        <p>{{ tour?.pendingSeats }} chỗ</p>
+      </div>
+    </div>
+
+    <!-- Điều hành tour -->
+    <div class="grid bg-white p-4 shadow-md gap-y-4">
+      <h3 class="font-bold flex justify-between">
+        Điều hành tour
+        <button data-modal-target="assignTourGuideModal" data-modal-toggle="assignTourGuideModal">
+          <svg class="w-6 h-6 text-green-700 hover:text-green-800 cursor-pointer" aria-hidden="true"
+            xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none" viewBox="0 0 24 24">
+            <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+              d="m14.304 4.844 2.852 2.852M7 7H4a1 1 0 0 0-1 1v10a1 1 0 0 0 1 1h11a1 1 0 0 0 1-1v-4.5m2.409-9.91a2.017 2.017 0 0 1 0 2.853l-6.844 6.844L8 14l.713-3.565 6.844-6.844a2.015 2.015 0 0 1 2.852 0Z" />
+          </svg>
+        </button>
+      </h3>
+
+      <p><strong>Người điều hành:</strong></p>
+      <p
+        [ngClass]="{'text-green-700': tour?.operatorName && tour?.operatorName !== 'null', 'text-red-600': !tour?.operatorName || tour?.operatorName === 'null'}">
+        {{ (tour?.operatorName && tour?.operatorName !== 'null') ? tour?.operatorName : 'Chưa có người điều hành' }}
+      </p>
+
+      <p><strong>Thời gian khởi hành:</strong></p>
+      <p [ngClass]="{'text-green-700': tour?.departureTime, 'text-red-600': !tour?.departureTime}">
+        {{ tour?.departureTime ? tour?.departureTime : 'Chưa cập nhật' }}
+      </p>
+
+      <p><strong>Hướng dẫn viên:</strong></p>
+      <p
+        [ngClass]="{'text-green-700': tour?.tourGuideName && tour?.tourGuideName !== 'null', 'text-red-600': !tour?.tourGuideName || tour?.tourGuideName === 'null'}">
+        {{ (tour?.tourGuideName && tour?.tourGuideName !== 'null') ? tour?.tourGuideName : 'Chưa có HDV' }}
+      </p>
+
+      <p><strong>Địa điểm gặp mặt:</strong></p>
+      <p
+        [ngClass]="{'text-green-700': tour?.meetingLocation && tour?.meetingLocation !== 'null', 'text-red-600': !tour?.meetingLocation || tour?.meetingLocation === 'null'}">
+        {{ (tour?.meetingLocation && tour?.meetingLocation !== 'null') ? tour?.meetingLocation : 'Chưa cập nhật' }}
+      </p>
+    </div>
+  </div>
+</div>
+
+<!-- tour-operation.component.html -->
+<app-assign-tour-guide (tourGuideAssigned)="onTourGuideAssigned()" [scheduleId]="id" [tour]="tour">
+</app-assign-tour-guide>
+
+<app-spinner [isLoading]="isLoading"></app-spinner>

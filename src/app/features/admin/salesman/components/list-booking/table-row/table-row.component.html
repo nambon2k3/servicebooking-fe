@@ -1,0 +1,65 @@
+<ng-container>
+  <td>
+
+    {{ index + 1 }}
+  </td>
+  <td class="max-w-[300px]">
+    {{ tourBookingDetail?.tourBooking?.tour?.name }}
+  </td>
+
+  <td>
+    {{ tourBookingDetail?.tourBooking?.tourSchedule?.startDate | date: 'dd/MM/yyyy' }}
+  </td>
+
+  <td>
+    {{ tourBookingDetail?.tourBooking?.bookingCode }}
+  </td>
+
+
+  <td>
+    {{ tourBookingDetail?.tourBooking?.seats }}
+  </td>
+
+  <td class="space-x-1">
+    {{ tourBookingDetail?.bookedCustomer?.fullName }}
+  </td>
+  <td class="min-w-[150px]">
+
+    @if(tourBookingDetail?.tourBooking?.status === 'PENDING') {
+      <span
+          class="inline-flex items-center bg-yellow-100 text-yellow-800 text-xs font-medium px-2.5 py-0.5 rounded-full dark:bg-green-900 dark:text-green-300">
+          <span class="w-2 h-2 me-1 bg-yellow-500 rounded-full"></span>
+          Đang xử lí
+      </span>
+      } @else if (tourBookingDetail?.tourBooking?.status === 'SUCCESS') {
+      <span
+          class="inline-flex items-center bg-green-100 text-green-800 text-xs font-medium px-2.5 py-0.5 rounded-full dark:bg-green-900 dark:text-green-300">
+          <span class="w-2 h-2 me-1 bg-green-500 rounded-full"></span>
+          Thành công
+      </span>
+      }
+
+
+  </td>
+  <td>
+    <button type="button" (click)="takeBooking(tourBookingDetail?.tourBooking?.id)">
+      <svg class="w-6 h-6 text-gray-800 dark:text-white" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none" viewBox="0 0 24 24">
+        <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 3v4a1 1 0 0 1-1 1H5m4 6 2 2 4-4m4-8v16a1 1 0 0 1-1 1H6a1 1 0 0 1-1-1V7.914a1 1 0 0 1 .293-.707l3.914-3.914A1 1 0 0 1 9.914 3H18a1 1 0 0 1 1 1Z"/>
+      </svg>
+      
+      </button>
+  </td>
+</ng-container>
+
+
+@if(showError) {
+  <!-- Warning Notification (Only One at a Time) -->
+  <div class="fixed top-[5rem] left-1/2 transform -translate-x-1/2 z-50 w-80">
+      <div class="flex items-center bg-white shadow-md border border-gray-200 rounded-md p-3 animate-slide-in">
+          <span class="text-red-500 text-xl mr-2">X</span>
+          <p class="text-red-800 text-sm">
+              Nhận booking thất bại. Vui lòng thử lại sau.
+          </p>
+      </div>
+  </div>
+  }

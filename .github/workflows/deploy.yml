@@ -1,0 +1,91 @@
+name: DEPLOYMENT WORKFLOW V1
+run-name: Deploy to production by @${{ github.actor }}
+
+on:
+  workflow_dispatch:
+    inputs:
+      branch:
+        description: "Choose branch to deploy"
+        required: true
+        default: "dev"
+
+permissions:
+  contents: read
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  cleanup:
+    runs-on: self-hosted
+    steps:
+      - name: Clean up temporary files
+        run: |
+          echo "Started cleaning up temporary files..."
+          rm -rf /home/g79/runner-fe/_work/viet-travel-fe/viet-travel-fe/dist/*
+
+  build-n-deploy:
+    runs-on: self-hosted
+    needs: cleanup
+    env:
+      BUILD_FOLDER: /home/g79/runner-fe/_work/viet-travel-fe/viet-travel-fe/dist/viet-travel-fe
+      DEPLOY_PATH: /var/www/viet-travel-fe
+      DEPLOY_FILE_NAME: ViettravelFE
+    steps:
+      - name: Checkout branch
+        uses: actions/checkout@v4
+        with:
+          ref: ${{ github.event.inputs.branch }}
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v3
+        with:
+          node-version: '20'
+
+      # Cache npm dependencies
+      - name: Cache npm modules
+        uses: actions/cache@v3
+        with:
+          path: ~/.npm
+          key: ${{ runner.os }}-node-${{ hashFiles('**/package-lock.json', '**/package.json') }}
+          restore-keys: |
+            ${{ runner.os }}-node-
+          
+      - name: Install dependencies
+        run: |
+          export NODE_OPTIONS=--max-old-space-size=4096
+          npm install
+
+      - name: Build the project
+        run: |
+          set -e  # Exit on error
+          export NODE_OPTIONS=--max-old-space-size=4096
+          npm run build:prod --verbose
+
+      - name: Verify build folder
+        run: |
+          echo "Listing files in build directory:"
+          ls -la $BUILD_FOLDER
+
+      - name: Deploy to server
+        run: |
+          echo "Deploying files..."
+          sudo mkdir -p $DEPLOY_PATH
+          sudo cp -r $BUILD_FOLDER/* $DEPLOY_PATH
+          echo "Deployment completed."
+
+      - name: Verify deployment
+        run: |
+          echo "Listing files in $DEPLOY_PATH:"
+          ls -la $DEPLOY_PATH
+
+      - name: Upload Artifact to server
+        uses: actions/upload-artifact@v4
+        with:
+          name: ViettravelFE
+          path: stub/${{ env.DEPLOY_FILE_NAME }}
+          if-no-files-found: warn
+          compression-level: 6
+          overwrite: false
+          include-hidden-files: false

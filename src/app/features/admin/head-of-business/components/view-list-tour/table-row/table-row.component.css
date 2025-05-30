@@ -1,0 +1,9 @@
+
+td {
+  padding: 0.75rem 1rem;
+  font-size: 0.85rem;
+}
+
+.z-50 {
+  z-index: 1000;
+}

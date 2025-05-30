@@ -1,0 +1,48 @@
+<div *ngIf="showPopup" class="popup-message" [ngClass]="{'success': isSuccess, 'error': !isSuccess}">
+    {{ popupMessage }}
+  </div>
+  
+  <div id="createOpenTourDayModal" tabindex="-1" aria-hidden="true"
+      class="hidden fixed inset-0 bg-gray-600 bg-opacity-50 flex items-center justify-center z-50">
+      <div class="bg-white p-6 rounded shadow-lg w-96">
+          <h3 class="text-lg font-semibold mb-4">Thêm ngày mở bán</h3>
+          <form #createForm="ngForm">
+              <div class="mb-4">
+                  <label class="block mb-1">Tên Tour:</label>
+                  <input type="text" name="tourName" ngModel [(ngModel)]="tourName"
+                      class="w-full bg-gray-100 p-2 border rounded" readonly>
+              </div>
+              <div class="mb-4">
+                  <label class="block mb-1">Ngày đi tour:</label>
+                  <input type="date" name="openDate" ngModel [(ngModel)]="selectedDate" (ngModelChange)="onSelectedDateChange($event)"
+                      class="w-full p-2 border rounded">
+              </div>
+              <div class="mb-4">
+                  <label class="block mb-1">Chọn điều hành:</label>
+                  <ng-select class="custom bg-white border border-gray-300 rounded-md" name="operatorId"
+                      [(ngModel)]="operatorId" [items]="dropdownList" bindLabel="fullName" bindValue="id" 
+                      placeholder="Chọn điều hành" [searchable]="true">
+                  </ng-select>
+              </div>
+              <div class="mb-4">
+                  <label class="block mb-1">Chọn khoảng khách:</label>
+                  <ng-select class="custom bg-white border border-gray-300 rounded-md" name="paxId"
+                      [(ngModel)]="paxId" [items]="dropdownPaxList" bindLabel="paxRange" bindValue="id" 
+                      placeholder="Chọn khoảng khách" [searchable]="true">
+                  </ng-select>
+              </div>
+              <div class="mb-4">
+                  <label class="block">
+                      <input type="checkbox" name="addByMonth" [(ngModel)]="addByMonth" (change)="onCheckboxChange()" class="mr-2">
+                      Thêm ngày theo tháng
+                  </label>
+              </div>            
+              <div class="flex justify-end space-x-4">
+                  <button type="button" data-modal-hide="createOpenTourDayModal" (click)="close()"
+                      class="px-4 py-2 bg-gray-500 hover:bg-gray-600 text-white rounded">Huỷ</button>
+                  <button type="submit" data-modal-hide="createOpenTourDayModal" (click)="createTourSaleDay()"
+                      class="px-4 py-2 bg-green-700 hover:bg-green-800 text-white rounded">Xác nhận</button>
+              </div>
+          </form>
+      </div>
+  </div>

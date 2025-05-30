@@ -1,0 +1,8 @@
+/* Message styling */
+.message {
+    position: relative;
+    width: 100%;
+    text-align: center;
+    font-weight: 500;
+    transition: opacity 0.3s ease;
+  }

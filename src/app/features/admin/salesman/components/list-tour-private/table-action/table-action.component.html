@@ -1,0 +1,37 @@
+<form (ngSubmit)="onSubmit()" class="flex flex-wrap items-center justify-between gap-2 py-3 px-5">
+  <h3 class="text-muted-foreground text-sm font-medium">
+    Đang hiển thị {{totalItems}} tours
+  </h3>
+  <div class="flex flex-wrap gap-2">
+    <div class="flex">
+      <label class="text-muted-foreground relative">
+        <div class="absolute left-2.5 top-2.5">
+          <svg-icon src="./assets/icons/heroicons/outline/magnifying-glass.svg" [svgClass]="'h-4 w-4'"></svg-icon>
+        </div>
+        <input
+          name="keyword"
+          class="py-2 pl-8 pr-2"
+          placeholder="Tìm kiếm tour"
+          type="text"
+          [(ngModel)]="keyword" />
+      </label>
+    </div>
+    <div class="flex flex-wrap gap-2.5">
+      <select name="status" class="text-muted-foreground w-28! p-2" [(ngModel)]="status">
+        <option value="">Tất cả</option>
+        <option value="DRAFT">Bản Nháp</option>
+        <option value="PENDING_PRICING">Chờ chiết tính</option>
+        <option value="OPENED">Mở bán</option>
+      </select>
+      <select name="order" class="text-muted-foreground w-28! p-2" [(ngModel)]="order">
+        <option value="1">Mới nhất</option>
+        <option value="2">Cũ nhất</option>
+      </select>
+      <button
+        type="submit"
+        class="text-white bg-gray-800 hover:bg-gray-900 focus:outline-none focus:ring-4 focus:ring-gray-300 font-medium rounded-full text-sm px-5 py-2.5 me-2 mb-2 dark:bg-gray-800 dark:hover:bg-gray-700 dark:focus:ring-gray-700 dark:border-gray-700">
+        Lọc
+      </button>
+    </div>
+  </div>
+</form>

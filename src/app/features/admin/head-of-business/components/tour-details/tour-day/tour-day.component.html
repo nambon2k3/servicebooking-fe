@@ -1,0 +1,53 @@
+<div class="flex justify-end items-center">
+  <button data-modal-target="createTourDayModal" data-modal-toggle="createTourDayModal"
+    class="px-4 py-2 my-4 bg-green-700 hover:bg-green-800 text-white rounded">
+    Tạo Ngày Tour
+  </button>
+</div>
+<div class="rounded-md bg-white p-6 shadow">
+  <app-spinner [isLoading]="isLoading"></app-spinner>
+  <div class="flex justify-end items-center mb-4">
+    <table class="w-full border-opacity-0">
+      <thead>
+        <tr class="bg-gray-100">
+          <th class="p-2">Ngày</th>
+          <th class="p-2 text-left">Tiêu Đề Tour Ngày</th>
+          <th class="p-2 text-left">Danh Sách Dịch Vụ</th>
+          <th class="p-2">Hành Động</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr class="border" *ngFor="let day of tourDays; let i = index">
+          <td class="p-2 text-center">{{ i + 1 }}</td>
+          <td class="p-2">{{ day.title | truncate : 30}}</td>
+          <td class="p-2">
+            <span *ngFor="let service of getTranslatedServices(day.id)" class="text-gray-700 mr-3">
+              {{ service }}
+            </span>
+          </td>
+          <td class="p-2 text-center">
+            <button (click)="onEdit(day)"
+              class="px-4 py-2 mr-2 bg-green-700 hover:bg-green-800 text-white rounded">
+              Cập Nhật
+            </button>
+            @if(!day.deleted) {
+              <button (click)="onDelete(day.id)" class="px-4 py-2 bg-red-600 hover:bg-red-700 text-white rounded">
+                Xóa
+              </button>
+            } 
+            @else {
+              <button (click)="onRecover(day.id)" class="px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white rounded">
+                Khôi Phục
+              </button>
+            }
+          </td>
+        </tr>
+        <tr *ngIf="tourDays.length === 0">
+          <td colspan="4" class="p-2 text-center">Không có ngày tour nào</td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+</div>
+<app-create-tour-day (tourChange)="onCreate()" [tourId]="tourId"></app-create-tour-day>
+<app-update-tour-day #editTourDayModal [tourId]="tourId" (tourChange)="onCreate()"></app-update-tour-day>

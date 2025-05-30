@@ -1,0 +1,30 @@
+<div class="flex flex-wrap items-center justify-between gap-2 py-3 px-5">
+  <h3 class="text-muted-foreground text-sm font-medium">Hiển thị {{ totalItems }} trong {{ totalItems }} kết quả</h3>
+  <div class="flex flex-wrap gap-2">
+    <div class="flex">
+      <label class="text-muted-foreground relative">
+        <div class="absolute left-2.5 top-2.5">
+          <svg-icon src="./assets/icons/heroicons/outline/magnifying-glass.svg" [svgClass]="'h-4 w-4'"> </svg-icon>
+        </div>
+        <input
+          name="search"
+          class="py-2 pl-8 pr-2"
+          placeholder="Tìm kiếm"
+          type="text"
+          [(ngModel)]="keyword"
+          (input)="onSubmit()" />
+      </label>
+    </div>
+    <div class="flex flex-wrap gap-2.5">
+      <select name="status" class="text-muted-foreground w-28! p-2" [(ngModel)]="status" (change)="onSubmit()">
+        <option value="">Tất cả</option>
+        <option value="1">Đang hoạt động</option>
+        <option value="2">Đã vô hiệu hóa</option>
+      </select>
+      <select name="order" class="text-muted-foreground w-28! p-2" [(ngModel)]="order" (change)="onSubmit()">
+        <option value="1">Mới nhất</option>
+        <option value="2">Cũ nhất</option>
+      </select>
+    </div>
+  </div>
+</div>

@@ -1,0 +1,462 @@
+<!-- Tour Header -->
+<app-spinner [isLoading]="isLoading"></app-spinner>
+<div *ngIf="showPopup" class="popup-message" [ngClass]="{'success': isSuccess, 'error': !isSuccess}">
+  {{ popupMessage }}
+</div>
+
+<div class="flex items-center bg-yellow-50">
+  <svg class="w-10 h-10 text-white bg-green-700 hover:bg-green-800 cursor-pointer dark:text-white" aria-hidden="true"
+    xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none" viewBox="0 0 24 24" (click)="backToList()">
+    <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="m15 19-7-7 7-7" />
+  </svg>
+  <div class="ml-4">
+    <h1 class="text-xl font-bold">VT_{{ tourId }} - {{ tourName }}</h1>
+  </div>
+</div>
+<div class="p-6 bg-white rounded-md">
+  <div class="mt-2 flex justify-between items-center">
+    <div class="text-gray-600 flex">
+      Số khách hàng:
+      <div class="ml-2" *ngFor="let pax of priceRanges;">
+        <span class="font-semibold text-black">{{ pax }}</span> khách
+      </div>
+    </div>
+    <div>
+      <button data-modal-target="tourConfigPaxModal" data-modal-toggle="tourConfigPaxModal"
+        class="bg-green-700 hover:bg-green-800 text-white px-4 py-2 rounded">Cấu hình khách hàng
+      </button>
+    </div>
+  </div>
+
+  <!-- Hotel -->
+  <div class="mb-6 mt-6">
+    <div class="flex justify-between items-center mb-4">
+      <div class="flex items-center">
+        <div class="px-4 py-2 bg-black text-white rounded-md font-semibold">1</div>
+        <h2 class="text-lg font-semibold ml-4">Khách sạn</h2>
+      </div>
+      <button data-modal-target="addHotelModal" data-modal-toggle="addHotelModal" (click)="openAddHotelModal()"
+        class="bg-green-700 hover:bg-green-800 text-white px-4 py-2 rounded">Thêm mới</button>
+    </div>
+    <table class="w-full border border-gray-300 rounded-lg">
+      <thead>
+        <tr class="bg-gray-100 border-b border-gray-300">
+          <th class="p-2 text-center">Ngày</th>
+          <th class="p-2 text-left">Tên dịch vụ</th>
+          <th class="p-2 text-left">Nhà cung cấp</th>
+          <th class="p-2 text-left">Địa chỉ</th>
+          <th class="p-2 text-center">Giá Net (đôi)</th>
+          <th class="p-2 text-center">Giá phòng (đôi)</th>
+          <th class="p-2 text-center">Hành động</th>
+        </tr>
+        <tr class="bg-gray-200 border-b border-gray-300">
+          <th colspan="5"></th>
+          <th class="p-2 text-right" [ngClass]="{'w-2/5': hotels.length > 0, 'w-1/3': hotels.length === 0}">
+            <table class="border-collapse inline-table w-full">
+              <tbody>
+                <tr>
+                  <td *ngFor="let range of priceRanges" class="text-center pr-2">{{ range }} khách</td>
+                </tr>
+              </tbody>
+            </table>
+          </th>
+          <th></th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr *ngIf="hotels.length === 0">
+          <td colspan="7" class="p-4 text-center text-gray-500">Không có dịch vụ</td>
+        </tr>
+        <tr class="border-b border-gray-300" *ngFor="let hotel of hotels; let i = index"
+          [class.bg-gray-50]="i % 2 === 0">
+          <td class="p-2 text-center">{{ hotel.dayNumber }}</td>
+          <td class="p-2">{{ hotel.name }}</td>
+          <td class="p-2">{{ hotel.serviceProviderName }}</td>
+          <td class="p-2">{{ hotel.locationName }}</td>
+          <td class="p-2 text-center">{{ hotel.nettPrice | currencyVnd }}</td>
+          <td class="p-2 text-center w-1/3">
+            <table class="border-collapse inline-table w-full text-center">
+              <tbody>
+                <tr>
+                  <td *ngFor="let range of priceRanges" class="text-center pr-2">
+                    {{ (hotel.paxPrices[range].sellingPrice || 0) | currencyVnd }}
+                  </td>
+                </tr>
+              </tbody>
+            </table>
+          </td>
+          <td class="p-2 text-center">
+            <button class="text-green-700 hover:text-green-800 mr-2"
+              (click)="openAddHotelModal(hotel.id, hotel.dayNumber)">
+              <svg class="w-6 h-6" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="24" height="24"
+                fill="none" viewBox="0 0 24 24">
+                <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                  d="m14.304 4.844 2.852 2.852M7 7H4a1 1 0 0 0-1 1v10a1 1 0 0 0 1 1h11a1 1 0 0 0 1-1v-4.5m2.409-9.91a2.017 2.017 0 0 1 0 2.853l-6.844 6.844L8 14l.713-3.565 6.844-6.844a2.015 2.015 0 0 1 2.852 0Z" />
+              </svg>
+            </button>
+            <button class="text-red-500 hover:text-red-700"
+              (click)="deleteHotel(i, hotel.id, hotel.dayNumber)">X</button>
+          </td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+
+  <!-- Transportation Section -->
+  <div class="mb-6">
+    <div class="flex justify-between items-center mb-4">
+      <div class="flex items-center">
+        <div class="px-4 py-2 bg-black text-white rounded-md font-semibold">2</div>
+        <h2 class="text-lg font-semibold ml-4">Phương tiện</h2>
+      </div>
+      <button data-modal-target="addTransportationModal" data-modal-toggle="addTransportationModal"
+        class="bg-green-700 hover:bg-green-800 text-white px-4 py-2 rounded" (click)="openAddTransportationModal()">Thêm
+        mới</button>
+    </div>
+    <table class="w-full border border-gray-300 rounded-lg">
+      <thead>
+        <tr class="bg-gray-100 border-b border-gray-300">
+          <th class="p-2 text-center">Ngày</th>
+          <th class="p-2 text-left">Tên dịch vụ</th>
+          <th class="p-2 text-left">Nhà cung cấp</th>
+          <th class="p-2 text-center">Giá Net</th>
+          <th class="p-2 text-center">Giá xe</th>
+          <th class="p-2 text-center">Hành động</th>
+        </tr>
+        <tr class="bg-gray-200 border-b border-gray-300">
+          <th colspan="4"></th>
+          <th class="p-2 text-right" [ngClass]="{'w-2/5': transports.length > 0, 'w-1/3': transports.length === 0}">
+            <table class="border-collapse inline-table w-full">
+              <tbody>
+                <tr>
+                  <td *ngFor="let range of priceRanges" class="text-center pr-2">{{ range }} khách</td>
+                </tr>
+              </tbody>
+            </table>
+          </th>
+          <th></th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr *ngIf="transports.length === 0">
+          <td colspan="6" class="p-4 text-center text-gray-500">Không có dịch vụ</td>
+        </tr>
+        <tr class="border-b border-gray-300" *ngFor="let transport of transports; let i = index"
+          [class.bg-gray-50]="i % 2 === 0">
+          <td class="p-2 text-center">{{ transport.dayNumber }}</td>
+          <td class="p-2">{{ transport.name }}</td>
+          <td class="p-2">{{ transport.serviceProviderName }}</td>
+          <td class="p-2 text-center">{{ transport.nettPrice | currencyVnd }}</td>
+          <td class="p-2 text-center w-1/3">
+            <table class="border-collapse inline-table w-full text-center">
+              <tbody>
+                <tr>
+                  <td *ngFor="let range of priceRanges" class="text-center pr-2">
+                    {{ (transport.paxPrices[range].sellingPrice / getMinPax(range) || 0) | currencyVnd }}
+                  </td>
+                </tr>
+              </tbody>
+            </table>
+          </td>
+          <td class="p-2 text-center">
+            <button class="text-green-700 hover:text-green-800 mr-2"
+              (click)="openAddTransportationModal(transport.id, transport.dayNumber)">
+              <svg class="w-6 h-6" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="24" height="24"
+                fill="none" viewBox="0 0 24 24">
+                <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                  d="m14.304 4.844 2.852 2.852M7 7H4a1 1 0 0 0-1 1v10a1 1 0 0 0 1 1h11a1 1 0 0 0 1-1v-4.5m2.409-9.91a2.017 2.017 0 0 1 0 2.853l-6.844 6.844L8 14l.713-3.565 6.844-6.844a2.015 2.015 0 0 1 2.852 0Z" />
+              </svg>
+            </button>
+            <button class="text-red-500 hover:text-red-700"
+              (click)="deleteTransportation(i, transport.id, transport.dayNumber)">X</button>
+          </td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+
+  <!-- Restaurants Section -->
+  <div class="mb-6">
+    <div class="flex justify-between items-center mb-4">
+      <div class="flex items-center">
+        <div class="px-4 py-2 bg-black text-white rounded-md font-semibold">3</div>
+        <h2 class="text-lg font-semibold ml-4">Nhà hàng</h2>
+      </div>
+      <button data-modal-target="addRestaurantModal" data-modal-toggle="addRestaurantModal"
+        class="bg-green-700 hover:bg-green-800 text-white px-4 py-2 rounded" (click)="openAddRestaurantModal()">Thêm
+        mới</button>
+    </div>
+    <table class="w-full border border-gray-300 rounded-lg">
+      <thead>
+        <tr class="bg-gray-100 border-b border-gray-300">
+          <th class="p-2 text-center">Ngày</th>
+          <th class="p-2 text-left">Tên dịch vụ</th>
+          <th class="p-2 text-left">Nhà cung cấp</th>
+          <th class="p-2 text-left">Địa chỉ</th>
+          <th class="p-2 text-center">Giá Net</th>
+          <th class="p-2 text-center">Giá bữa ăn</th>
+          <th class="p-2 text-center">Hành động</th>
+        </tr>
+        <tr class="bg-gray-200 border-b border-gray-300">
+          <th colspan="5"></th>
+          <th class="p-2 text-right" [ngClass]="{'w-2/5': restaurants.length > 0, 'w-1/3': restaurants.length === 0}">
+            <table class="border-collapse inline-table w-full">
+              <tbody>
+                <tr>
+                  <td *ngFor="let range of priceRanges" class="text-center pr-2">{{ range }} khách</td>
+                </tr>
+              </tbody>
+            </table>
+          </th>
+          <th></th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr *ngIf="restaurants.length === 0">
+          <td colspan="7" class="p-4 text-center text-gray-500">Không có dịch vụ</td>
+        </tr>
+        <tr class="border-b border-gray-300" *ngFor="let restaurant of restaurants; let i = index"
+          [class.bg-gray-50]="i % 2 === 0">
+          <td class="p-2 text-center">{{ restaurant.dayNumber }}</td>
+          <td class="p-2">{{ restaurant.name }}</td>
+          <td class="p-2">{{ restaurant.serviceProviderName }}</td>
+          <td class="p-2">{{ restaurant.locationName }}</td>
+          <td class="p-2 text-center">{{ restaurant.nettPrice | currencyVnd }}</td>
+          <td class="p-2 text-center w-1/3">
+            <table class="border-collapse inline-table w-full text-center">
+              <tbody>
+                <tr>
+                  <td *ngFor="let range of priceRanges" class="text-center pr-2">
+                    {{ (restaurant.paxPrices[range].sellingPrice || 0) | currencyVnd }}
+                  </td>
+                </tr>
+              </tbody>
+            </table>
+          </td>
+          <td class="p-2 text-center">
+            <button class="text-green-700 hover:text-green-800 mr-2"
+              (click)="openAddRestaurantModal(restaurant.id, restaurant.dayNumber)">
+              <svg class="w-6 h-6" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="24" height="24"
+                fill="none" viewBox="0 0 24 24">
+                <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                  d="m14.304 4.844 2.852 2.852M7 7H4a1 1 0 0 0-1 1v10a1 1 0 0 0 1 1h11a1 1 0 0 0 1-1v-4.5m2.409-9.91a2.017 2.017 0 0 1 0 2.853l-6.844 6.844L8 14l.713-3.565 6.844-6.844a2.015 2.015 0 0 1 2.852 0Z" />
+              </svg>
+            </button>
+            <button class="text-red-500 hover:text-red-700"
+              (click)="deleteRestaurant(i, restaurant.id, restaurant.dayNumber)">X</button>
+          </td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+
+  <!-- Activities Section -->
+  <div class="mb-6">
+    <div class="flex justify-between items-center mb-4">
+      <div class="flex items-center">
+        <div class="px-4 py-2 bg-black text-white rounded-md font-semibold">4</div>
+        <h2 class="text-lg font-semibold ml-4">Hoạt động</h2>
+      </div>
+      <button data-modal-target="addActivityModal" data-modal-toggle="addActivityModal"
+        class="bg-green-700 hover:bg-green-800 text-white px-4 py-2 rounded" (click)="openAddActivityModal()">Thêm
+        mới</button>
+    </div>
+    <table class="w-full border border-gray-300 rounded-lg">
+      <thead>
+        <tr class="bg-gray-100 border-b border-gray-300">
+          <th class="p-2 text-center">Ngày</th>
+          <th class="p-2 text-left">Tên dịch vụ</th>
+          <th class="p-2 text-left min-w-[130px]">Nhà cung cấp</th>
+          <th class="p-2 text-center min-w-[100px]">Giá Net</th>
+          <th class="p-2 text-center min-w-[250px]">Giá vé</th>
+          <th class="p-2 text-center min-w-[100px]">Hành Động</th>
+        </tr>
+        <tr class="bg-gray-200 border-b border-gray-300">
+          <th colspan="4"></th>
+          <th class="p-2 text-right" [ngClass]="{'w-2/5': activities.length > 0, 'w-1/3': activities.length === 0}">
+            <table class="border-collapse inline-table w-full">
+              <tbody>
+                <tr>
+                  <td *ngFor="let range of priceRanges" class="text-center pr-2">{{ range }} khách</td>
+                </tr>
+              </tbody>
+            </table>
+          </th>
+          <th></th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr *ngIf="activities.length === 0">
+          <td colspan="6" class="p-4 text-center text-gray-500">Không có dịch vụ</td>
+        </tr>
+        <tr class="border-b border-gray-300" *ngFor="let activity of activities; let i = index"
+          [class.bg-gray-50]="i % 2 === 0">
+          <td class="p-2 text-center whitespace-nowrap">{{ activity.dayNumber }}</td>
+          <td class="p-2 whitespace-nowrap">{{ activity.name }}</td>
+          <td class="p-2 whitespace-nowrap">{{ activity.serviceProviderName }}</td>
+          <td class="p-2 text-center whitespace-nowrap">{{ activity.nettPrice | currencyVnd }}</td>
+          <td class="p-2 text-center w-1/3">
+            <table class="border-collapse inline-table w-full text-center">
+              <tbody>
+                <tr>
+                  <td *ngFor="let range of priceRanges" class="text-center pr-2">
+                    {{ (activity.paxPrices[range].sellingPrice || 0) | currencyVnd }}
+                  </td>
+                </tr>
+              </tbody>
+            </table>
+          </td>
+          <td class="p-2 text-center">
+            <button class="text-green-700 hover:text-green-800 mr-2"
+              (click)="openAddActivityModal(activity.id, activity.dayNumber)">
+              <svg class="w-6 h-6" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="24" height="24"
+                fill="none" viewBox="0 0 24 24">
+                <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                  d="m14.304 4.844 2.852 2.852M7 7H4a1 1 0 0 0-1 1v10a1 1 0 0 0 1 1h11a1 1 0 0 0 1-1v-4.5m2.409-9.91a2.017 2.017 0 0 1 0 2.853l-6.844 6.844L8 14l.713-3.565 6.844-6.844a2.015 2.015 0 0 1 2.852 0Z" />
+              </svg>
+            </button>
+            <button class="text-red-500 hover:text-red-700"
+              (click)="deleteActivity(i, activity.id, activity.dayNumber)">X</button>
+          </td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+
+  <!-- Flight Section -->
+  <div class="mb-6">
+    <div class="flex justify-between items-center mb-4">
+      <div class="flex items-center">
+        <div class="px-4 py-2 bg-black text-white rounded-md font-semibold">5</div>
+        <h2 class="text-lg font-semibold ml-4">Vé máy bay</h2>
+      </div>
+      <button data-modal-target="addFlightModal" data-modal-toggle="addFlightModal"
+        class="bg-green-700 hover:bg-green-800 text-white px-4 py-2 rounded" (click)="openAddFlightModal()">Thêm
+        mới</button>
+    </div>
+    <table class="w-full border border-gray-300 rounded-lg">
+      <thead>
+        <tr class="bg-gray-100 border-b border-gray-300">
+          <th class="p-2 text-center">Ngày</th>
+          <th class="p-2 text-left">Tên dịch vụ</th>
+          <th class="p-2 text-left min-w-[130px]">Nhà cung cấp</th>
+          <th class="p-2 text-center min-w-[100px]">Giá Net</th>
+          <th class="p-2 text-center min-w-[250px]">Giá vé</th>
+          <th class="p-2 text-center min-w-[100px]">Hành Động</th>
+        </tr>
+        <tr class="bg-gray-200 border-b border-gray-300">
+          <th colspan="4"></th>
+          <th class="p-2 text-right" [ngClass]="{'w-2/5': flights.length > 0, 'w-1/3': flights.length === 0}">
+            <table class="border-collapse inline-table w-full">
+              <tbody>
+                <tr>
+                  <td *ngFor="let range of priceRanges" class="text-center pr-2">{{ range }} khách</td>
+                </tr>
+              </tbody>
+            </table>
+          </th>
+          <th></th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr *ngIf="activities.length === 0">
+          <td colspan="6" class="p-4 text-center text-gray-500">Không có dịch vụ</td>
+        </tr>
+        <tr class="border-b border-gray-300" *ngFor="let flight of flights; let i = index"
+          [class.bg-gray-50]="i % 2 === 0">
+          <td class="p-2 text-center whitespace-nowrap">{{ flight.dayNumber }}</td>
+          <td class="p-2 whitespace-nowrap">{{ flight.name }}</td>
+          <td class="p-2 whitespace-nowrap">{{ flight.serviceProviderName }}</td>
+          <td class="p-2 text-center whitespace-nowrap">{{ flight.nettPrice | currencyVnd }}</td>
+          <td class="p-2 text-center w-1/3">
+            <table class="border-collapse inline-table w-full text-center">
+              <tbody>
+                <tr>
+                  <td *ngFor="let range of priceRanges" class="text-center pr-2">
+                    {{ (flight.paxPrices[range].sellingPrice || 0) | currencyVnd }}
+                  </td>
+                </tr>
+              </tbody>
+            </table>
+          </td>
+          <td class="p-2 text-center">
+            <button class="text-green-700 hover:text-green-800 mr-2"
+              (click)="openAddFlightModal(flight.id, flight.dayNumber)">
+              <svg class="w-6 h-6" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="24" height="24"
+                fill="none" viewBox="0 0 24 24">
+                <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                  d="m14.304 4.844 2.852 2.852M7 7H4a1 1 0 0 0-1 1v10a1 1 0 0 0 1 1h11a1 1 0 0 0 1-1v-4.5m2.409-9.91a2.017 2.017 0 0 1 0 2.853l-6.844 6.844L8 14l.713-3.565 6.844-6.844a2.015 2.015 0 0 1 2.852 0Z" />
+              </svg>
+            </button>
+            <button class="text-red-500 hover:text-red-700"
+              (click)="deleteFlight(i, flight.id, flight.dayNumber)">X</button>
+          </td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+
+  <!-- Table Layout with Stripes -->
+  <div class="mb-6">
+    <div class="flex justify-between items-center mb-4">
+      <h2 class="text-lg font-semibold">Tổng cộng</h2>
+      <div class="">
+        <button data-modal-target="configMarkupModal"></button>
+        <!-- <button *ngIf="tourType === 'SIC'" class="bg-green-700 mr-4 text-white px-4 py-2 rounded hover:bg-green-800"
+          (click)="openConfigMarkup()">Cấu hình lợi nhuận</button> -->
+        <button class="bg-green-700 text-white px-4 py-2 rounded hover:bg-green-800" data-modal-target="addPriceModal"
+          data-modal-toggle="addPriceModal">Cấu hình giá</button>
+      </div>
+    </div>
+    <div class="flex justify-end">
+      <table class="w-3/4 border border-gray-300 rounded-lg bg-gray-50">
+        <thead>
+          <tr class="bg-gray-100 border-b border-gray-300">
+            <th class="w-1/4 py-2 font-semibold text-left pl-4"></th>
+            <th *ngFor="let range of priceRanges" class="py-2 font-semibold text-center">{{ range }} khách</th>
+          </tr>
+        </thead>
+        <tbody>
+          <!-- Giá Net 1 khách -->
+          <tr class="border-b border-gray-300 odd:bg-white even:bg-gray-50">
+            <td class="w-1/4 py-2 font-semibold text-left pl-4">Giá Net (1 khách)</td>
+            <td *ngFor="let range of priceRanges" class="py-2 text-center">
+              {{ (mintotalNetPrices[range]) | currencyVnd }}
+            </td>
+          </tr>
+          <!-- Giá bán cuối -->
+          <tr class="odd:bg-white even:bg-gray-50">
+            <td class="w-1/4 py-2 font-semibold text-left pl-4">Giá bán (1 khách)</td>
+            <td *ngFor="let range of priceRanges" class="py-2 text-center">
+              {{ minsalePrices[range] | currencyVnd }}
+            </td>
+          </tr>
+          <tr class="odd:bg-white even:bg-gray-50">
+            <td class="w-1/4 py-2 font-semibold text-left pl-4">Giá bán cuối (1 khách)</td>
+            <td *ngFor="let range of priceRanges" class="py-2 text-center">
+              {{ finalTourPrices[range] | currencyVnd }}
+            </td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+</div>
+
+<!-- Include the new popup components -->
+<app-config-tour-pax (close)="closeTourPax()" [tourId]="tourId" #tourConfigPaxModal></app-config-tour-pax>
+<app-config-price #addPriceModal [tourId]="tourId" [prices]="prices" [totalSellingPrice]="minsalePrices"
+  [extraHotelCost]="extraHotelCost" [nettPricePerPax]="mintotalNetPrices" (error)="handleError($event)"
+  (confirm)="handlePriceConfirm($event)"></app-config-price>
+<!-- <app-config-markup #configMarkupModal [tourId]="tourId" (confirm)="handleMarkupConfirm($event)"></app-config-markup> -->
+<app-add-hotel #addHotelModal [tourId]="tourId" [days]="tourDays" [prices]="prices" [locations]="locations"
+  (error)="handleError($event)" (hotelAdded)="addNewHotel($event)"></app-add-hotel>
+<app-add-transportation #addTransportationModal [tourId]="tourId" [days]="tourDays" [prices]="prices"
+  [locations]="locations" (error)="handleTransportationError($event)"
+  (transportationAdded)="addNewTransportation($event)"></app-add-transportation>
+<app-add-restaurant #addRestaurantModal [tourId]="tourId" [days]="tourDays" [prices]="prices" [locations]="locations"
+  (error)="handleRestaurantError($event)" (restaurantAdded)="addNewRestaurant($event)"></app-add-restaurant>
+<app-add-activity #addActivityModal [tourId]="tourId" [days]="tourDays" [prices]="prices" [locations]="locations"
+  (error)="handleActivityError($event)" (activityAdded)="addNewActivity($event)"></app-add-activity>
+<app-add-flight #addFlightModal [tourId]="tourId" [days]="tourDays" [prices]="prices" [locations]="locations"
+  (error)="handleFlightError($event)" (flightAdded)="addNewFlight($event)"></app-add-flight>

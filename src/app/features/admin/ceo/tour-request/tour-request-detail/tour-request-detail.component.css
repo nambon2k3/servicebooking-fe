@@ -1,0 +1,28 @@
+/* Đảm bảo pop-up hiển thị trên cùng */
+.fixed {
+    z-index: 50;
+  }
+  
+  /* Căn giữa nội dung pop-up */
+  .max-w-lg {
+    max-width: 32rem;
+  }
+  
+  /* Tùy chỉnh bảng trong pop-up */
+  table {
+    width: 100%;
+    border-collapse: collapse;
+  }
+  
+  th, td {
+    padding: 0.75rem;
+    text-align: left;
+  }
+  
+  thead {
+    background-color: #f9fafb;
+  }
+  
+  tbody tr:hover {
+    background-color: #f3f4f6;
+  }

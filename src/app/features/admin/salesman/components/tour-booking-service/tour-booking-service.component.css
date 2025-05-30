@@ -1,0 +1,10 @@
+body {
+    min-height: 100vh !important;
+}
+
+input:read-only {
+    background-color: #f2f1f1 !important; /* Light gray background */
+    color: #bcbaba !important; /* Dimmed text color */
+    border: 1px solid #ccc !important;  /* Optional: lighter border */
+    cursor: not-allowed !important; /* Optional: shows it's not clickable */
+  }

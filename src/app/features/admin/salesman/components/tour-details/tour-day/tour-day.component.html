@@ -1,0 +1,34 @@
+<div class="flex justify-end items-center">
+  <button data-modal-target="createTourDayModal" data-modal-toggle="createTourDayModal"
+    class="px-4 py-2 my-4 bg-green-700 hover:bg-green-800 text-white rounded">
+    Tạo Ngày Tour
+  </button>
+</div>
+<div class="rounded-md bg-white p-6 shadow">
+  <app-spinner [isLoading]="isLoading"></app-spinner>
+  <div class="flex justify-end items-center mb-4">
+    <table class="w-full border-opacity-0">
+      <thead>
+        <tr class="bg-gray-100">
+          <th class="p-2">Ngày</th>
+          <th class="p-2 text-left">Tiêu Đề Tour Ngày</th>
+          <th class="p-2 text-left">Danh Sách Dịch Vụ</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr class="border" *ngFor="let day of tourDays; let i = index">
+          <td class="p-2 text-center">{{ i + 1 }}</td>
+          <td class="p-2">{{ day.title }}</td>
+          <td class="p-2">
+            <span *ngFor="let service of getTranslatedServices(day.id)" class="text-gray-700 mr-3">
+              {{ service }}
+            </span>
+          </td>
+        </tr>
+        <tr *ngIf="tourDays.length === 0">
+          <td colspan="4" class="p-2 text-center">Không có ngày tour nào</td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+</div>

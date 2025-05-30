@@ -1,0 +1,58 @@
+<ng-container>
+  <td>{{ location.id }}</td>
+
+  <td>
+    <div class="flex items-center gap-2.5">
+      <img
+        alt="blog thumnail"
+        class="h-16 w-32 shrink-0 rounded-lg object-cover bg-gray-200"
+        [src]="location.image" />
+    </div>
+  </td>
+
+  <td>
+    {{ location.name }}
+  </td>
+
+  <td>
+    {{ location.description | truncate:20}}
+  </td>
+
+  <td>
+    {{ location.geoPosition.latitude }}
+  </td>
+
+  <td>
+    {{ location.geoPosition.longitude }}
+  </td>
+  
+  <td>
+    @if (location.deleted) {
+      <button 
+        type="button" 
+        class="rounded-[30px] bg-yellow-500/10 px-2 py-0.5 text-xs font-medium text-yellow-800 inline-block mt-1"
+        (click)="recoverLocation()">
+        Vô hiệu hoá
+      </button>
+    } @else {
+      <button 
+        type="button" 
+        class="rounded-[30px] bg-green-500/10 px-2 py-0.5 text-xs font-medium text-green-800 inline-block mt-1"
+        (click)="deleteLocation()">
+        Kích hoạt
+      </button>
+    }
+  </td>
+  
+  <td>
+    <div  class="text-center flex justify-start items-center">
+    <button 
+      type="button" 
+      class="text-white w-24 bg-blue-700 hover:bg-blue-800 focus:outline-none focus:ring-4 focus:ring-blue-300 font-medium rounded-full text-sm px-5 py-2.5 text-center me-2 mb-2 dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800"
+      (click)="openDetail(location)">
+      Chi tiết
+    </button>
+    </div>
+    
+  </td>
+</ng-container>

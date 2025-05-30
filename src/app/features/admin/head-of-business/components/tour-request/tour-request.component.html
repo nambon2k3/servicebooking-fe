@@ -1,0 +1,50 @@
+<div class="mb-2 flex justify-between">
+
+
+  <div class="inline-block">
+    <h3 class="text-foreground font-semibold">Bán hàng</h3>
+    <div class="text-muted-foreground space-x-1 text-xs font-medium">
+      <a href="" class="hover:text-primary">Tất cả đặt chỗ:</a>
+      <span class="text-foreground">{{ totalItems }}</span>
+    </div>
+  </div>
+  <app-spinner [isLoading]="isLoading"></app-spinner>
+</div>
+
+<div class="border-muted/20 bg-background flex min-w-full flex-col rounded-xl border p-2  bg-white">
+  <app-table-action [totalItems]="totalItems" [size]="size" (searchFilters)="onSearch($event)">"></app-table-action>
+  <div
+    class="scrollbar-thumb-rounded scrollbar-track-rounded scrollbar-thin scrollbar-track-transparent scrollbar-thumb-muted grow overflow-x-auto px-5">
+    <table
+      class="text-muted-foreground table w-full table-auto border-collapse border-0 text-left align-middle leading-5">
+      <thead class="border-muted/20 text-muted-foreground border text-xs">
+        <tr app-table-header (onCheck)="toggleBlogs($event)"></tr>
+      </thead>
+      <tbody>
+        @for (tourBooking of tourBookings; track $index) {
+        <tr class="hover:bg-card/50" app-table-row [tourBookingDetail]="tourBooking" [index]="$index"
+          (bookingTaken)="reloadBooking()">
+        </tr>
+        } @empty {
+        <tr>
+          <td class="py-4 text-center text-sm" colspan="7">Không tìm thấy bài viết nào</td>
+        </tr>
+        }
+      </tbody>
+    </table>
+  </div>
+  <app-table-footer [totalPages]="totalPages()" [currentPage]="page" (pageChange)="onPageChange($event)"
+    (pageSizeChange)="onPageSizeChange($event)"></app-table-footer>
+</div>
+
+@if(showSuccess) {
+<!-- Warning Notification (Only One at a Time) -->
+<div class="fixed top-[5rem] left-1/2 transform -translate-x-1/2 z-50 w-80">
+  <div class="flex items-center bg-white shadow-md border border-gray-200 rounded-md p-3 animate-slide-in">
+    <span class="text-green-500 text-xl mr-2">✔</span>
+    <p class="text-green-800 text-sm">
+      {{ successMessage }}
+    </p>
+  </div>
+</div>
+}

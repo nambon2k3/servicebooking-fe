@@ -1,0 +1,12 @@
+/* Add any custom styles if needed */
+.space-x-4>*+* {
+    margin-left: 1rem;
+}
+
+.space-x-2>*+* {
+    margin-left: 0.5rem;
+}
+
+.space-y-4>*+* {
+    margin-top: 1rem;
+}

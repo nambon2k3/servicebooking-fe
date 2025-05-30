@@ -1,0 +1,45 @@
+
+td {
+  padding: 0.75rem 1rem;
+  font-size: 0.85rem;
+}
+.popup-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.5); /* Làm nền tối */
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 50;
+}
+
+.popup-content {
+  background: white;
+  padding: 20px;
+  border-radius: 8px;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+}
+
+.hidden {
+  display: none;
+}
+
+.status-label {
+  transition: background-color 0.3s ease;
+  cursor: pointer;
+  user-select: none; /* Ngăn chặn chọn văn bản */
+}
+
+.status-label:hover {
+  opacity: 0.9; /* Hiệu ứng hover nhẹ */
+}
+
+/* Đảm bảo text không bị ngắt dòng */
+.status-label.whitespace-nowrap {
+  white-space: nowrap;
+}
+
+/* Tùy chỉnh kích thước và khoảng cách nếu cần */
+td.p-3 {
+  vertical-align: middle; /* Căn giữa theo chiều dọc */
+}
