@@ -8,15 +8,13 @@ import { SsrService } from '../../../../core/services/ssr.service';
 import { Router } from '@angular/router';
 import { NgSelectComponent } from '@ng-select/ng-select';
 import { Locations } from '../../../../core/models/location.model';
-
 @Component({
-  selector: 'app-hotel',
-  standalone: true,
-  imports: [CommonModule, FormsModule, CurrencyVndPipe, NgSelectComponent],
-  templateUrl: './hotel.component.html',
-  styleUrl: './hotel.component.css'
+  selector: 'app-restaurant',
+   imports: [CommonModule, FormsModule, CurrencyVndPipe, NgSelectComponent],
+  templateUrl: './restaurant.component.html',
+  styleUrl: './restaurant.component.css'
 })
-export class HotelComponent implements OnInit {
+export class RestaurantComponent {
   hotels = signal<Hotel[]>([]);
   locations = signal<Locations[]>([]);
 
@@ -80,7 +78,7 @@ export class HotelComponent implements OnInit {
   }
 
   getHotels(): void {
-    this.hotelService.getHotels(
+    this.hotelService.getRestaurants(
       this.currentPage,
       this.size,
       this.keyword,
