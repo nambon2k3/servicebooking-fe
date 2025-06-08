@@ -31,7 +31,7 @@ export class HomepageComponent {
   @ViewChild('searchDropdown') searchDropdownRef!: ElementRef;
 
   selectedCategory: string = 'Tìm kiếm tất cả';
-  searchPlaceholder: string = 'TÌm kiếm tour thịnh hành...';
+  searchPlaceholder: string = 'TÌm kiếm khách sạn, nhà hàng thịnh hành...';
   searchTitle: string = 'Hiện thực hóa chuyến du lịch trong mơ';
   userProfile: any;
   searchQuery: string = '';

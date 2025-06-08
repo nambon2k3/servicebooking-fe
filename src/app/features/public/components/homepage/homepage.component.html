@@ -1,5 +1,5 @@
 <div class="text-center mt-10 pt-16 sm:mt-20">
-    <h1 class="text-4xl sm:text-4xl lg:text-5xl font-extrabold text-green-900">
+    <h1 class="text-4xl sm:text-4xl lg:text-5xl font-extrabold text-[#1F3F7D]">
         {{ searchTitle }}
     </h1>
 
@@ -18,7 +18,7 @@
                 class="w-full outline-none px-4 text-gray-700 placeholder-gray-400 text-lg bg-transparent"
                 (input)="onSearchInput($event)" [(ngModel)]="searchQuery" />                
 
-            <button class="bg-green-600 w-1/5 text-white font-semibold px-6 py-2 rounded-full hover:bg-green-700"
+            <button class="bg-[#1F3F7D] w-1/5 text-white font-semibold px-6 py-2 rounded-full hover:bg-blue-600"
             (click)="onDropdownClick()">
                 Tìm kiếm
             </button>
@@ -37,10 +37,10 @@
 </div>
 
 <div class="relative mt-16 sm:mt-32 max-w-6xl mx-auto bg-gray-200 h-[400px] sm:h-[520px] overflow-hidden rounded-xl">
-    <img src="https://stcd02265632633.cloud.edgevnpay.vn/website-vnpay-public/fill/2023/12/0v5qil1lbl5s1702018754377.png"
+    <img src="https://toquoc.mediacdn.vn/280518851207290880/2022/10/24/photo-1666605209337-1666605209433251738388.jpg"
         alt="Ảnh Tour"  class="absolute top-0 left-0 w-full h-full object-cover rounded-xl z-0">
     <div class="relative mt-6 z-10 flex flex-col items-center justify-center h-full text-white">
-        <p class="font-bold text-xl sm:text-2xl drop-shadow-lg">Các Tour Hàng Đầu Năm 2025</p>
+        <p class="font-bold text-xl sm:text-2xl drop-shadow-lg">Các Điểm đến Hàng Đầu Năm 2025</p>
         <p class="text-base sm:text-lg text-gray-200 drop-shadow-md">Dự báo tương lai của du lịch—ngay bây giờ.</p>
         <button (click)="openTourDetail(topTourOfYear?.id!)"
             class="mt-6 sm:mt-8 px-6 sm:px-8 py-3 sm:py-5 hover:bg-white/70 hover:text-black hover:font-semibold bg-black bg-opacity-70 hover:bg-opacity-90 rounded-lg text-base sm:text-lg">Xem

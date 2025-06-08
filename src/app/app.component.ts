@@ -11,7 +11,7 @@ import { initFlowbite } from 'flowbite';
   imports: [RouterOutlet],
 })
 export class AppComponent implements AfterViewInit {
-  title = 'Viet Travel';
+  title = 'Soloist - Explore Vietnam';
   isBrowser: boolean = false;
   isServer: boolean = false;
 
@@ -41,7 +41,7 @@ export class AppComponent implements AfterViewInit {
   private initializeClientFeatures(): void {
     setTimeout(() => {
       if (this.isBrowser) {
-        document.title = 'Viet Travel - Explore the World';
+        document.title = 'Soloist - Explore Vietnam';
       }
     }, 100);
   }
