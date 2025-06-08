@@ -1,4 +1,4 @@
 export const environment = {
     production: true,
-    apiUrl: 'https://traveltoday.cloud/api/v1/'
+    apiUrl: 'http://3.107.57.226/v1/'
 };
