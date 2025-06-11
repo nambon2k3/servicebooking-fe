@@ -1,1 +1,114 @@
-<p>activity works!</p>
+<section class="mt-20 py-8 lg:py-12">
+    <div class="max-w-[1280px] mx-auto px-4">
+        <h2 class="text-3xl font-bold text-center mb-2">Khám Phá Các Hoạt Động</h2>
+        <p class="text-gray-600 text-center mb-8">Tìm kiếm và trải nghiệm những hoạt động thú vị tại các điểm đến yêu
+            thích của bạn!</p>
+
+        <!-- Search and Filter Section -->
+        <div class="flex flex-col sm:flex-row gap-4 mb-8 justify-center">
+            <div class="relative w-full sm:w-1/2">
+                <input type="text" [(ngModel)]="searchQuery" (input)="searchActivities()"
+                    placeholder="Tìm kiếm hoạt động..."
+                    class="w-full px-4 py-2 rounded-md border border-gray-300 focus:outline-none focus:ring-2 focus:ring-blue-600">
+            </div>
+            <div class="flex gap-4">
+                <input type="number" [(ngModel)]="minPrice" (input)="filterActivities()"
+                    placeholder="Giá tối thiểu (VND)"
+                    class="w-1/2 px-4 py-2 rounded-md border border-gray-300 focus:outline-none focus:ring-2 focus:ring-blue-600">
+                <input type="number" [(ngModel)]="maxPrice" (input)="filterActivities()" placeholder="Giá tối đa (VND)"
+                    class="w-1/2 px-4 py-2 rounded-md border border-gray-300 focus:outline-none focus:ring-2 focus:ring-blue-600">
+            </div>
+        </div>
+
+        <!-- Activities List -->
+        <!-- <div *ngIf="filteredActivities.length > 0; else noData"
+            class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8">
+            <div *ngFor="let activity of filteredActivities" (click)="openActivityDetail(activity.id)"
+                class="relative bg-gray-200 h-[300px] cursor-pointer rounded-xl flex flex-col justify-end text-white p-4"
+                [style.backgroundImage]="'url(' + activity.imageUrl + ')'"
+                style="background-size: cover; background-position: center;">
+                <div class="absolute inset-0 bg-black bg-opacity-50 rounded-xl"></div>
+                <div class="relative z-10">
+                    <h3 class="text-xl font-bold">{{ activity.activityName }}</h3>
+                    <p class="text-sm">Giá: {{ activity.sellingPrice | currency:'VND':'symbol' }}</p>
+                    <p class="text-sm">Địa điểm: {{ activity.locationName }}</p>
+                    <p class="text-sm">Nhà cung cấp: {{ activity.providerName }}</p>
+                    <p class="text-sm">Danh mục: {{ activity.categoryName }}</p>
+                </div>
+            </div>
+        </div> -->
+        <div *ngIf="filteredActivities.length > 0; else noData"
+            class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8">
+            <div *ngFor="let activity of filteredActivities" (click)="openActivityDetail(activity.id)"
+                class="relative bg-gray-200 h-[300px] cursor-pointer rounded-xl overflow-hidden flex flex-col justify-end text-white">
+                <!-- Background Image -->
+                <div class="absolute inset-0"
+                    [style.backgroundImage]="'url(' + (activity.imageUrl || 'https://via.placeholder.com/300') + ')'"
+                    style="background-size: cover; background-position: center;"></div>
+
+                <!-- Service Info with Semi-Transparent Background -->
+                <div class="relative z-10 bg-black bg-opacity-60 p-4 rounded-b-xl">
+                    <h3 class="text-lg font-bold mb-2">{{ activity.activityName }}</h3>
+                    <div class="flex items-center gap-2 text-sm">
+                        <!-- Price Icon -->
+                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"
+                            xmlns="http://www.w3.org/2000/svg">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z">
+                            </path>
+                        </svg>
+                        <span>{{ activity.sellingPrice | currency:'VND':'symbol' }}</span>
+                    </div>
+                    <div class="flex items-center gap-2 text-sm">
+                        <!-- Location Icon -->
+                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"
+                            xmlns="http://www.w3.org/2000/svg">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z">
+                            </path>
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                d="M15 11a3 3 0 11-6 0 3 3 0 016 0z"></path>
+                        </svg>
+                        <span>{{ activity.address }}</span>
+                    </div>
+                    <!-- <div class="flex items-center gap-2 text-sm"> -->
+                        <!-- Provider Icon -->
+                        <!-- <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"
+                            xmlns="http://www.w3.org/2000/svg">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4">
+                            </path>
+                        </svg>
+                        <span>{{ activity.providerName }}</span>
+                    </div> -->
+                </div>
+            </div>
+        </div>
+
+        <ng-template #noData>
+            <p class="text-center text-gray-600">Không có hoạt động nào phù hợp với bộ lọc của bạn.</p>
+        </ng-template>
+
+        <!-- Pagination -->
+        <div class="py-8 mt-8 text-center">
+            <ul class="inline-flex space-x-2">
+                <li *ngIf="currentPage > 0">
+                    <a (click)="changePage(currentPage - 1)"
+                        class="px-3 py-2 rounded-md border cursor-pointer hover:bg-gray-100">«</a>
+                </li>
+                <li *ngFor="let page of [].constructor(totalPages); let i = index">
+                    <a (click)="changePage(i)" class="px-3 py-2 rounded-md border cursor-pointer"
+                        [class.bg-black]="i === currentPage" [class.text-white]="i === currentPage">
+                        {{ i + 1 }}
+                    </a>
+                </li>
+                <li *ngIf="currentPage < totalPages - 1">
+                    <a (click)="changePage(currentPage + 1)"
+                        class="px-3 py-2 rounded-md border cursor-pointer hover:bg-gray-100">»</a>
+                </li>
+            </ul>
+        </div>
+    </div>
+</section>
+
+<app-footer></app-footer>
