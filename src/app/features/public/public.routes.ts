@@ -15,6 +15,7 @@ import { PlanDetailComponent } from "./components/plan/plan-detail/plan-detail.c
 import { RestaurantComponent } from "./components/restaurant/restaurant.component";
 import { RestaurantDetailComponent } from "./components/restaurant/restaurant-detail/restaurant-detail.component";
 import { ServiceBookingComponent } from "./components/service-booking/service-booking.component";
+import { ActivitiesComponent } from "./components/activity/activity.component";
 
 export const PUBLIC_ROUTES: Route[] = [
   {
@@ -41,6 +42,10 @@ export const PUBLIC_ROUTES: Route[] = [
       {
         path: 'hotels',
         component: HotelComponent,
+      },
+      {
+        path: 'activities',
+        component: ActivitiesComponent,
       },
       {
         path: 'hotel-details/:id',
