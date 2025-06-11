@@ -14,7 +14,6 @@ import { PlanComponent } from "./components/plan/plan.component";
 import { PlanDetailComponent } from "./components/plan/plan-detail/plan-detail.component";
 import { RestaurantComponent } from "./components/restaurant/restaurant.component";
 import { RestaurantDetailComponent } from "./components/restaurant/restaurant-detail/restaurant-detail.component";
-import { ServiceBookingComponent } from "./components/service-booking/service-booking.component";
 
 export const PUBLIC_ROUTES: Route[] = [
   {
@@ -82,10 +81,6 @@ export const PUBLIC_ROUTES: Route[] = [
         path: 'plan-detail/:id',
         component: PlanDetailComponent,
       },
-      {
-        path: 'service-booking',
-        component: ServiceBookingComponent,
-      }
     ]
   },
   

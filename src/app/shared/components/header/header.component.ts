@@ -2,7 +2,7 @@ import { CommonModule } from '@angular/common';
 import { Component, AfterViewInit, OnDestroy, OnInit, ViewChild, ElementRef, HostListener } from '@angular/core';
 import { UserStorageService } from '../../../core/services/user-storage/user-storage.service';
 import { CustomerService } from '../../../features/customer/services/customer.service';
-import { NavigationEnd, Router } from '@angular/router';
+import { NavigationEnd, Router, RouterModule } from '@angular/router';
 import { SsrService } from '../../../core/services/ssr.service';
 import { WishlistComponent } from '../../../features/customer/components/wishlist/wishlist.component';
 import { HomepageService } from '../../../features/public/services/homepage.service';
@@ -17,7 +17,8 @@ import { debounceTime, Subject } from 'rxjs';
     CommonModule,
     ShufflePipe,
     WishlistComponent,
-    FormsModule
+    FormsModule,
+    RouterModule
   ],
   templateUrl: './header.component.html',
 })

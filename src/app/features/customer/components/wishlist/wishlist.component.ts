@@ -75,6 +75,33 @@ export class WishlistComponent implements OnInit {
   }
 
   viewDetails(tourId: number): void {
-    this.router.navigate(['/tour-details', tourId]);
+    //this.router.navigate(['/tour-details', tourId]);
   }
+
+
+  showSuccess: boolean = false;
+  showError: boolean = false;
+
+
+  successMessage: string = 'Thêm thành công';
+  errorMessage: string = 'Thêm thất bại';
+
+  triggerSuccess() {
+    this.showSuccess = true;
+
+    // Hide warning after 3 seconds
+    setTimeout(() => {
+      this.showSuccess = false;
+    }, 4000);
+  }
+
+  triggerError() {
+    this.showError = true;
+
+    // Hide warning after 3 seconds
+    setTimeout(() => {
+      this.showError = false;
+    }, 4000);
+  }
+
 }

@@ -142,7 +142,7 @@
                                     <!-- Người -->
                                     <div class="flex items-center space-x-1">
                                         <span>👥</span>
-                                        <span>1 người</span>
+                                        <span>{{ room.capacity }} người</span>
                                     </div>
 
                                     <!-- Diện tích -->
@@ -177,20 +177,9 @@
                                         }}</span>
                                     / đêm
                                 </p>
-                                <button (click)="selectRoom(room)" [class.bg-white]="selectedRoom === room"
-                                    [class.border-green-600]="selectedRoom === room"
-                                    [class.text-green-600]="selectedRoom === room"
-                                    [class.border-2]="selectedRoom === room" [class.bg-red-600]="selectedRoom !== room"
-                                    [class.text-white]="selectedRoom !== room"
-                                    [class.hover:text-white]="selectedRoom === room"
-                                    [class.hover:bg-green-700]="selectedRoom === room"
-                                    [class.hover:bg-white]="selectedRoom !== room"
-                                    [class.border-2]="selectedRoom !== room"
-                                    [class.hover:text-red-700]="selectedRoom !== room"
-                                    [class.border-red-600]="selectedRoom !== room"
-                                    [class.hover:bg-red-700]="selectedRoom !== room"
-                                    class="mt-2 px-4 py-2 rounded border">
-                                    {{ selectedRoom === room ? 'Đổi phòng' : 'Chọn' }}
+                                <button (click)="selectRoom(room)"
+                                    class=" mt-2 px-4 py-2 rounded border bg-red-600 text-white hover:bg-white hover:text-red-700 border-red-600 hover:bg-red-700">
+                                    {{ selectedRoom === room ? 'Thêm phòng' : 'Thêm phòng' }}
                                 </button>
                             </div>
                         </div>
@@ -199,7 +188,7 @@
             </div>
         </div>
     </div>
-        <h2 class="text-3xl font-bold text-center mt-20">QUY ĐỊNH CHỖ NGHỈ</h2>
+    <h2 class="text-3xl font-bold text-center mt-20">QUY ĐỊNH CHỖ NGHỈ</h2>
 
     <div class="p-6 bg-white rounded-lg shadow-md space-y-6 text-lg text-gray-800">
 
@@ -314,3 +303,27 @@
 </div>
 
 <app-footer></app-footer>
+
+
+@if(showSuccess) {
+<!-- Warning Notification (Only One at a Time) -->
+<div class="fixed top-[5rem] left-1/2 transform -translate-x-1/2 z-50 w-80">
+    <div class="flex items-center bg-white shadow-md border border-gray-200 rounded-md p-3 animate-slide-in">
+        <span class="text-green-500 text-xl mr-2">✔</span>
+        <p class="text-green-800 text-sm">
+            Thêm vào danh sách đặt thành công
+        </p>
+    </div>
+</div>
+}
+
+@if(showError) {
+<!-- Warning Notification (Only One at a Time) -->
+<div class="fixed top-[5rem] left-1/2 transform -translate-x-1/2 z-50 w-80">
+    <div class="flex items-center bg-white shadow-md border border-gray-200 rounded-md p-3 animate-slide-in">
+        <span class="text-red-500 text-xl mr-2">X</span>
+        <p class="text-red-800 text-sm">
+            Thêm vào danh sách đặt thất bại
+    </div>
+</div>
+}
