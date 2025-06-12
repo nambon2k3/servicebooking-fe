@@ -1,7 +1,7 @@
 import { CommonModule } from '@angular/common';
 import { Component, OnInit } from '@angular/core';
 import { FooterComponent } from "../../../../../shared/components/footer/footer.component";
-import { ActivatedRoute } from '@angular/router';
+import { ActivatedRoute, RouterModule } from '@angular/router';
 import { HotelService } from '../../../services/hotel.service';
 import { CurrencyVndPipe } from "../../../../../shared/pipes/currency-vnd.pipe";
 import { SsrService } from '../../../../../core/services/ssr.service';
@@ -12,16 +12,17 @@ import { UserStorageService } from '../../../../../core/services/user-storage/us
   imports: [
     CommonModule,
     FooterComponent,
-    CurrencyVndPipe
+    CurrencyVndPipe,
+    RouterModule
   ],
   templateUrl: './restaurant-detail.component.html',
   styleUrl: './restaurant-detail.component.css'
 })
 export class RestaurantDetailComponent {
   isShow: boolean = false;
-    hotelDetails: any;
-    rooms: any[] = [];
-    allRooms: any[] = [];
+    restaurantDetails: any;
+    meals: any[] = [];
+    allMeals: any[] = [];
     otherServices: any[] = [];
     price: number = 0;
     isLoading: boolean = false;
@@ -49,15 +50,15 @@ export class RestaurantDetailComponent {
   
     loadHotelDetail(id: string) {
       this.isLoading = true;
-      this.hotelService.getHotelDetail(id).subscribe({
+      this.hotelService.getRestaurantDetail(id).subscribe({
         next: (response: any) => {
           this.isLoading = false;
           if (response.code === 200 && response.data) {
-            this.hotelDetails = response.data.serviceProvider;
-            this.allRooms = response.data.rooms;
-            this.rooms = [...this.allRooms]; // Use all rooms as is
-            this.price = this.rooms.length > 0 ? this.rooms[0].sellingPrice : (this.hotelDetails.minRoomPrice || 0);
-            this.otherServices = response.data.otherHotels;
+            this.restaurantDetails = response.data.serviceProvider;
+            this.allMeals = response.data.meals;
+            this.meals = [...this.allMeals]; // Use all rooms as is
+            this.price = this.meals.length > 0 ? this.meals[0].sellingPrice : (this.restaurantDetails.minRoomPrice || 0);
+            this.otherServices = response.data.otherRestaurants;
   
             if (this.ssrService.isBrowser) {
               this.initMap();
@@ -110,11 +111,11 @@ export class RestaurantDetailComponent {
   
      private async initMap() {
         const L = await import('leaflet');
-        console.log('geo', this.hotelDetails);
-        console.log('geo', this.hotelDetails.geoPosition.latitude, this.hotelDetails.geoPosition.longitude);
+        console.log('geo', this.restaurantDetails);
+        console.log('geo', this.restaurantDetails.geoPosition.latitude, this.restaurantDetails.geoPosition.longitude);
   
         this.map = L.map('map').setView(
-          [this.hotelDetails.geoPosition.latitude, this.hotelDetails.geoPosition.longitude],
+          [this.restaurantDetails.geoPosition.latitude, this.restaurantDetails.geoPosition.longitude],
           13
         );
   
@@ -122,7 +123,7 @@ export class RestaurantDetailComponent {
           attribution: '© OpenStreetMap contributors'
         }).addTo(this.map);
   
-        L.marker([this.hotelDetails.geoPosition.latitude, this.hotelDetails.geoPosition.longitude])
+        L.marker([this.restaurantDetails.geoPosition.latitude, this.restaurantDetails.geoPosition.longitude])
           .addTo(this.map);
   
         

@@ -65,7 +65,7 @@ export class RestaurantComponent {
   }
 
   goToDetail(id: number): void {
-    this.router.navigate(['/hotel-details', id]);
+    this.router.navigate(['/restaurant-details', id]);
   }
 
   getDestinationName(): string {

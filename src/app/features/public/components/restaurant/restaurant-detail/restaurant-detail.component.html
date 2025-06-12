@@ -62,11 +62,11 @@
 <div class="container mx-auto p-6 pb-0 mt-32">
     <!-- Hotel Title -->
     <div class="grid grid-cols-12 gap-4">
-        <h1 class="col-span-12 row-span-1 text-4xl font-bold mb-10">{{ hotelDetails?.name }}</h1>
+        <h1 class="col-span-12 row-span-1 text-4xl font-bold mb-10">{{ restaurantDetails?.name }}</h1>
         <!-- Main Image -->
         <div class="col-span-12 row-span-2">
             <div class="bg-gray-300 shadow-sm rounded-md w-full h-[600px] flex items-center justify-center">
-                <img [src]="hotelDetails?.imageUrl" alt="Hotel Main Image" class="w-full h-[600px] object-cover" />
+                <img [src]="restaurantDetails?.imageUrl" alt="Hotel Main Image" class="w-full h-[600px] object-cover" />
             </div>
         </div>
 
@@ -132,54 +132,29 @@
                 <!-- Room List Section -->
                 <div>
                     <h2 class="text-3xl font-bold text-center mb-6 mt-20">Danh sách phòng</h2>
-                    <div *ngFor="let room of rooms" class="bg-gray-100 p-4 rounded-lg shadow-md mb-6">
+                    <div *ngFor="let meal of meals" class="bg-gray-100 p-4 rounded-lg shadow-md mb-6">
                         <div class="grid grid-cols-1 md:grid-cols-4 gap-4 mt-4">
-                            <img [src]="room.imageUrl" alt="Room Image" class="w-full h-full object-cover rounded-md">
+                            <img [src]="meal.imageUrl" alt="Room Image" class="w-full h-full object-cover rounded-md">
                             <div class="space-y-2 col-span-2 ml-7">
-                                <h3 class="text-xl font-bold">{{ room.name }}</h3>
-
-                                <div class="flex space-x-6 items-center text-md text-black">
-                                    <!-- Người -->
-                                    <div class="flex items-center space-x-1">
-                                        <span>👥</span>
-                                        <span>{{ room.capacity }} người</span>
-                                    </div>
-
-                                    <!-- Diện tích -->
-                                    <div class="flex items-center space-x-1">
-                                        <span
-                                            class="inline-flex items-center justify-center w-5 h-5 border rounded text-xs">↔</span>
-                                        <span>22m<sup>2</sup></span>
-                                    </div>
-
-                                    <!-- Giường -->
-                                    <div class="flex items-center space-x-1">
-                                        <span>🛏️</span>
-                                        <span>1 giường đôi</span>
-                                    </div>
-                                </div>
+                                <h3 class="text-xl font-bold">{{ meal.name }}</h3>
+                                <p>
+                                    🍜 {{ meal.type == 'DINNER' ? 'Bữa tối' :  meal.type == 'LUNCH' ? 'Bữa Trưa' : ' Bữa Sáng'}}
+                                </p>
+                                
                                 <hr class="text-black">
-                                <div class="grid grid-cols-2 md:grid-cols-2 gap-3 text-gray-600 text-md text-left">
-                                    <span>✓ Trà chiều</span>
-                                    <span>✓ Nhận phòng sớm</span>
-                                    <span>✓ Thức uống</span>
-                                    <span>✓ Nước uống chào đón</span>
-                                    <span>✓ Nhận phòng nhanh</span>
-                                    <span>✓ WiFi miễn phí</span>
-                                    <span>✓ Bữa sáng</span>
-                                    <span>✓ Massage</span>
-                                    <span>✓ Mạng wifi</span>
-                                </div>
+                                <p>
+                                    {{ meal.mealDetail }}
+                                </p>
                             </div>
                             <div class="flex flex-col justify-center align-center">
                                 <p class="text-center">
-                                    <span class="text-red-600 text-lg font-bold">{{ room.sellingPrice | currencyVnd
+                                    <span class="text-red-600 text-lg font-bold">{{ meal.sellingPrice | currencyVnd
                                         }}</span>
-                                    / đêm
+                                    / suất
                                 </p>
-                                <button (click)="selectRoom(room)"
+                                <button (click)="selectRoom(meal)"
                                     class=" mt-2 px-4 py-2 rounded border bg-red-600 text-white hover:bg-white hover:text-red-700 border-red-600 hover:bg-red-700">
-                                    Thêm phòng
+                                    Đặt chỗ
                                 </button>
                             </div>
                         </div>
@@ -188,88 +163,59 @@
             </div>
         </div>
     </div>
-    <h2 class="text-3xl font-bold text-center mt-20">QUY ĐỊNH CHỖ NGHỈ</h2>
+    <div class="bg-white p-6 rounded-xl shadow-md mx-auto">
+        <h2 class="text-2xl font-bold text-center mb-6">QUY ĐỊNH NHÀ HÀNG</h2>
 
-    <div class="p-6 bg-white rounded-lg shadow-md space-y-6 text-lg text-gray-800">
+        <div class="space-y-6">
+            <div>
+                <h3 class="font-semibold text-lg">Trẻ em và suất ăn</h3>
+                <p>Suất ăn cho trẻ tùy thuộc vào độ tuổi. Tất cả trẻ em đều được chào đón tại nhà hàng.</p>
 
-        <!-- Trẻ em và giường phụ -->
-        <div>
-            <h3 class="font-semibold text-base mb-2">Trẻ em và giường phụ</h3>
-            <p class="mb-2">Giường phụ tuỳ thuộc vào loại phòng bạn chọn, xin vui lòng kiểm tra thông tin phòng để biết
-                thêm chi tiết.<br />Tất cả trẻ em đều được chào đón.</p>
-
-            <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
-                <!-- Box 1 -->
-                <div class="border border-blue-600 rounded-md">
-                    <div class="bg-blue-600 text-white px-3 py-2 flex items-center space-x-2 font-medium">
-                        <span>👶</span>
-                        <span>Độ tuổi trẻ em: 0 - 3 tuổi</span>
+                <div class="flex flex-col md:flex-row gap-4 mt-4">
+                    <div class="border border-blue-500 rounded-lg w-full md:w-1/3">
+                        <div class="bg-blue-600 text-white font-medium p-3 rounded-t-lg">🧒 Trẻ em dưới 5 tuổi</div>
+                        <div class="p-3 text-sm">Miễn phí nếu dùng chung với người lớn.</div>
                     </div>
-                    <div class="px-3 py-2">
-                        <p class="font-semibold">Ở miễn phí nếu sử dụng giường có sẵn</p>
-                        <p class="text-gray-600 text-sm">Có thể yêu cầu cho cũi/nôi em bé trực tiếp từ nơi lưu trú.</p>
+                    <div class="border border-blue-500 rounded-lg w-full md:w-1/3">
+                        <div class="bg-blue-600 text-white font-medium p-3 rounded-t-lg">🧒 Trẻ từ 5 đến 11 tuổi</div>
+                        <div class="p-3 text-sm">Tính 50% giá suất ăn người lớn.</div>
                     </div>
-                </div>
-
-                <!-- Box 2 -->
-                <div class="border border-blue-600 rounded-md">
-                    <div class="bg-blue-600 text-white px-3 py-2 flex items-center space-x-2 font-medium">
-                        <span>👶👶</span>
-                        <span>Độ tuổi trẻ em: 0 - 3 tuổi</span>
-                    </div>
-                    <div class="px-3 py-2">
-                        <p class="font-semibold">Ở miễn phí nếu sử dụng giường có sẵn</p>
-                        <p class="text-gray-600 text-sm">Nếu cần một giường phụ thì sẽ phụ thu thêm.</p>
-                    </div>
-                </div>
-
-                <!-- Box 3 -->
-                <div class="border border-blue-600 rounded-md">
-                    <div class="bg-blue-600 text-white px-3 py-2 flex items-center space-x-2 font-medium">
-                        <span>🧑</span>
-                        <span>Những khách từ 7 tuổi trở lên tính là người lớn</span>
-                    </div>
-                    <div class="px-3 py-2">
-                        <p>Cần đặt thêm một giường phụ và sẽ phụ thu thêm.</p>
+                    <div class="border border-blue-500 rounded-lg w-full md:w-1/3">
+                        <div class="bg-blue-600 text-white font-medium p-3 rounded-t-lg">👦 Trên 12 tuổi</div>
+                        <div class="p-3 text-sm">Tính như người lớn.</div>
                     </div>
                 </div>
             </div>
-        </div>
 
-        <!-- Quy định hủy phòng -->
-        <div>
-            <h3 class="font-semibold text-base mb-2">Quy định hủy phòng</h3>
-            <p>
-                Đặt phòng không có rủi ro! Hủy trước <span class="font-medium text-black">2025-06-09</span> và quý khách
-                sẽ không phải trả gì cả!
-                Bất kỳ việc hủy nào ghi nhận trong vòng 1 ngày trước ngày đến sẽ phải trả phí cho toàn bộ thời gian ở.
-                Không đến khách sạn hoặc chỗ nghỉ sẽ được giải quyết như là Vắng Mặt và sẽ phải trả một khoản tiền là
-                100% giá trị đặt phòng <span class="italic">(Quy định của khách sạn)</span>.
-            </p>
-        </div>
+            <div>
+                <h3 class="font-semibold text-lg mt-6">Quy định hủy đặt bàn</h3>
+                <p>
+                    Hủy trước <span class="font-bold">24 giờ</span> sẽ không bị tính phí. Hủy trong vòng 24 giờ có thể
+                    bị tính <em>phí dịch vụ</em>.
+                </p>
+            </div>
 
-        <!-- Quy định khác -->
-        <div>
-            <h3 class="font-semibold text-base mb-2">Quy định khác</h3>
-            <ul class="list-disc list-inside space-y-1">
-                <li>Đối với đặt phòng trả tiền tại khách sạn, khách cần liên hệ chỗ nghỉ trước để xác nhận thời gian
-                    nhận phòng.</li>
-                <li>Khi đặt trên 5 phòng, chính sách và điều khoản bổ sung có thể được áp dụng.</li>
-            </ul>
-        </div>
+            <div>
+                <h3 class="font-semibold text-lg mt-6">Quy định khác</h3>
+                <ul class="list-disc list-inside space-y-1">
+                    <li>Không mang đồ ăn/uống từ ngoài vào nhà hàng.</li>
+                    <li>Vui lòng báo trước nếu có dị ứng thực phẩm.</li>
+                </ul>
+            </div>
 
-        <!-- Lưu ý của khách sạn -->
-        <div>
-            <h3 class="text-red-600 font-semibold">Lưu ý của khách sạn</h3>
-            <p>Có chỗ đỗ xe <span class="italic">(phụ thu 200.000 VND mỗi đêm)</span>, miễn phí đối với xe máy và lệ
-                thuộc vào khả năng cung cấp. Bãi đỗ xe cách cơ sở lưu trú 50–100 mét. Những khách có ý định đến bằng xe
-                hơi phải liên hệ trước với cơ sở lưu trú.</p>
+            <div>
+                <h3 class="text-red-600 font-bold mt-6">Lưu ý của nhà hàng</h3>
+                <p>
+                    Có chỗ để xe miễn phí. Vào cuối tuần và lễ, vui lòng đặt bàn trước để đảm bảo chỗ ngồi.
+                </p>
+            </div>
         </div>
     </div>
 
 
+
     <div class="w-10/12 mx-auto rounded-lg mt-20">
-        <h2 class="text-2xl md:text-3xl font-bold text-center text-green-700 mb-6">Other Hotels</h2>
+        <h2 class="text-2xl md:text-3xl font-bold text-center text-green-700 mb-6">Other Restaurant</h2>
         <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
             @for (hotel of otherServices.slice(0, 3); track $index) {
             <!-- Hotel Card -->
@@ -289,10 +235,11 @@
                     <!-- Price & Button Section -->
                     <div class="flex justify-between items-center bg-opacity-60 rounded-lg">
                         <div>
-                            <p>Price: </p>
-                            <p class="text-red-600 text-2xl font-bold">{{ hotel.price || 0 | currencyVnd }}</p>
+                            <p>Giá từ: </p>
+                            <p class="text-red-600 text-2xl font-bold">{{ hotel.minRoomPrice || 0 | currencyVnd }}</p>
                         </div>
-                        <a href="#" class="text-black hover:text-green-700 font-semibold hover:underline">Xem chi tiết
+                        <a [href]="'restaurant-details/' + hotel.id"
+                            class="text-black hover:text-green-700 font-semibold hover:underline">Xem chi tiết
                             →</a>
                     </div>
                 </div>

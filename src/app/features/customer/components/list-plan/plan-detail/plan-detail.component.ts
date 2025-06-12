@@ -2,7 +2,7 @@ import { AfterViewInit, Component } from '@angular/core';
 import { PlanService } from '../../../services/plan.service';
 import { UserStorageService } from '../../../../../core/services/user-storage/user-storage.service';
 import { Router } from '@angular/router';
-import { CommonModule } from '@angular/common';
+import { CommonModule, DatePipe } from '@angular/common';
 import { FooterComponent } from '../../../../../shared/components/footer/footer.component';
 import { SpinnerComponent } from '../../../../../shared/components/spinner/spinner.component';
 import { Modal } from 'flowbite';
@@ -19,6 +19,7 @@ import {
   ReactiveFormsModule,
   Validators,
 } from '@angular/forms';
+
 @Component({
   selector: 'app-plan-detail',
   imports: [
@@ -27,6 +28,7 @@ import {
     SpinnerComponent,
     DragDropModule,
     ReactiveFormsModule,
+    DatePipe
   ],
   templateUrl: './plan-detail.component.html',
   styleUrl: './plan-detail.component.css',
@@ -54,6 +56,9 @@ export class PlanDetailComponent implements AfterViewInit {
       endTime: ['', [Validators.required]],
     });
   }
+
+
+  reviewModal: Modal | null = null;
 
   editTime() {
     if (this.editTimeForm.invalid) {
@@ -103,7 +108,23 @@ export class PlanDetailComponent implements AfterViewInit {
     this.editActivityModal = new Modal(
       document.getElementById('authentication-modal')
     );
+
+    this.reviewModal = new Modal(document.getElementById('reviewModal'))
+
     this.editTimeModal = new Modal(document.getElementById('crud-modal'));
+  }
+
+
+  openReviewModal() {
+    if(this.reviewModal) {
+      this.reviewModal.show()
+    }
+  }
+
+   closeReviewModal() {
+    if (this.reviewModal) {
+      this.reviewModal.hide();
+    }
   }
 
   openEditTimeModal(activity: any) {
@@ -301,6 +322,7 @@ export class PlanDetailComponent implements AfterViewInit {
     const planId = Number(this.router.url.split('/').pop());
     console.log(planId);
     this.getPlanDetailById(planId);
+    this.getPlanReviewsById(planId);
   }
 
   onSelectDay(day: any) {
@@ -347,6 +369,23 @@ export class PlanDetailComponent implements AfterViewInit {
       },
       (error) => {
         console.error('Error fetching plan details:', error);
+        this.isLoading = false;
+      }
+    );
+  }
+
+
+  reviews: any;
+
+  getPlanReviewsById(planId: number) {
+    this.isLoading = true;
+    this.planService.getPlanReviewsById(planId).subscribe(
+      (response) => {
+        this.reviews = response.data;
+        this.isLoading = false;
+      },
+      (error) => {
+        console.error('Error fetching plan reviews:', error);
         this.isLoading = false;
       }
     );

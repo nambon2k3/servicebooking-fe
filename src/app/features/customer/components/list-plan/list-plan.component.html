@@ -10,6 +10,11 @@
             <span class="text-purple-600 text-lg mr-2">📍</span>
             Xây dựng kế hoạch với AI
         </button>
+        <button [routerLink]="['/plans']" type="button"
+            class="flex-1 border border-gray-300 rounded-lg py-3 px-4 text-sm font-medium flex items-center justify-center hover:bg-gray-100">
+            <span class="text-purple-600 text-lg mr-2">🌎</span>
+            Tham khảo từ cộng đồng
+        </button>
     </div>
 
     <!-- Sort dropdown -->
@@ -40,7 +45,6 @@
                 <div class="text-sm text-gray-500 flex items-center gap-4 mb-2">
                     <span>🗓️ {{plan?.content?.numberDays}} Ngày</span>
                     <span>📍 {{plan?.content?.location}}</span>
-                    <span>📍 {{plan?.content?.plan_category}}</span>
                 </div>
                 <div class="text-sm text-gray-500 flex items-center gap-4 mb-2 mt-5">
                     <span> <strong>Loại hình:</strong> {{plan?.content?.plan_category}}</span>

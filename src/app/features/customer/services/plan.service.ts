@@ -7,6 +7,9 @@ import { environment } from '../../../../environments/environment';
   providedIn: 'root'
 })
 export class PlanService {
+  saveReview(planId: number, value: any) : Observable<any>{
+    return this.http.post<any>(`${environment.apiUrl}public/plans/reviews/create/${planId}`, value);
+  }
 
 
   constructor(private http: HttpClient) { }
@@ -38,9 +41,33 @@ export class PlanService {
     return this.http.get(`${environment.apiUrl}public/plans/list`, { params });
   }
 
+  getListForumPlan(
+    page: number = 0,
+    size: number = 10,
+    sortField: string,
+    sortDirection: string = 'desc',
+  ): Observable<any> {
+
+    let params = new HttpParams()
+      .set('page', page)
+      .set('size', size)
+      .set('sortField', sortField)
+      .set('sortDirection', sortDirection);
+
+    console.log(params.toString())
+
+
+    return this.http.get(`${environment.apiUrl}public/plans/forum`, { params });
+  }
+
 
   getPlanById(planId: number): Observable<any> {
     return this.http.get<any>(`${environment.apiUrl}public/plans/details/${planId}`);
+
+  }
+
+  getPlanReviewsById(planId: number): Observable<any> {
+    return this.http.get<any>(`${environment.apiUrl}public/plans/reviews/${planId}`);
 
   }
 

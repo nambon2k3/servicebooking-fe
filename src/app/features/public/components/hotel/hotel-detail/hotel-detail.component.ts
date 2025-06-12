@@ -1,7 +1,7 @@
 import { CommonModule } from '@angular/common';
 import { Component, OnInit } from '@angular/core';
 import { FooterComponent } from "../../../../../shared/components/footer/footer.component";
-import { ActivatedRoute } from '@angular/router';
+import { ActivatedRoute, RouterModule } from '@angular/router';
 import { HotelService } from '../../../services/hotel.service';
 import { CurrencyVndPipe } from "../../../../../shared/pipes/currency-vnd.pipe";
 import { SsrService } from '../../../../../core/services/ssr.service';
@@ -13,7 +13,8 @@ import { UserStorageService } from '../../../../../core/services/user-storage/us
   imports: [
     CommonModule,
     FooterComponent,
-    CurrencyVndPipe
+    CurrencyVndPipe,
+    RouterModule
   ],
   templateUrl: './hotel-detail.component.html',
   styleUrls: [],

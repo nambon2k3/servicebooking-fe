@@ -59,6 +59,10 @@ export class HotelService {
     return this.http.get(`${environment.apiUrl}public/hotel-detail/${id}`);
   }
 
+  getRestaurantDetail(id: string): Observable<any> {
+    return this.http.get(`${environment.apiUrl}public/restaurant-detail/${id}`);
+  }
+
   getLocations(): Observable<any> {
     return this.http.get(`${environment.apiUrl}public/list-location`);
   }
