@@ -4,6 +4,7 @@ import { ListStaffComponent } from "./components/list-staff/list-staff.component
 import { PostStaffDetailComponent } from "./components/post-staff-detail/post-staff-detail.component";
 import { ListCustomerComponent } from "./components/list-customer/list-customer.component";
 import { ServiceCategoryComponent } from "./components/service-category/service-category.component";
+import { AdminComponent } from "../admin/admin.component";
 
 export const SYSTEM_ADMIN_ROUTES: Route[] = [
   {
@@ -31,6 +32,8 @@ export const SYSTEM_ADMIN_ROUTES: Route[] = [
         path: 'service-category',
         component: ServiceCategoryComponent,
       },
+      { path: 'booking', component: AdminComponent }
+
     ]
   },
 ];

@@ -1,4 +1,4 @@
-import { CommonModule } from '@angular/common';
+import { CommonModule, DatePipe } from '@angular/common';
 import { AfterViewInit, Component } from '@angular/core';
 import { PlanService } from '../../services/plan.service/plan.service';
 import { FormGroup, FormBuilder, FormsModule, ReactiveFormsModule, Validators } from '@angular/forms';
@@ -9,10 +9,11 @@ import { UserStorageService } from '../../../../core/services/user-storage/user-
 import { SpinnerComponent } from '../../../../shared/components/spinner/spinner.component';
 import { GeminiService } from './gemini.service';
 import { ImageSearchService } from './plan-detail/imge.service';
+import { WeatherService } from '../../services/weather/weather.service';
 
 @Component({
   selector: 'app-plan',
-  imports: [CommonModule, CommonModule, ReactiveFormsModule, RouterModule, FormsModule, SpinnerComponent],
+  imports: [CommonModule, CommonModule, ReactiveFormsModule, RouterModule, FormsModule, SpinnerComponent, DatePipe],
   templateUrl: './plan.component.html',
   styleUrl: './plan.component.css'
 })
@@ -29,6 +30,8 @@ export class PlanComponent implements AfterViewInit {
 
   isGenerating: boolean = false;
 
+  WEATHER_API_KEY = "1c1b78e3960d40948f191126250602";
+
   constructor(
     private planService: PlanService,
     private router: RouterModule,
@@ -37,6 +40,7 @@ export class PlanComponent implements AfterViewInit {
     private route: Router,
     private geminiService: GeminiService,
     private imageSearchService: ImageSearchService,
+    private weatherService: WeatherService,
   ) {
 
     this.generatePlanForm = this.fb.group({
@@ -117,7 +121,7 @@ export class PlanComponent implements AfterViewInit {
     if (startDate) {
       const start = new Date(startDate);
       this.minEndDate = start.toISOString().split('T')[0];
-      start.setDate(start.getDate() + 7); // Calculate End Date
+      start.setDate(start.getDate() + 6); // Calculate End Date
       const endDateFormatted = start.toISOString().split('T')[0];
 
       this.maxEndDate = endDateFormatted;
@@ -209,9 +213,9 @@ export class PlanComponent implements AfterViewInit {
 
                 this.response = JSON.parse(this.response);
                 console.log('Parsed response:', this.response);
-                await this.loadImagesForActivities(); 
+                await this.loadImagesForActivities();
 
-                console.log('Updated response:',this.response);
+                console.log('Updated response:', this.response);
 
                 this.planService.savePlan(this.userStorageService.getUserId(), JSON.stringify(this.response))
                   .subscribe({
@@ -253,7 +257,7 @@ export class PlanComponent implements AfterViewInit {
   async loadImagesForActivities(): Promise<void> {
     this.isGenerating = true;
     const imageFetchTasks: Promise<void>[] = [];
-  
+
     this.response.plan.days.forEach((day: any) => {
       day.activities.forEach((activity: any) => {
         const task = this.imageSearchService.getImageUrl(activity.title)
@@ -265,11 +269,11 @@ export class PlanComponent implements AfterViewInit {
             console.error(`Error fetching image for ${activity.title}:`, err);
             activity.imageUrl = 'https://statics.vinpearl.com/pho-co-ha-noi-10_1687918089.jpg';
           });
-  
+
         imageFetchTasks.push(task);
       });
     });
-  
+
     await Promise.all(imageFetchTasks);
     this.isGenerating = false;
   }
@@ -328,11 +332,12 @@ export class PlanComponent implements AfterViewInit {
     { label: 'Step 1' },
     { label: 'Step 2' },
     { label: 'Step 3' },
-    { label: 'Step 4' }
+    { label: 'Step 4' },
+    { label: 'Step 5' }
   ];
 
   currentStep = 0;
-  widthProgress = 25;
+  widthProgress = 20;
 
   prevStep() {
     if (this.currentStep > 0) {
@@ -350,7 +355,54 @@ export class PlanComponent implements AfterViewInit {
     }, 3000); // Hide after 3 seconds
   }
 
+  weatherData: any;
+
+
+  getWeather(locationName: string, targetDate: string) {
+    this.weatherService.getWeatherForecastForDay(locationName, targetDate).subscribe({
+      next: (response) => {
+        const parsed = JSON.parse(response.data);
+        const day = parsed.forecast.forecastday[0];
+
+        const weather = {
+          date: day.date,
+          weatherDetail: {
+            maxtemp_c: day.day.maxtemp_c,
+            maxtemp_f: day.day.maxtemp_f,
+            mintemp_c: day.day.mintemp_c,
+            mintemp_f: day.day.mintemp_f,
+            avgtemp_c: day.day.avgtemp_c,
+            avgtemp_f: day.day.avgtemp_f,
+            avghumidity: day.day.avghumidity,
+            condition: {
+              text: day.day.condition.text,
+              icon: day.day.condition.icon
+            },
+            uv: day.day.uv
+          }
+        };
+
+        this.weatherData.push(weather);
+        console.log('Weather data:', this.weatherData);
+      },
+      error: (error) => {
+        console.error('Error fetching weather data:', error);
+      }
+    });
+  }
+
+  removeVietnameseTones(str: string): string {
+    return str
+      .normalize('NFD')                       // Tách dấu khỏi ký tự gốc
+      .replace(/[\u0300-\u036f]/g, '')        // Xóa các dấu
+      .replace(/đ/g, 'd')                     // Thay đ bằng d
+      .replace(/Đ/g, 'd')                     // Thay Đ bằng d
+      .toLowerCase()                          // Chuyển thành chữ thường
+      .replace(/\s+/g, '');                   // Bỏ khoảng trắng (nếu cần)
+  }
+
   nextStep() {
+
 
     if (this.currentStep == 0) {
       if (this.selectedLocation) {
@@ -362,6 +414,48 @@ export class PlanComponent implements AfterViewInit {
     } else if (this.currentStep < this.steps.length - 1) {
       this.currentStep++;
     }
+
+
+    if (this.currentStep == 2) {
+      const location = this.removeVietnameseTones(this.selectedLocation.name);
+
+      const rawDate = new Date(this.generatePlanForm.get('startDate')?.value);
+      const yyyy = rawDate.getFullYear();
+      const mm = String(rawDate.getMonth() + 1).padStart(2, '0');
+      const dd = String(rawDate.getDate()).padStart(2, '0');
+      const formattedDate = `${yyyy}-${mm}-${dd}`;
+      console.log(formattedDate); // Ví dụ: '2025-06-13'
+
+
+      const startDateRaw = new Date(this.generatePlanForm.get('startDate')?.value);
+      const endDateRaw = new Date(this.generatePlanForm.get('endDate')?.value);
+
+      this.weatherData = []; // clear trước
+
+      const currentDate = new Date(startDateRaw);
+
+      while (currentDate <= endDateRaw) {
+        const yyyy = currentDate.getFullYear();
+        const mm = String(currentDate.getMonth() + 1).padStart(2, '0');
+        const dd = String(currentDate.getDate()).padStart(2, '0');
+        const formattedDate = `${yyyy}-${mm}-${dd}`;
+
+        console.log('Selected location:', location);
+      console.log('Start date:', formattedDate);
+
+        this.getWeather(location, formattedDate);
+
+        // tăng lên 1 ngày
+        currentDate.setDate(currentDate.getDate() + 1);
+      }
+
+
+      
+      
+
+      return;
+    }
+
   }
 
   goToStep(index: number) {
@@ -372,7 +466,7 @@ export class PlanComponent implements AfterViewInit {
 
   setMinStartDate() {
     const today = new Date();
-    today.setDate(today.getDate() + 1); // Set to tomorrow
+    today.setDate(today.getDate() + 15); // Set to tomorrow
     this.minStartDate = today.toISOString().split('T')[0]; // Format as YYYY-MM-DD
   }
 
