@@ -136,8 +136,6 @@ export class AdminComponent implements OnInit {
         };
         const dialogRef = this.dialog.open(BookingDetailDialogComponent, {
           width: '1400px',
-          height: 'auto',
-          maxHeight: '95vh',
           panelClass: 'custom-wide-dialog',
           autoFocus: false,
           data: dialogData

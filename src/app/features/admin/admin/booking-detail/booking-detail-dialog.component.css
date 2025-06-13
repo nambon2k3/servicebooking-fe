@@ -8,8 +8,12 @@
 
 .dialog-content {
   width: 100% !important;
-  max-height: 80vh !important;
-  overflow-y: auto !important;
+  overflow-y: hiden !important;
+  height: fit-content !important;
+}
+
+.custom-wide-dialog .mat-mdc-dialog-inner-container{
+  height: fit-content !important;
 }
 
 img {

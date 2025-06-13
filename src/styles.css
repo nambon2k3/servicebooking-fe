@@ -5,6 +5,14 @@
 @plugin "flowbite-typography";
 @plugin "flowbite";
 
+.custom-wide-dialog .mat-mdc-dialog-inner-container{
+  height: fit-content !important;
+}
+
+.dialog-content {
+  overflow: hidden !important;
+}
+
 #editor a {
   color: oklch(.546 .245 262.881);
   font-weight: 500;
