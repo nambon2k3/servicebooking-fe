@@ -13,7 +13,7 @@
                         d="M6 18L18 6M6 6l12 12" />
                 </svg>
             </button>
-            <h2 class="text-lg font-semibold">Tour yêu thích</h2>
+            <h2 class="text-lg font-semibold">Nhà cung cấp yêu thích</h2>
             <hr class="my-2 border-gray-300">
 
             <div class="overflow-y-auto h-[80vh]">
@@ -23,7 +23,9 @@
                         class="w-40 h-40 object-cover rounded-md bg-blue-300" />
                     <div class="ml-4 my-auto flex-grow" (click)="viewDetails(tour.itemId)">
                         <p class="text-lg font-semibold">{{ tour.tourName }}</p>
-                        <p class="text-md text-gray-500">{{ tour.itemType }}</p>
+                        <p class="text-md text-gray-500">
+                            Nhà cung cấp
+                        </p>
                     </div>
                     <div class="flex items-start">
                         <button class=" text-gray-500 hover:text-black">
@@ -40,3 +42,27 @@
         </div>
     </div>
 </div>
+
+
+@if(showSuccess) {
+<!-- Warning Notification (Only One at a Time) -->
+<div class="fixed top-[5rem] left-1/2 transform -translate-x-1/2 z-50 w-80">
+    <div class="flex items-center bg-green-500 shadow-md border border-gray-200 rounded-md p-3 animate-slide-in">
+        <span class="text-white text-xl mr-2">✔</span>
+        <p class="text-white text-sm">
+            {{ successMessage }}
+        </p>
+    </div>
+</div>
+}
+
+@if(showError) {
+<!-- Warning Notification (Only One at a Time) -->
+<div class="fixed top-[5rem] left-1/2 transform -translate-x-1/2 z-50 w-80">
+    <div class="flex items-center bg-white shadow-md border border-gray-200 rounded-md p-3 animate-slide-in">
+        <span class="text-red-500 text-xl mr-2">X</span>
+        <p class="text-red-800 text-sm">
+            {{ errorMessage }}
+    </div>
+</div>
+}

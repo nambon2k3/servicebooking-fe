@@ -8,6 +8,8 @@ import { SsrService } from '../../../../core/services/ssr.service';
 import { Router } from '@angular/router';
 import { NgSelectComponent } from '@ng-select/ng-select';
 import { Locations } from '../../../../core/models/location.model';
+import { HomepageService } from '../../services/homepage.service';
+import { WishlistService } from '../../../customer/components/wishlist/wishlist.service';
 @Component({
   selector: 'app-restaurant',
    imports: [CommonModule, FormsModule, CurrencyVndPipe, NgSelectComponent],
@@ -38,8 +40,23 @@ export class RestaurantComponent {
   constructor(
     private hotelService: HotelService,
     private ssrService: SsrService,
-    private router: Router
+    private router: Router,
+    private homepageService: HomepageService,
+        private wishlistService: WishlistService
   ) {
+  }
+
+  addToWishlist(provider: any) {
+    this.homepageService.addWishlist(provider).subscribe({
+      next: (response) => {
+        if (response.code === 200) {
+          this.wishlistService.triggerWishlistUpdate();
+        }
+      },
+      error: (err) => {
+        console.error('Error adding to wishlist:', err);
+      },
+    });
   }
 
   ngOnInit(): void {
@@ -48,7 +65,7 @@ export class RestaurantComponent {
   }
 
   goToDetail(id: number): void {
-    this.router.navigate(['/hotel-details', id]);
+    this.router.navigate(['/restaurant-details', id]);
   }
 
   getDestinationName(): string {
@@ -107,7 +124,7 @@ export class RestaurantComponent {
 
   clearFilters(): void {
     this.minPrice = 0;
-    this.maxPrice = 1000;
+    this.maxPrice = 200000000;
     this.hotelClassFilter = 0;
     // this.sortBy = '';
     this.ratingFilter = 0;

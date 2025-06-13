@@ -90,10 +90,21 @@
 
         <div class="w-full md:w-4/5">
             @for (hotel of filteredHotels(); track $index){
-            <div class="bg-gray-100 rounded-lg flex items-start gap-4 mb-4" (click)="goToDetail(hotel.id)">
+            <div class="bg-gray-100 rounded-lg flex items-start gap-4 mb-4">
                 <div class="relative w-2/5 overflow-clip">
                     <img [src]="hotel.imageUrl" alt="Ảnh Hotel"
                         class="w-[700px] h-72 object-cover overflow-hidden rounded-l-lg" />
+                        <button (click)="addToWishlist(hotel.id)" data-modal-toggle="wishlistModal"
+                            data-modal-target="wishlistModal"
+                            class="absolute top-2 left-2 bg-white p-2 rounded-full shadow-md">
+                            <svg class="w-6 h-6 text-gray-800 dark:text-white" aria-hidden="true"
+                                xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none"
+                                viewBox="0 0 24 24">
+                                <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"
+                                    stroke-width="2"
+                                    d="M12.01 6.001C6.5 1 1 8 5.782 13.001L12.011 20l6.23-7C23 8 17.5 1 12.01 6.002Z" />
+                            </svg>
+                        </button>
                 </div>
                 <div class="w-2/3 p-4">
                     <div class="flex justify-between items-start">
@@ -135,7 +146,7 @@
                             </div>
                         </div>
                         <div class="gap-4 mt-2 items-center ml-4">
-                            <button class="bg-blue-700 text-white hover:bg-blue-800 px-4 py-2 rounded-lg mx-auto">
+                            <button class="bg-blue-700 text-white hover:bg-blue-800 px-4 py-2 rounded-lg mx-auto" (click)="goToDetail(hotel.id)">
                                 Xem ưu đãi
                             </button>
                         </div>
@@ -166,3 +177,28 @@
         </div>
     </div>
 </div>
+
+
+@if(showSuccess) {
+<!-- Warning Notification (Only One at a Time) -->
+<div class="fixed top-[10rem] left-1/2 transform -translate-x-1/2 z-9999 w-80">
+    <div class="flex items-center bg-green-500 shadow-md border border-gray-200 rounded-md p-3 animate-slide-in">
+        <span class="text-white text-xl mr-2">✔</span>
+        <p class="text-white text-sm">
+            {{ successMessage }}
+        </p>
+    </div>
+</div>
+}
+
+
+@if(showError) {
+<!-- Warning Notification (Only One at a Time) -->
+<div class="fixed top-[10rem] left-1/2 transform -translate-x-1/2 z-99999 w-80">
+    <div class="flex items-center bg-white shadow-md border border-gray-200 rounded-md p-3 animate-slide-in">
+        <span class="text-red-500 text-xl mr-2">X</span>
+        <p class="text-red-800 text-sm">
+            {{ errorMessage }}
+    </div>
+</div>
+}

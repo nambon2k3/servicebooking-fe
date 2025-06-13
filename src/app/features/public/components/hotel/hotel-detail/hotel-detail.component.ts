@@ -1,10 +1,11 @@
 import { CommonModule } from '@angular/common';
 import { Component, OnInit } from '@angular/core';
 import { FooterComponent } from "../../../../../shared/components/footer/footer.component";
-import { ActivatedRoute } from '@angular/router';
+import { ActivatedRoute, RouterModule } from '@angular/router';
 import { HotelService } from '../../../services/hotel.service';
 import { CurrencyVndPipe } from "../../../../../shared/pipes/currency-vnd.pipe";
 import { SsrService } from '../../../../../core/services/ssr.service';
+import { UserStorageService } from '../../../../../core/services/user-storage/user-storage.service';
 
 @Component({
   selector: 'app-hotel-detail',
@@ -12,7 +13,8 @@ import { SsrService } from '../../../../../core/services/ssr.service';
   imports: [
     CommonModule,
     FooterComponent,
-    CurrencyVndPipe
+    CurrencyVndPipe,
+    RouterModule
   ],
   templateUrl: './hotel-detail.component.html',
   styleUrls: [],
@@ -36,6 +38,7 @@ export class HotelDetailComponent implements OnInit {
     private route: ActivatedRoute,
     private hotelService: HotelService,
     private ssrService: SsrService,
+    private userStorageService: UserStorageService
   ) { }
 
   ngOnInit(): void {
@@ -71,16 +74,41 @@ export class HotelDetailComponent implements OnInit {
     });
   }
 
+
+  showSuccess: boolean = false;
+  showError: boolean = false;
+
+  triggerSuccess() {
+    this.showSuccess = true;
+    // Hide warning after 3 seconds
+    setTimeout(() => {
+      this.showSuccess = false;
+    }, 4000);
+  }
+
+  triggerError() {
+    this.showError = true;
+
+
+    // Hide warning after 3 seconds
+    setTimeout(() => {
+      this.showError = false;
+    }, 4000);
+  }
+
   selectRoom(room: any) {
-    if (this.selectedRoom === room) {
-      this.selectedRoom = null;
-      this.rooms = [...this.allRooms];
-      this.price = 0;
-    } else {
-      this.selectedRoom = room;
-      this.rooms = [room];
-      this.price = room.sellingPrice;
-    }
+
+    const userId = this.userStorageService.getUserId() || 1;
+
+    this.hotelService.addRoom(room.serviceId, userId, 1).subscribe({
+      next: (response: any) => {
+        this.triggerSuccess();
+      },
+      error: (err: any) => {
+        this.triggerError();
+        console.error('Error fetching hotel details', err);
+      },
+    });
   }
 
    private async initMap() {

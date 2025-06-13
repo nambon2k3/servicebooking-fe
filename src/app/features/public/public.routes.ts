@@ -14,8 +14,9 @@ import { PlanComponent } from "./components/plan/plan.component";
 import { PlanDetailComponent } from "./components/plan/plan-detail/plan-detail.component";
 import { RestaurantComponent } from "./components/restaurant/restaurant.component";
 import { RestaurantDetailComponent } from "./components/restaurant/restaurant-detail/restaurant-detail.component";
-import { ServiceBookingComponent } from "./components/service-booking/service-booking.component";
 import { ActivitiesComponent } from "./components/activity/activity.component";
+import { ForumPlansComponent } from "./components/forum-plans/forum-plans.component";
+import { ForumPlanDetailComponent } from "./components/forum-plans/forum-plan-detail/forum-plan-detail.component";
 
 export const PUBLIC_ROUTES: Route[] = [
   {
@@ -88,8 +89,12 @@ export const PUBLIC_ROUTES: Route[] = [
         component: PlanDetailComponent,
       },
       {
-        path: 'service-booking',
-        component: ServiceBookingComponent,
+        path: 'plans',
+        component: ForumPlansComponent,
+      },
+      {
+        path: 'plan-forum-detail/:id',
+        component: ForumPlanDetailComponent,
       }
     ]
   },

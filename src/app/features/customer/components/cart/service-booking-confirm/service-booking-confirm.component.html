@@ -1,0 +1,250 @@
+<div class="p-4 md:p-6 bg-white text-gray-800 mt-24">
+    <app-spinner [isLoading]="isLoading"></app-spinner>
+
+    <h1 class="text-2xl md:text-3xl font-bold text-blue-800 mb-6 ml-60">
+        THÔNG TIN CHI TIẾT DỊCH VỤ
+    </h1>
+    <h1 class="text-2xl md:text-3xl font-bold text-blue-800 mb-6 ml-60">
+        Khách sạn
+    </h1>
+    <div class="grid grid-cols-3 gap-6 m-auto ml-60">
+        <!-- Thông tin phòng -->
+        <div class="col-span-2 space-y-3 h-fit">
+
+            <div *ngIf="rooms.length < 1" class="grid grid-cols-1 md:grid-cols-4 gap-4 rounded-lg  p-4">
+                Chưa có dịch vụ được chọn
+            </div>
+
+            <div class="grid grid-cols-1 md:grid-cols-4 gap-4 border border-blue-300 rounded-lg shadow-sm p-4"
+                *ngFor="let item of rooms">
+                <!-- Hình ảnh phòng -->
+                <img [src]="item?.imageUrl" alt="Room Image"
+                    class="rounded-md w-full h-auto object-cover col-span-1" />
+
+                <!-- Thông tin chi tiết -->
+                <div class="col-span-2 space-y-1">
+                    <h2 class="text-lg font-semibold text-blue-800">
+                        {{item?.name}}
+                    </h2>
+                    <div class="flex items-center space-x-1 text-yellow-500 text-sm">
+                        <span>★</span><span>★</span><span>★</span><span>★</span><span>★</span>
+                    </div>
+                    <div class="flex flex-wrap gap-4 text-sm mt-2">
+                        <span>👤 {{ item?.capacity }} Người</span>
+                        <span>📐 30m²</span>
+                        <span>🛏 {{ item?.capacity }} giường siêu lớn</span>
+                    </div>
+                    <div class="grid grid-cols-2 md:grid-cols-2 gap-3 text-gray-600 text-md text-left">
+                        <span>✓ Trà chiều</span>
+                        <span>✓ Nhận phòng sớm</span>
+                        <span>✓ Thức uống</span>
+                        <span>✓ Nước uống chào đón</span>
+                        <span>✓ Nhận phòng nhanh</span>
+                        <span>✓ WiFi miễn phí</span>
+                        <span>✓ Bữa sáng</span>
+                    </div>
+                </div>
+
+                <!-- Giá và hành động -->
+                <div class="col-span-1 flex flex-col justify-between border-l pl-4">
+                    <div class="flex flex-col items-start space-y-2">
+                        <p class="text-blue-600 text-2xl font-bold">
+                            {{ item?.sellingPrice | currencyVnd }}
+                        </p>
+                        <p class="text-gray-600 text-sm">{{item?.quantity}} Phòng</p>
+                        <div class="text-sm mt-2">
+                            <p>🕒 Nhận phòng: {{item?.checkInDate | date: 'dd-MM-yyyy HH:mm:ss' }} </p>
+                            <p>🕒 Trả phòng: {{item?.checkOutDate | date: 'dd-MM-yyyy HH:mm:ss' }}</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Tóm tắt đơn hàng -->
+        <div class="w-full lg:w-80 col-span-1 bg-white border rounded-lg shadow-md h-fit">
+            <h3 class="bg-blue-500 text-white text-sm font-semibold px-3 py-2 rounded-t-md">
+                Tóm tắt đơn hàng
+            </h3>
+            <p class="py-2 px-4 font-semibold text-blue-700">🏨 Khách sạn</p>
+
+            <div class="py-2 px-4 text-sm" *ngFor="let item of rooms">
+                <p></p>
+                <div class=" my-2 text-sm text-gray-700">
+                    <p>
+                        <span class="w-[50%]">
+                            {{item?.name}}
+                        </span>
+                        <span class="float-right">{{item?.quantity}} x {{ item?.sellingPrice |
+                            currencyVnd }}</span>
+                    </p>
+                </div>
+            </div>
+
+
+            <p class="py-2 px-4 font-semibold text-blue-700 border-t">🍜 Nhà Hàng</p>
+
+            <div class="py-2 px-4 text-sm" *ngFor="let item of meals">
+                <p></p>
+                <div class="my-2 text-sm text-gray-700">
+                    <p>
+                        <span class="w-[50%]">
+                            {{item?.name}}
+                        </span>
+                        <span class="float-right">{{item?.quantity}} x {{ item?.sellingPrice |
+                            currencyVnd }}</span>
+                    </p>
+                </div>
+            </div>
+
+            <p class="py-2 px-4 font-semibold text-blue-700 border-t">📷 Vé Tham Quan</p>
+
+            <div class="py-2 px-4 text-sm" *ngFor="let item of activities">
+                <p></p>
+                <div class=" my-2 text-sm text-gray-700">
+                    <p>
+                        <span class="w-[50%]">
+                            {{item?.name}}
+                        </span>
+                        <span class="float-right">{{item?.quantity}} x {{ item?.sellingPrice |
+                            currencyVnd }}</span>
+                    </p>
+                </div>
+            </div>
+
+
+            <div class="border-t py-2 px-4 pt-2 font-semibold text-base text-black mt-3">
+                Tổng cộng: <span class="text-blue-600 float-right">
+                    {{ grandTotal | currencyVnd}}
+                </span>
+            </div>
+
+            <div class="py-2 px-4" *ngIf="bookingStatus == 'PENDING'">
+                <button class="mt-3 w-full bg-blue-600 text-white py-2 rounded-md font-semibold hover:bg-blue-700"
+                    (click)="forwardPayment()">
+                    Thanh toán
+                </button>
+            </div>
+
+        </div>
+    </div>
+
+    <h1 class="text-2xl md:text-3xl font-bold text-blue-800 mb-6 ml-60 mt-6">
+        Nhà Hàng
+    </h1>
+    <div class="grid grid-cols-3 gap-6 m-auto ml-60">
+        <div *ngIf="meals.length < 1" class="grid grid-cols-1 gap-4 rounded-lg  p-4">
+            Chưa có dịch vụ được chọn
+        </div>
+        <!-- Thông tin phòng -->
+        <div class="col-span-2 space-y-3 h-fit">
+            <div class="grid grid-cols-1 md:grid-cols-4 gap-4 border border-blue-300 rounded-lg shadow-sm p-4"
+                *ngFor="let item of meals">
+                <!-- Hình ảnh phòng -->
+                <img [src]="item?.imageUrl" alt="Room Image"
+                    class="rounded-md w-full h-auto object-cover col-span-1" />
+
+                <!-- Thông tin chi tiết -->
+                <div class="col-span-2 space-y-1">
+                    <h2 class="text-lg font-semibold text-blue-800">
+                        {{item?.name}}
+                    </h2>
+                    <div class="flex items-center space-x-1 text-yellow-500 text-sm">
+                        <span>★</span><span>★</span><span>★</span><span>★</span><span>★</span>
+                    </div>
+                    <div class="flex flex-wrap gap-4 text-sm mt-2">
+                        <span>🍜 {{ item?.type == 'DINNER'? 'Ăn Tối' : item?.type == 'LUNCH' ?
+                            'Ăn Trưa' : 'Ăn Sáng' }}</span>
+                    </div>
+                    <div class="grid grid-cols-2 md:grid-cols-2 gap-3 text-gray-600 text-md text-left">
+                        <p>
+                            {{item?.mealDetail}}
+                        </p>
+                    </div>
+                </div>
+
+                <!-- Giá và hành động -->
+                <div class="col-span-1 flex flex-col justify-between border-l pl-4">
+                    <div class="flex flex-col items-start space-y-2">
+                        <p class="text-blue-600 text-2xl font-bold">
+                            {{ item?.sellingPrice | currencyVnd }}
+                        </p>
+                        <p class="text-gray-600 text-sm">{{item?.quantity}} Suất</p>
+                        <div class="text-sm mt-2">
+                            <p>🕒 Bắt đầu: {{item?.checkInDate | date: 'dd-MM-yyyy HH:mm:ss' }}</p>
+                        </div>
+                    </div>
+                    
+                </div>
+            </div>
+        </div>
+    </div>
+
+
+    <h1 class="text-2xl md:text-3xl font-bold text-blue-800 mb-6 ml-60 mt-6">
+        Vé Tham Quan
+    </h1>
+    <div class="grid grid-cols-3 gap-6 m-auto ml-60">
+
+        <div *ngIf="activities.length < 1" class="grid grid-cols-1 gap-4 rounded-lg  p-4">
+            Chưa có dịch vụ được chọn
+        </div>
+        <!-- Thông tin phòng -->
+        <div class="col-span-2 space-y-3 h-fit">
+            <div class="grid grid-cols-1 md:grid-cols-4 gap-4 border border-blue-300 rounded-lg shadow-sm p-4"
+                *ngFor="let item of activities">
+                <!-- Hình ảnh phòng -->
+                <img [src]="item?.imageUrl" alt="Room Image"
+                    class="rounded-md w-full h-auto object-cover col-span-1" />
+
+                <!-- Thông tin chi tiết -->
+                <div class="col-span-2 space-y-1">
+                    <h2 class="text-lg font-semibold text-blue-800">
+                        {{item?.name}}
+                    </h2>
+                    <div class="flex items-center space-x-1 text-yellow-500 text-sm">
+                        <span>★</span><span>★</span><span>★</span><span>★</span><span>★</span>
+                    </div>
+                </div>
+
+                <!-- Giá và hành động -->
+                <div class="col-span-1 flex flex-col justify-between border-l pl-4">
+                    <div class="flex flex-col items-start space-y-2">
+                        <p class="text-blue-600 text-2xl font-bold">
+                            {{ item?.sellingPrice | currencyVnd }}
+                        </p>
+                        <p class="text-gray-600 text-sm"> {{item?.quantity}} Vé</p>
+                        <div class="text-sm mt-2">
+                            <p>🕒 Bắt đầu: {{item?.checkInDate | date: 'dd-MM-yyyy HH:mm:ss' }}</p>
+                        </div>
+                    </div>
+                    
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+@if(showSuccess) {
+<!-- Warning Notification (Only One at a Time) -->
+<div class="fixed top-[5rem] left-1/2 transform -translate-x-1/2 z-50 w-80">
+    <div class="flex items-center bg-green-500 shadow-md border border-gray-200 rounded-md p-3 animate-slide-in">
+        <span class="text-white text-xl mr-2">✔</span>
+        <p class="text-white text-sm">
+            {{ successMessage }}
+        </p>
+    </div>
+</div>
+}
+
+@if(showError) {
+<!-- Warning Notification (Only One at a Time) -->
+<div class="fixed top-[5rem] left-1/2 transform -translate-x-1/2 z-50 w-80">
+    <div class="flex items-center bg-white shadow-md border border-gray-200 rounded-md p-3 animate-slide-in">
+        <span class="text-red-500 text-xl mr-2">X</span>
+        <p class="text-red-800 text-sm">
+            {{ errorMessage }}
+    </div>
+</div>
+}
+

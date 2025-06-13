@@ -8,6 +8,8 @@ import { SsrService } from '../../../../core/services/ssr.service';
 import { Router } from '@angular/router';
 import { NgSelectComponent } from '@ng-select/ng-select';
 import { Locations } from '../../../../core/models/location.model';
+import { HomepageService } from '../../services/homepage.service';
+import { WishlistService } from '../../../customer/components/wishlist/wishlist.service';
 
 @Component({
   selector: 'app-hotel',
@@ -40,7 +42,9 @@ export class HotelComponent implements OnInit {
   constructor(
     private hotelService: HotelService,
     private ssrService: SsrService,
-    private router: Router
+    private router: Router,
+    private homepageService: HomepageService,
+    private wishlistService: WishlistService
   ) {
   }
 
@@ -79,6 +83,21 @@ export class HotelComponent implements OnInit {
     });
   }
 
+  addToWishlist(provider: any) {
+    this.homepageService.addWishlist(provider).subscribe({
+      next: (response) => {
+        if (response.code === 200) {
+          this.wishlistService.triggerWishlistUpdate();
+          this.triggerSuccess();
+        }
+      },
+      error: (err) => {
+        console.error('Error adding to wishlist:', err);
+        this.triggerError();
+      },
+    });
+  }
+
   getHotels(): void {
     this.hotelService.getHotels(
       this.currentPage,
@@ -109,7 +128,7 @@ export class HotelComponent implements OnInit {
 
   clearFilters(): void {
     this.minPrice = 0;
-    this.maxPrice = 1000;
+    this.maxPrice = 200000000;
     this.hotelClassFilter = 0;
     // this.sortBy = '';
     this.ratingFilter = 0;
@@ -214,4 +233,31 @@ export class HotelComponent implements OnInit {
 
     window.open(googleMapsUrl, '_blank'); // Mở trong tab mới
   }
+
+
+  showSuccess: boolean = false;
+  showError: boolean = false;
+
+
+  successMessage: string = 'Thêm thành công';
+  errorMessage: string = 'Thêm thất bại';
+
+  triggerSuccess() {
+    this.showSuccess = true;
+
+    // Hide warning after 3 seconds
+    setTimeout(() => {
+      this.showSuccess = false;
+    }, 4000);
+  }
+
+  triggerError() {
+    this.showError = true;
+
+    // Hide warning after 3 seconds
+    setTimeout(() => {
+      this.showError = false;
+    }, 4000);
+  }
+
 }

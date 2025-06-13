@@ -1,0 +1,374 @@
+<div class="p-4 md:p-6 bg-white text-gray-800 mt-24">
+    <app-spinner [isLoading]="isLoading"></app-spinner>
+    <!-- Header -->
+    <div class="flex items-center space-x-2 mb-4 ml-60 cursor-pointer" [routerLink]="['/homepage']">
+        <span class="text-lg">←</span>
+        <span class="text-sm font-medium">Quay lại</span>
+    </div>
+
+    <h1 class="text-2xl md:text-3xl font-bold text-blue-800 mb-6 ml-60">
+        THÔNG TIN CHI TIẾT DỊCH VỤ
+    </h1>
+    <h1 class="text-2xl md:text-3xl font-bold text-blue-800 mb-6 ml-60">
+        Khách sạn
+    </h1>
+    <div class="grid grid-cols-3 gap-6 m-auto ml-60">
+        <!-- Thông tin phòng -->
+        <div class="col-span-2 space-y-3 h-fit">
+
+            <div *ngIf="hotels.length < 1" class="grid grid-cols-1 md:grid-cols-4 gap-4 rounded-lg  p-4">
+                Chưa có dịch vụ được chọn
+            </div>
+
+            <div class="grid grid-cols-1 md:grid-cols-4 gap-4 border border-blue-300 rounded-lg shadow-sm p-4"
+                *ngFor="let cartItem of hotels">
+                <!-- Hình ảnh phòng -->
+                <img [src]="cartItem?.service?.imageUrl" alt="Room Image"
+                    class="rounded-md w-full h-auto object-cover col-span-1" />
+
+                <!-- Thông tin chi tiết -->
+                <div class="col-span-2 space-y-1">
+                    <h2 class="text-lg font-semibold text-blue-800">
+                        {{cartItem?.service?.name}}
+                    </h2>
+                    <div class="flex items-center space-x-1 text-yellow-500 text-sm">
+                        <span>★</span><span>★</span><span>★</span><span>★</span><span>★</span>
+                    </div>
+                    <div class="flex flex-wrap gap-4 text-sm mt-2">
+                        <span>👤 {{ cartItem?.service?.capacity }} Người</span>
+                        <span>📐 30m²</span>
+                        <span>🛏 {{ cartItem?.service?.capacity }} giường siêu lớn</span>
+                    </div>
+                    <div class="grid grid-cols-2 md:grid-cols-2 gap-3 text-gray-600 text-md text-left">
+                        <span>✓ Trà chiều</span>
+                        <span>✓ Nhận phòng sớm</span>
+                        <span>✓ Thức uống</span>
+                        <span>✓ Nước uống chào đón</span>
+                        <span>✓ Nhận phòng nhanh</span>
+                        <span>✓ WiFi miễn phí</span>
+                        <span>✓ Bữa sáng</span>
+                    </div>
+                </div>
+
+                <!-- Giá và hành động -->
+                <div class="col-span-1 flex flex-col justify-between border-l pl-4">
+                    <div class="flex flex-col items-start space-y-2">
+                        <p class="text-blue-600 text-2xl font-bold">
+                            {{ cartItem?.service?.sellingPrice | currencyVnd }}
+                        </p>
+                        <p class="text-gray-600 text-sm">{{cartItem?.quantity}} Phòng</p>
+                        <div class="text-sm mt-2">
+                            <p>🕒 Nhận phòng: {{cartItem?.checkInDate | date: 'dd-MM-yyyy HH:mm:ss' }} </p>
+                            <p>🕒 Trả phòng: {{cartItem?.checkOutDate | date: 'dd-MM-yyyy HH:mm:ss' }}</p>
+                        </div>
+                    </div>
+                    <div class="flex gap-2 mt-4">
+                        <button
+                            class="border border-blue-600 text-blue-600 px-4 py-1 rounded hover:text-white hover:bg-blue-600"
+                            (click)="openServiceModal(cartItem)">
+                            Thay đổi
+                        </button>
+                        <button
+                            class="border border-red-600 text-red-600 px-4 py-1 rounded  hover:text-white hover:bg-red-600"
+                            (click)="deleteCartItem(cartItem?.id)">
+                            Huỷ
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Tóm tắt đơn hàng -->
+        <div class="w-full lg:w-80 col-span-1 bg-white border rounded-lg shadow-md h-fit">
+            <h3 class="bg-blue-500 text-white text-sm font-semibold px-3 py-2 rounded-t-md">
+                Tóm tắt đơn hàng
+            </h3>
+            <p class="py-2 px-4 font-semibold text-blue-700">🏨 Khách sạn</p>
+
+            <div class="py-2 px-4 text-sm" *ngFor="let cartItem of hotels">
+                <p></p>
+                <div class=" my-2 text-sm text-gray-700">
+                    <p>
+                        <span class="w-[50%]">
+                            {{cartItem?.service?.name}}
+                        </span>
+                        <span class="float-right">{{cartItem?.quantity}} x {{ cartItem?.service?.sellingPrice |
+                            currencyVnd }}</span>
+                    </p>
+                </div>
+            </div>
+
+
+            <p class="py-2 px-4 font-semibold text-blue-700 border-t">🍜 Nhà Hàng</p>
+
+            <div class="py-2 px-4 text-sm" *ngFor="let cartItem of meals">
+                <p></p>
+                <div class="my-2 text-sm text-gray-700">
+                    <p>
+                        <span class="w-[50%]">
+                            {{cartItem?.service?.name}}
+                        </span>
+                        <span class="float-right">{{cartItem?.quantity}} x {{ cartItem?.service?.sellingPrice |
+                            currencyVnd }}</span>
+                    </p>
+                </div>
+            </div>
+
+            <p class="py-2 px-4 font-semibold text-blue-700 border-t">📷 Vé Tham Quan</p>
+
+            <div class="py-2 px-4 text-sm" *ngFor="let cartItem of activities">
+                <p></p>
+                <div class=" my-2 text-sm text-gray-700">
+                    <p>
+                        <span class="w-[50%]">
+                            {{cartItem?.service?.name}}
+                        </span>
+                        <span class="float-right">{{cartItem?.quantity}} x {{ cartItem?.service?.sellingPrice |
+                            currencyVnd }}</span>
+                    </p>
+                </div>
+            </div>
+
+
+            <div class="border-t py-2 px-4 pt-2 font-semibold text-base text-black mt-3">
+                Tổng cộng: <span class="text-blue-600 float-right">
+                    {{ grandTotal | currencyVnd}}
+                </span>
+            </div>
+            <div class="py-2 px-4">
+                <button class="mt-3 w-full bg-blue-600 text-white py-2 rounded-md font-semibold hover:bg-blue-700"
+                    (click)="submitBooking()">
+                    Xác nhận
+                </button>
+            </div>
+
+        </div>
+    </div>
+
+    <h1 class="text-2xl md:text-3xl font-bold text-blue-800 mb-6 ml-60 mt-6">
+        Nhà Hàng
+    </h1>
+    <div class="grid grid-cols-3 gap-6 m-auto ml-60">
+        <div *ngIf="meals.length < 1" class="grid grid-cols-1 gap-4 rounded-lg  p-4">
+            Chưa có dịch vụ được chọn
+        </div>
+        <!-- Thông tin phòng -->
+        <div class="col-span-2 space-y-3 h-fit">
+            <div class="grid grid-cols-1 md:grid-cols-4 gap-4 border border-blue-300 rounded-lg shadow-sm p-4"
+                *ngFor="let cartItem of meals">
+                <!-- Hình ảnh phòng -->
+                <img [src]="cartItem?.service?.imageUrl" alt="Room Image"
+                    class="rounded-md w-full h-auto object-cover col-span-1" />
+
+                <!-- Thông tin chi tiết -->
+                <div class="col-span-2 space-y-1">
+                    <h2 class="text-lg font-semibold text-blue-800">
+                        {{cartItem?.service?.name}}
+                    </h2>
+                    <div class="flex items-center space-x-1 text-yellow-500 text-sm">
+                        <span>★</span><span>★</span><span>★</span><span>★</span><span>★</span>
+                    </div>
+                    <div class="flex flex-wrap gap-4 text-sm mt-2">
+                        <span>🍜 {{ cartItem?.service?.type == 'DINNER'? 'Ăn Tối' : cartItem?.service?.type == 'LUNCH' ?
+                            'Ăn Trưa' : 'Ăn Sáng' }}</span>
+                    </div>
+                    <div class="grid grid-cols-2 md:grid-cols-2 gap-3 text-gray-600 text-md text-left">
+                        <p>
+                            {{cartItem?.service?.mealDetail}}
+                        </p>
+                    </div>
+                </div>
+
+                <!-- Giá và hành động -->
+                <div class="col-span-1 flex flex-col justify-between border-l pl-4">
+                    <div class="flex flex-col items-start space-y-2">
+                        <p class="text-blue-600 text-2xl font-bold">
+                            {{ cartItem?.service?.sellingPrice | currencyVnd }}
+                        </p>
+                        <p class="text-gray-600 text-sm">{{cartItem?.quantity}} Suất</p>
+                        <div class="text-sm mt-2">
+                            <p>🕒 Bắt đầu: {{cartItem?.checkInDate | date: 'dd-MM-yyyy HH:mm:ss' }}</p>
+                        </div>
+                    </div>
+                    <div class="flex gap-2 mt-4">
+                        <button
+                            class="border border-blue-600 text-blue-600 px-4 py-1 rounded hover:text-white hover:bg-blue-600"
+                            (click)="openServiceModal(cartItem)">
+                            Thay đổi
+                        </button>
+                        <button
+                            class="border border-red-600 text-red-600 px-4 py-1 rounded hover:text-white hover:bg-red-600"
+                            (click)="deleteCartItem(cartItem?.id)">
+                            Huỷ
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+
+    <h1 class="text-2xl md:text-3xl font-bold text-blue-800 mb-6 ml-60 mt-6">
+        Vé Tham Quan
+    </h1>
+    <div class="grid grid-cols-3 gap-6 m-auto ml-60">
+
+        <div *ngIf="activities.length < 1" class="grid grid-cols-1 gap-4 rounded-lg  p-4">
+            Chưa có dịch vụ được chọn
+        </div>
+        <!-- Thông tin phòng -->
+        <div class="col-span-2 space-y-3 h-fit">
+            <div class="grid grid-cols-1 md:grid-cols-4 gap-4 border border-blue-300 rounded-lg shadow-sm p-4"
+                *ngFor="let cartItem of activities">
+                <!-- Hình ảnh phòng -->
+                <img [src]="cartItem?.service?.imageUrl" alt="Room Image"
+                    class="rounded-md w-full h-auto object-cover col-span-1" />
+
+                <!-- Thông tin chi tiết -->
+                <div class="col-span-2 space-y-1">
+                    <h2 class="text-lg font-semibold text-blue-800">
+                        {{cartItem?.service?.name}}
+                    </h2>
+                    <div class="flex items-center space-x-1 text-yellow-500 text-sm">
+                        <span>★</span><span>★</span><span>★</span><span>★</span><span>★</span>
+                    </div>
+                </div>
+
+                <!-- Giá và hành động -->
+                <div class="col-span-1 flex flex-col justify-between border-l pl-4">
+                    <div class="flex flex-col items-start space-y-2">
+                        <p class="text-blue-600 text-2xl font-bold">
+                            {{ cartItem?.service?.sellingPrice | currencyVnd }}
+                        </p>
+                        <p class="text-gray-600 text-sm"> {{cartItem?.quantity}} Vé</p>
+                        <div class="text-sm mt-2">
+                            <p>🕒 Bắt đầu: {{cartItem?.checkInDate | date: 'dd-MM-yyyy HH:mm:ss' }}</p>
+                        </div>
+                    </div>
+                    <div class="flex gap-2 mt-4">
+                        <button
+                            class="border border-blue-600 text-blue-600 px-4 py-1 rounded hover:text-white hover:bg-blue-600"
+                            (click)="openServiceModal(cartItem)">
+                            Thay đổi
+                        </button>
+                        <button
+                            class="border border-red-600 text-red-600 px-4 py-1 rounded hover:text-white hover:bg-red-600"
+                            (click)="deleteCartItem(cartItem?.id)">
+                            Huỷ
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+@if(showSuccess) {
+<!-- Warning Notification (Only One at a Time) -->
+<div class="fixed top-[5rem] left-1/2 transform -translate-x-1/2 z-50 w-80">
+    <div class="flex items-center bg-green-500 shadow-md border border-gray-200 rounded-md p-3 animate-slide-in">
+        <span class="text-white text-xl mr-2">✔</span>
+        <p class="text-white text-sm">
+            Chỉnh sửa thành công
+        </p>
+    </div>
+</div>
+}
+
+@if(showError) {
+<!-- Warning Notification (Only One at a Time) -->
+<div class="fixed top-[5rem] left-1/2 transform -translate-x-1/2 z-50 w-80">
+    <div class="flex items-center bg-white shadow-md border border-gray-200 rounded-md p-3 animate-slide-in">
+        <span class="text-red-500 text-xl mr-2">X</span>
+        <p class="text-red-800 text-sm">
+            Chỉnh sửa thất bại
+    </div>
+</div>
+}
+
+
+
+
+
+<div id="authentication-modal" tabindex="-1" aria-hidden="true"
+    class="hidden overflow-y-auto overflow-x-hidden fixed top-0 right-0 left-0 z-50 justify-center items-center w-full md:inset-0 h-[calc(100%-1rem)] max-h-full">
+    <div class="relative p-4 w-full max-w-md max-h-full">
+        <!-- Modal content -->
+        <div class="relative bg-white rounded-lg shadow-sm dark:bg-gray-700">
+            <!-- Modal header -->
+            <div class="flex items-center justify-between rounded-t dark:border-gray-600 border-gray-200">
+                <button type="button" (click)="closeServiceModal()"
+                    class="end-2.5 text-gray-400 bg-transparent hover:bg-gray-200 hover:text-gray-900 rounded-lg text-sm w-8 h-8 ms-auto inline-flex justify-center items-center dark:hover:bg-gray-600 dark:hover:text-white"
+                    data-modal-hide="authentication-modal">
+                    <svg class="w-3 h-3" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none"
+                        viewBox="0 0 14 14">
+                        <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                            d="m1 1 6 6m0 0 6 6M7 7l6-6M7 7l-6 6" />
+                    </svg>
+                    <span class="sr-only">Close modal</span>
+                </button>
+            </div>
+            <!-- Modal body -->
+            <div class="p-4 md:p-5 pt-0!">
+                <form [formGroup]="cartItemForm" (ngSubmit)="onSubmit()" class="space-y-4 mt-4">
+                    <p>
+                        Dịch vụ: <strong>{{selectedCartItem?.service?.name}}</strong>
+                    </p>
+                    <!-- Check-in -->
+                    <div>
+                        <label for="checkin" class="block mb-2 text-sm font-medium text-gray-700 dark:text-white">Ngày
+                            sử dụng</label>
+                        <input type="datetime-local" id="checkin" formControlName="checkInDate"
+                            class="w-full px-3 py-2 border rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-blue-500">
+                    </div>
+
+                    <!-- Check-out -->
+                    <div>
+                        <label for="checkout" class="block mb-2 text-sm font-medium text-gray-700 dark:text-white">Ngày
+                            Trả</label>
+                        <input type="datetime-local" id="checkout" formControlName="checkOutDate"
+                            class="w-full px-3 py-2 border rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-blue-500">
+                    </div>
+
+                    <!-- Quantity -->
+                    <div>
+                        <label for="quantity" class="block mb-2 text-sm font-medium text-gray-700 dark:text-white">Số
+                            lượng</label>
+                        <input type="number" id="quantity" formControlName="quantity" min="1"
+                            class="w-full px-3 py-2 border rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-blue-500">
+                    </div>
+
+                    <button type="submit"
+                        class="w-full text-white bg-blue-600 hover:bg-blue-700 font-medium rounded-lg text-sm px-4 py-2 text-center">
+                        Save Changes
+                    </button>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+@if(success) {
+    <!-- Modal Overlay (Black Background) -->
+<div class="fixed inset-0 flex items-center justify-center bg-black/70 backdrop-blur-sm transition-opacity">
+    <!-- Modal Box -->
+    <div id="successModal" tabindex="-1" class="relative z-50 w-full max-w-md p-4">
+        <div class="relative bg-white rounded-lg shadow dark:bg-gray-800 animate-fadeIn">
+
+            <!-- Modal Content -->
+            <div class="p-6 text-center">
+                <svg class="w-16 h-16 mx-auto text-green-500 dark:text-green-400" fill="none" stroke="currentColor"
+                    stroke-width="2" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                    <path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7"></path>
+                </svg>
+                <h2 class="mt-4 text-2xl font-semibold text-gray-800 dark:text-white">Success!</h2>
+                <p class="mt-2 text-gray-600 dark:text-gray-300">
+                    Tạo đơn đặt dịch vụ thành công. 
+                    <br />
+                    Chuyển sang trang thông tin đơn hàng {{second}} giây ...
+                </p>
+            </div>
+        </div>
+    </div>
+</div>
+}
