@@ -305,20 +305,20 @@ export class TourDetailsComponent implements OnInit {
       formData.append('file', latestFile);
     }
 
-    this.adminService.uploadImage(formData).subscribe({
-      next: (response) => {
-        this.isLoading = false;
-        const uploadedImage = response.data; // Giả sử API trả về URL của ảnh vừa upload
-        const currentImages = this.editTourForm.get('tourImages')?.value || [];
-        this.editTourForm.get('tourImages')?.setValue([...currentImages, uploadedImage]);
-        // Xóa file đã gửi khỏi selectedFiles để tránh gửi lại
-        this.selectedFiles.pop();
-      },
-      error: (err) => {
-        this.isLoading = false;
-        console.error('Lỗi tải ảnh:', err);
-      }
-    });
+    // this.adminService.uploadImage(formData).subscribe({
+    //   next: (response) => {
+    //     this.isLoading = false;
+    //     const uploadedImage = response.data; // Giả sử API trả về URL của ảnh vừa upload
+    //     const currentImages = this.editTourForm.get('tourImages')?.value || [];
+    //     this.editTourForm.get('tourImages')?.setValue([...currentImages, uploadedImage]);
+    //     // Xóa file đã gửi khỏi selectedFiles để tránh gửi lại
+    //     this.selectedFiles.pop();
+    //   },
+    //   error: (err) => {
+    //     this.isLoading = false;
+    //     console.error('Lỗi tải ảnh:', err);
+    //   }
+    // });
   }
 
   onSearch(event: any): void {

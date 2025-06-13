@@ -1,0 +1,97 @@
+<div class="container mx-auto px-4 py-8">
+    <h1 class="text-2xl font-bold mb-4">Admin Booking Management</h1>
+    <div *ngIf="errorMessage" class="text-red-500 mb-4">{{ errorMessage }}</div>
+
+    <!-- Search and Filter -->
+    <div class="flex flex-col sm:flex-row gap-4 mb-6">
+        <input type="text" [(ngModel)]="searchBookingCode" (ngModelChange)="searchBookings()"
+            placeholder="Search by Booking Code..."
+            class="w-full sm:w-1/2 px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-600" />
+        <select [(ngModel)]="filterStatus" (ngModelChange)="filterBookings()"
+            class="w-full sm:w-1/4 px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-600">
+            <option value="">All Statuses</option>
+            <option *ngFor="let status of availableStatuses" [value]="status">{{ status }}</option>
+        </select>
+    </div>
+
+    <!-- Booking List -->
+    <div *ngIf="filteredBookings.length > 0; else noData"
+        class="px-4 py-6 bg-gray-50 rounded-lg shadow-md overflow-x-auto">
+        <table class="min-w-full table-auto border border-gray-200 rounded-lg overflow-hidden">
+            <thead class="bg-gray-100 text-left">
+                <tr>
+                    <th class="px-4 py-3 text-sm font-semibold text-gray-700">Mã Booking</th>
+                    <th class="px-4 py-3 text-sm font-semibold text-gray-700">Tên khách hàng</th>
+                    <th class="px-4 py-3 text-sm font-semibold text-gray-700">Ngày đặt</th>
+                    <th class="px-4 py-3 text-sm font-semibold text-gray-700">Tổng tiền</th>
+                    <th class="px-4 py-3 text-sm font-semibold text-gray-700 w-40">Trạng thái</th>
+                    <th class="px-4 py-3 text-sm font-semibold text-gray-700">Hành động</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr *ngFor="let booking of filteredBookings"
+                    class="border-t hover:bg-gray-50 transition-colors duration-200">
+                    <td class="px-4 py-3 font-medium text-gray-800 cursor-pointer"
+                        (click)="openBookingDetail(booking.id)">
+                        {{ booking.bookingCode || 'N/A' }}
+                    </td>
+                    <td class="px-4 py-3 text-gray-700">
+                        {{ booking.userName || 'N/A' }} (ID: {{ booking.userId || 'N/A' }})
+                    </td>
+                    <td class="px-4 py-3 text-gray-600">
+                        {{ booking.createdAt | date }}
+                    </td>
+                    <td class="px-4 py-3 text-green-700 font-semibold">
+                        {{ booking.totalPrice | currency:'VND' }}
+                    </td>
+                    <td class="px-4 py-3">
+                        <span class="inline-flex items-center px-3 py-1 rounded-full text-sm font-semibold" [ngClass]="{
+            'bg-green-100 text-green-800': booking.status === 'COMPLETED' || booking.status === 'SUCCESS',
+            'bg-yellow-100 text-yellow-800': booking.status === 'PENDING',
+            'bg-red-100 text-red-800': booking.status === 'CANCELED',
+            'bg-blue-100 text-blue-800': booking.status === 'CONFIRMED'
+          }">{{ booking.status || 'N/A' }}</span>
+                    </td>
+                    <td>
+  <button (click)="toggleStatusDropdown($event, booking)">Cập nhật ▼</button>
+  <div *ngIf="openedDropdownBookingId === booking.id" class="absolute bg-white shadow rounded border mt-2 z-10">
+    <button *ngFor="let status of bookingStatuses"
+            class="block px-4 py-2 hover:bg-gray-100 w-full text-left"
+            (click)="updateBookingStatus(booking, status)">
+      {{ status }}
+    </button>
+  </div>
+</td>
+
+
+                </tr>
+            </tbody>
+        </table>
+    </div>
+
+    <ng-template #noData>
+        <div class="text-center py-12 bg-white rounded-lg shadow-md">
+            <p class="text-gray-500 text-lg">No bookings available.</p>
+        </div>
+    </ng-template>
+
+    <!-- Pagination -->
+    <div class="py-8 mt-8 text-center">
+        <ul class="inline-flex space-x-2">
+            <li *ngIf="currentPage > 0">
+                <a (click)="changePage(currentPage - 1)"
+                    class="px-3 py-2 rounded-md border cursor-pointer hover:bg-gray-100">«</a>
+            </li>
+            <li *ngFor="let page of [].constructor(totalPages); let i = index">
+                <a (click)="changePage(i)" class="px-3 py-2 rounded-md border cursor-pointer"
+                    [class.bg-black]="i === currentPage" [class.text-white]="i === currentPage">
+                    {{ i + 1 }}
+                </a>
+            </li>
+            <li *ngIf="currentPage < totalPages - 1">
+                <a (click)="changePage(currentPage + 1)"
+                    class="px-3 py-2 rounded-md border cursor-pointer hover:bg-gray-100">»</a>
+            </li>
+        </ul>
+    </div>
+</div>

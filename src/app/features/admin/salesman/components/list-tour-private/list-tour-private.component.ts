@@ -140,19 +140,19 @@ export class ListTourPrivateComponent implements AfterViewInit {
       formData.append('file', file);
     });
 
-    this.adminService.uploadImage(formData).subscribe({
-      next: (response) => {
-        this.isImageLoading = false;
-        const uploadedImages = response.data;
-        const currentImages = this.tourForm.get('tourImages')?.value || [];
-        this.tourForm.get('tourImages')?.setValue([...currentImages, uploadedImages]);
-        this.selectedFiles.pop();
-      },
-      error: (err) => {
-        this.isImageLoading = false;
-        console.error('Lỗi tải ảnh:', err);
-      }
-    });
+    // this.adminService.uploadImage(formData).subscribe({
+    //   next: (response) => {
+    //     this.isImageLoading = false;
+    //     const uploadedImages = response.data;
+    //     const currentImages = this.tourForm.get('tourImages')?.value || [];
+    //     this.tourForm.get('tourImages')?.setValue([...currentImages, uploadedImages]);
+    //     this.selectedFiles.pop();
+    //   },
+    //   error: (err) => {
+    //     this.isImageLoading = false;
+    //     console.error('Lỗi tải ảnh:', err);
+    //   }
+    // });
   }
 
   selectedFile: File | null = null;

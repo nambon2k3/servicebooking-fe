@@ -5,7 +5,7 @@ import { FormsModule } from '@angular/forms'; // <-- Import FormsModule
 import { NgxChartsModule, ScaleType } from '@swimlane/ngx-charts';
 import { Color } from '@swimlane/ngx-charts';
 import { CurrencyVndPipe } from "../../../../shared/pipes/currency-vnd.pipe"; // <-- Adjust path
-import { AdminService, DashboardData } from '../../admin.service';
+// import { AdminService, DashboardData } from '../../admin.service';
 import { FormatDatePipe } from "../../../../shared/pipes/format-date.pipe";
 import { SpinnerComponent } from "../../../../shared/components/spinner/spinner.component";
 
@@ -43,7 +43,7 @@ export class DashboardComponent implements OnInit {
   private platformId = inject(PLATFORM_ID);
   isLoading = true;
   apiError: string | null = null;
-  dashboardData: DashboardData | null = null;
+  // dashboardData: DashboardData | null = null;
 
   // Date range properties
   fromDate: string = ''; // Will hold YYYY-MM-DD
@@ -93,10 +93,10 @@ export class DashboardComponent implements OnInit {
   latestMonthStr: string = '';
   totalOnlineOfflineBookings: number = 0;
 
-  constructor(
-    private dashboardService: AdminService, // Use injected service
-  ) {
-  }
+  // constructor(
+  //   private dashboardService: AdminService, // Use injected service
+  // ) {
+  // }
 
   ngOnInit(): void {
     this.isLoading = true; // Set loading state
@@ -151,92 +151,92 @@ export class DashboardComponent implements OnInit {
     this.apiError = null;
     this.cdr.markForCheck();
 
-    this.dashboardService.getDashboardData(fromDateFormatted, toDateFormatted).subscribe({
-        next: (response) => {
-            if (response) {
-                this.dashboardData = response.data;
-                this.processDataForCharts(response.data);
-                this.processOtherData(response.data);
-                this.isLoading = false;
-            }
-            this.cdr.markForCheck();
-        },
-        error: (err) => {
-            console.error('Lỗi API:', err);
-            this.apiError = 'Đã xảy ra lỗi khi lấy dữ liệu.';
-            this.isLoading = false;
-        }
-    });
+    // this.dashboardService.getDashboardData(fromDateFormatted, toDateFormatted).subscribe({
+    //     next: (response) => {
+    //         if (response) {
+    //             this.dashboardData = response.data;
+    //             this.processDataForCharts(response.data);
+    //             this.processOtherData(response.data);
+    //             this.isLoading = false;
+    //         }
+    //         this.cdr.markForCheck();
+    //     },
+    //     error: (err) => {
+    //         console.error('Lỗi API:', err);
+    //         this.apiError = 'Đã xảy ra lỗi khi lấy dữ liệu.';
+    //         this.isLoading = false;
+    //     }
+    // });
     
     this.isLoading = false;
 }
 
 
   // Process data functions remain largely the same, but handle empty arrays
-  private processDataForCharts(data: DashboardData): void {
-    this.isLoading = true; // Set loading state
-    this.cdr.markForCheck(); // Mark for check to update UI
+  // private processDataForCharts(data: DashboardData): void {
+    // this.isLoading = true; // Set loading state
+    // this.cdr.markForCheck(); // Mark for check to update UI
     // Revenue Chart
-    const sortedRevenue = Array.isArray(data.monthlyRevenue) ? [...data.monthlyRevenue].sort((a, b) => a.year === b.year ? a.month - b.month : a.year - b.year) : [];
-    this.revenueChartData = sortedRevenue.length > 0 ? [
-      {
-        name: 'Doanh thu',
-        series: sortedRevenue.map(item => ({
-          name: `${this.getMonthAbbreviation(item.month)} ${item.year}`,
-          value: item.revenue
-        }))
-      }
-    ] : []; // Assign empty array if no data
+    // const sortedRevenue = Array.isArray(data.monthlyRevenue) ? [...data.monthlyRevenue].sort((a, b) => a.year === b.year ? a.month - b.month : a.year - b.year) : [];
+    // this.revenueChartData = sortedRevenue.length > 0 ? [
+    //   {
+    //     name: 'Doanh thu',
+    //     series: sortedRevenue.map(item => ({
+    //       name: `${this.getMonthAbbreviation(item.month)} ${item.year}`,
+    //       value: item.revenue
+    //     }))
+    //   }
+    // ] : []; // Assign empty array if no data
 
     // New Users Chart
-    const sortedUsers = [...data.monthlyNewUsers].sort((a, b) => a.year === b.year ? a.month - b.month : a.year - b.year);
-    this.newUserChartData = sortedUsers.map(item => ({
-      name: `${this.getMonthAbbreviation(item.month)} ${item.year}`,
-      value: item.userCount
-    })); // Assign empty array if no data
+    // const sortedUsers = [...data.monthlyNewUsers].sort((a, b) => a.year === b.year ? a.month - b.month : a.year - b.year);
+    // this.newUserChartData = sortedUsers.map(item => ({
+    //   name: `${this.getMonthAbbreviation(item.month)} ${item.year}`,
+    //   value: item.userCount
+    // })); // Assign empty array if no data
 
     // Tour Type Ratio - This might represent the *overall* ratio in the period,
     // or the API might return ratios for each month. Assuming API gives one summary ratio set.
-    const latestRatio = data.tourTypeRatios.length > 0 ? data.tourTypeRatios[0] : null;
-    this.tourTypeChartData = latestRatio ? [
-      { name: 'Tour ghép', value: latestRatio.sicRatio },
-      { name: 'Tour riêng', value: latestRatio.privateRatio }
-    ] : []; // Assign empty array if no data
+//     const latestRatio = data.tourTypeRatios.length > 0 ? data.tourTypeRatios[0] : null;
+//     this.tourTypeChartData = latestRatio ? [
+//       { name: 'Tour ghép', value: latestRatio.sicRatio },
+//       { name: 'Tour riêng', value: latestRatio.privateRatio }
+//     ] : []; // Assign empty array if no data
     
-    this.isLoading = false; // Set loading state
-    this.cdr.markForCheck(); // Mark for check to update UI
- }
+//     this.isLoading = false; // Set loading state
+//     this.cdr.markForCheck(); // Mark for check to update UI
+//  }
 
 
-  private processOtherData(data: DashboardData): void {
-    this.isLoading = true; // Set loading state
-    this.cdr.markForCheck(); // Mark for check to update UI
-    // Reset values
-    this.latestRevenue = 0;
-    this.latestMonthStr = 'N/A';
-    this.totalOnlineOfflineBookings = 0;
+//   private processOtherData(data: DashboardData): void {
+//     this.isLoading = true; // Set loading state
+//     this.cdr.markForCheck(); // Mark for check to update UI
+//     // Reset values
+//     this.latestRevenue = 0;
+//     this.latestMonthStr = 'N/A';
+//     this.totalOnlineOfflineBookings = 0;
 
-    // Process only if data exists
-    if (data.monthlyRevenue && data.monthlyRevenue.length > 0) {
-       // Assuming API returns sorted descending, get the first (latest)
-       const latestRevData = data.monthlyRevenue[0];
-       this.latestRevenue = latestRevData.revenue;
-       this.latestMonthStr = `${this.getMonthAbbreviation(latestRevData.month)} ${latestRevData.year}`;
-    } else if (this.toDate) {
-        // If no revenue data, show the end date of the selected range
-        try {
-           this.latestMonthStr = new Date(this.toDate).toLocaleDateString('vi-VN', { month: 'short', year: 'numeric' });
-        } catch (e) {
-            this.latestMonthStr = 'N/A';
-        }
-    }
+//     // Process only if data exists
+//     if (data.monthlyRevenue && data.monthlyRevenue.length > 0) {
+//        // Assuming API returns sorted descending, get the first (latest)
+//        const latestRevData = data.monthlyRevenue[0];
+//        this.latestRevenue = latestRevData.revenue;
+//        this.latestMonthStr = `${this.getMonthAbbreviation(latestRevData.month)} ${latestRevData.year}`;
+//     } else if (this.toDate) {
+//         // If no revenue data, show the end date of the selected range
+//         try {
+//            this.latestMonthStr = new Date(this.toDate).toLocaleDateString('vi-VN', { month: 'short', year: 'numeric' });
+//         } catch (e) {
+//             this.latestMonthStr = 'N/A';
+//         }
+//     }
 
-    // These numbers likely represent totals *within* the selected date range from the API
-    this.totalOnlineOfflineBookings = (data.onlineBookingNumber ?? 0) + (data.offlineBookingNumber ?? 0);
+//     // These numbers likely represent totals *within* the selected date range from the API
+//     this.totalOnlineOfflineBookings = (data.onlineBookingNumber ?? 0) + (data.offlineBookingNumber ?? 0);
     
-    this.isLoading = false; // Set loading state
-    this.cdr.markForCheck(); // Mark for check to update UI
- }
+//     this.isLoading = false; // Set loading state
+//     this.cdr.markForCheck(); // Mark for check to update UI
+//  }
 
 
   // getMonthAbbreviation, formatters, onChartSelect remain the same...

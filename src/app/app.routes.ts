@@ -65,12 +65,18 @@ export const routes: Routes = [
     path: '',
     loadChildren: () => import('./features/public/public.routes').then(m => m.PUBLIC_ROUTES),
   },
+  // {
+  //   path: 'admin',
+  //   loadChildren: () => import('./features/admin/system-admin/system-admin.routes').then(m => m.SYSTEM_ADMIN_ROUTES),
+  //   canActivate: [AuthGuard],
+  //   data: { expectedRoles: ['ADMIN'] }
+  // },
   {
-    path: 'admin',
-    loadChildren: () => import('./features/admin/system-admin/system-admin.routes').then(m => m.SYSTEM_ADMIN_ROUTES),
-    canActivate: [AuthGuard],
-    data: { expectedRoles: ['ADMIN'] }
-  },
+  path: 'admin',
+  loadChildren: () => import('./features/admin/admin.routes').then(m => m.ADMIN_ROUTES),
+  canActivate: [AuthGuard],
+  data: { expectedRoles: ['ADMIN'] }
+},
   {
     path: 'head-business',
     loadChildren: () => import('./features/admin/head-of-business/head-of-business.routes').then(m => m.HEAD_OF_BUSINESS_ROUTES),

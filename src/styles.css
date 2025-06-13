@@ -326,9 +326,80 @@ body {
   opacity: 1;
 }
 
+/* styles.css */
+/* styles.css */
+.custom-wide-dialog .mat-mdc-dialog-container {
+  position: fixed !important;
+  top: 50% !important;
+  left: 50% !important;
+  transform: translate(-50%, -50%) !important;
+  width: 1400px !important;
+  max-width: 1400px !important;
+  min-width: 1400px !important;
+  box-sizing: border-box !important;
+  padding: 20px !important;
+}
+
+.custom-wide-dialog .mat-mdc-dialog-surface {
+  width: 1400px !important;
+  max-width: 1400px !important;
+  min-width: 1400px !important;
+  box-sizing: border-box !important;
+  padding: 20px !important;
+  max-height: 100vh !important; /* Tăng lên 100vh */
+  overflow: hidden !important;
+}
+
+.custom-wide-dialog .mat-mdc-dialog-content {
+  max-height: 80vh !important; /* Tăng lên 80vh */
+  overflow-y: auto !important;
+}
+
+.custom-wide-dialog .mat-mdc-dialog-container:focus,
+.custom-wide-dialog .mat-mdc-dialog-surface:focus {
+  outline: none !important;
+}
+
+/* Style button "Đóng" */
+.custom-wide-dialog .mat-mdc-dialog-actions {
+  display: flex !important;
+  justify-content: center !important;
+  width: 100% !important;
+}
+
+.custom-wide-dialog .mat-mdc-dialog-actions button {
+  width: 100px !important;
+  padding: 6px 12px !important;
+  margin: 0 auto !important;
+  transition: background-color 0.3s, color 0.3s !important;
+  background-color: #2563eb !important;
+  color: white !important;
+  border: none !important;
+}
+
+.custom-wide-dialog .mat-mdc-dialog-actions button:hover {
+  color: white !important;
+  background-color: #1d4ed8 !important;
+  text-decoration: none !important;
+}
+
+@media (max-width: 1440px) {
+  .custom-wide-dialog .mat-mdc-dialog-container {
+    width: 90vw !important;
+    max-width: 90vw !important;
+    min-width: 90vw !important;
+  }
+  .custom-wide-dialog .mat-mdc-dialog-surface {
+    width: 90vw !important;
+    max-width: 90vw !important;
+    min-width: 90vw !important;
+  }
+}
 
 
 
 
 
 
+html, body { height: 100%; }
+body { margin: 0; font-family: Roboto, "Helvetica Neue", sans-serif; }

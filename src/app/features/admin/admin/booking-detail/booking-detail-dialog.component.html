@@ -1,0 +1,95 @@
+<div class="dialog-content">
+  <h2 id="dialog-heading" class="text-2xl font-bold mb-6 text-gray-800 border-b pb-2">THÔNG TIN CHI TIẾT DỊCH VỤ</h2>
+
+  <!-- Booking Code Display -->
+  <p class="text-lg text-gray-600 mb-2">Mã booking: {{ displayData.bookingCode }}</p>
+  <p class="text-md text-gray-600 mb-2">Tên khách hàng: <span class="font-medium">{{ displayData.customerName }}</span></p>
+  <p class="text-md text-gray-600 mb-6">Trạng thái: <span class="inline-flex items-center px-3 py-1 rounded-full text-sm font-semibold" [ngClass]="{
+          'bg-green-100 text-green-800': displayData.status === 'COMPLETED' || displayData.status === 'SUCCESS',
+          'bg-yellow-100 text-yellow-800': displayData.status === 'PENDING',
+          'bg-red-100 text-red-800': displayData.status === 'CANCELED',
+          'bg-blue-100 text-blue-800': displayData.status === 'CONFIRMED'
+        }">{{ displayData.status }}</span></p>
+
+  <!-- Hotel Section (Table) -->
+  <div *ngIf="displayData.hotelItems.length > 0" class="mb-6">
+    <h3 class="text-xl font-semibold mb-4 text-gray-700 bg-blue-100 p-2 rounded">Khách sạn</h3>
+    <table class="w-full border-collapse border border-gray-200">
+      <thead>
+        <tr class="bg-gray-100">
+          <th class="border border-gray-200 p-2 text-left">Tên dịch vụ</th>
+          <th class="border border-gray-200 p-2 text-left">Check-in</th>
+          <th class="border border-gray-200 p-2 text-left">Check-out</th>
+          <th class="border border-gray-200 p-2 text-left">Số lượng</th>
+          <th class="border border-gray-200 p-2 text-left">Đơn giá</th>
+          <th class="border border-gray-200 p-2 text-left">Tổng tiền</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr *ngFor="let item of displayData.hotelItems" class="hover:bg-gray-50">
+          <td class="border border-gray-200 p-2">{{ item.name || 'N/A' }}</td>
+          <td class="border border-gray-200 p-2">{{ item.checkInDate | date:'medium' }}</td>
+          <td class="border border-gray-200 p-2">{{ item.checkOutDate | date:'medium' }}</td>
+          <td class="border border-gray-200 p-2">{{ item.quantity }} {{ item.quantity === 1 ? 'phòng' : 'phòng' }}</td>
+          <td class="border border-gray-200 p-2">{{ item.sellingPrice | currency:'VND' }}</td>
+          <td class="border border-gray-200 p-2">{{ (item.sellingPrice * (item.quantity || 1)) | currency:'VND' }}</td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+
+  <!-- Restaurant Section (Table) -->
+  <div *ngIf="displayData.mealItems.length > 0" class="mb-6">
+    <h3 class="text-xl font-semibold mb-4 text-gray-700 bg-green-100 p-2 rounded">Nhà hàng</h3>
+    <table class="w-full border-collapse border border-gray-200">
+      <thead>
+        <tr class="bg-gray-100">
+          <th class="border border-gray-200 p-2 text-left">Tên dịch vụ</th>
+          <th class="border border-gray-200 p-2 text-left">Số lượng</th>
+          <th class="border border-gray-200 p-2 text-left">Đơn giá</th>
+          <th class="border border-gray-200 p-2 text-left">Tổng tiền</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr *ngFor="let item of displayData.mealItems" class="hover:bg-gray-50">
+          <td class="border border-gray-200 p-2">{{ item.name || 'N/A' }}</td>
+          <td class="border border-gray-200 p-2">{{ item.quantity }} {{ item.quantity === 1 ? 'phần' : 'phần' }}</td>
+          <td class="border border-gray-200 p-2">{{ item.sellingPrice | currency:'VND' }}</td>
+          <td class="border border-gray-200 p-2">{{ (item.sellingPrice * (item.quantity || 1)) | currency:'VND' }}</td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+
+  <!-- Activity Section (Table) -->
+  <div *ngIf="displayData.activityItems.length > 0" class="mb-6">
+    <h3 class="text-xl font-semibold mb-4 text-gray-700 bg-yellow-100 p-2 rounded">Hoạt động</h3>
+    <table class="w-full border-collapse border border-gray-200">
+      <thead>
+        <tr class="bg-gray-100">
+          <th class="border border-gray-200 p-2 text-left">Tên dịch vụ</th>
+          <th class="border border-gray-200 p-2 text-left">Số lượng</th>
+          <th class="border border-gray-200 p-2 text-left">Đơn giá</th>
+          <th class="border border-gray-200 p-2 text-left">Tổng tiền</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr *ngFor="let item of displayData.activityItems" class="hover:bg-gray-50">
+          <td class="border border-gray-200 p-2">{{ item.name || 'N/A' }}</td>
+          <td class="border border-gray-200 p-2">{{ item.quantity }} {{ item.quantity === 1 ? 'vé' : 'vé' }}</td>
+          <td class="border border-gray-200 p-2">{{ item.sellingPrice | currency:'VND' }}</td>
+          <td class="border border-gray-200 p-2">{{ (item.sellingPrice * (item.quantity || 1)) | currency:'VND' }}</td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+
+  <!-- Dòng tổng tiền -->
+  <div class="text-right mt-4 mr-4 text-xl font-semibold text-gray-800">
+    Tổng tất cả tiền: {{ totalAmount | currency:'VND' }}
+  </div>
+
+  <div class="mt-6 flex justify-center">
+    <button mat-button (click)="onClose()" class="w-24 bg-blue-600 text-white px-2 py-1 rounded hover:bg-blue-700">Đóng</button>
+  </div>
+</div>

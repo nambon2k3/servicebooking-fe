@@ -1,0 +1,25 @@
+.custom-wide-dialog .mat-mdc-dialog-surface {
+  width: 1000px !important;
+  max-width: 1000px !important;
+  min-width: 1000px !important;
+  box-sizing: border-box !important;
+  padding: 0 !important; /* Remove default padding */
+}
+
+.dialog-content {
+  width: 100% !important;
+  max-height: 80vh !important;
+  overflow-y: auto !important;
+}
+
+img {
+  min-width: 256px !important;
+}
+
+@media (max-width: 1024px) {
+  .custom-wide-dialog .mat-mdc-dialog-surface {
+    width: 90vw !important;
+    max-width: 90vw !important;
+    min-width: 90vw !important;
+  }
+}
