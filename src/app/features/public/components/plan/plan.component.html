@@ -3,7 +3,7 @@
 
         <app-spinner [isLoading]="isLoading"></app-spinner>
 
-        <p class="text-sm text-gray-500">Bước {{ currentStep + 1 }}/4</p>
+        <p class="text-sm text-gray-500">Bước {{ currentStep + 1 }}/5</p>
         <p *ngIf="currentStep > 0" class="text-sm text-gray-500">
             {{ "Chuyến đi " + selectedLocation?.name }}
         </p>
@@ -113,6 +113,53 @@
         </div>
 
         <div *ngIf="currentStep === 2" class="flex flex-col items-center text-center mb-20">
+            <div class="p-6 mb-20">
+                <h2 class="text-3xl font-bold mb-20">Dự báo thời tiết du lịch</h2>
+                <div class="flex items-center space-x-4">
+
+                    <!-- Month Cards -->
+                    <div *ngIf="weatherData?.length" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+                        <div *ngFor="let day of weatherData"
+                            class="text-white! p-4 rounded-2xl shadow-md border border-gray-200 hover:shadow-lg transition duration-300 bg-gradient-to-l from-blue-100 via-blue-300 to-blue-400">
+                            <div class="flex items-center justify-between mb-2">
+                                <h2 class="text-lg font-semibold text-white">{{ day.date }}</h2>
+                                <img [src]="day.weatherDetail.condition.icon" alt="Weather icon" class="w-16 h-16" />
+                            </div>
+
+                            <p class="text-gray-600 mb-2"></p>
+
+                            <div class="flex justify-between text-md text-gray-600 gap-4 font-bold ">
+                                <div>
+                                    <p class="text-left">
+                                        🌡️ {{ day.weatherDetail.maxtemp_c }}°C - {{ day.weatherDetail.mintemp_c }}°C
+                                    </p>
+                                    <p class="text-left">
+                                        💧  {{ day.weatherDetail.avghumidity}}%, {{ day.weatherDetail.condition.text }}
+                                    </p>
+                                    <p class="text-left">
+                                        🔆 Chỉ số UV:  {{ day.weatherDetail.uv }}
+                                    </p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+            <div class="flex justify-between items-center text-center w-full">
+                <button type="button" (click)="prevStep()"
+                    class="underline text-black text-lg px-6 py-2 rounded-full !mb-10 !mt-10 hover:bg-gray-200">
+                    Quay lại
+                </button>
+                <!-- Next Button -->
+                <button type="button" (click)="nextStep()"
+                    class="bg-black text-white text-lg px-6 py-2 rounded-full !mb-10 !mt-10 hover:bg-gray-800">
+                    Tiếp theo
+                </button>
+            </div>
+        </div>
+
+        <div *ngIf="currentStep === 3" class="flex flex-col items-center text-center mb-20">
             <h1 class="text-5xl font-bold mb-3">
                 Loại hình du lịch mong muốn của bạn?
             </h1>
@@ -174,7 +221,7 @@
             </div>
         </div>
 
-        <div *ngIf="currentStep === 3">
+        <div *ngIf="currentStep === 4">
             <div class="interests-container">
                 <h1 class="text-5xl font-bold mb-3">
                     Cho chúng tôi biết sở thích của bạn
@@ -217,7 +264,7 @@
                     class="underline text-black text-lg px-6 py-2 rounded-full !mb-10 !mt-10 hover:bg-gray-200">
                     Quay lại
                 </button>
-                
+
                 <!-- Next Button -->
                 <button *ngIf="selectedInterests.length > 0" type="button" (click)="onSubmit()"
                     class="bg-black text-white text-lg px-6 py-2 rounded-full !mb-10 !mt-10 hover:bg-gray-800">
@@ -241,13 +288,12 @@
                 </label>
 
                 <!-- Ô nhập -->
-                 <form [formGroup]="addInterestForm">
+                <form [formGroup]="addInterestForm">
                     <textarea id="interests" maxlength="50" rows="3"
-                    class="w-full border border-black rounded-md px-4 py-3 text-base text-gray-700 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-black"
-                    formControlName="interest"
-                    placeholder="Enter additional interests"></textarea>
-                 </form>
-                
+                        class="w-full border border-black rounded-md px-4 py-3 text-base text-gray-700 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-black"
+                        formControlName="interest" placeholder="Enter additional interests"></textarea>
+                </form>
+
 
                 <!-- Phần mô tả -->
                 <div class="flex justify-between text-sm text-gray-500">
@@ -295,9 +341,11 @@
         <div class="relative bg-white rounded-lg shadow dark:bg-gray-800 animate-fadeIn">
             <!-- Modal Content -->
             <div class="p-6 text-center">
-                <div class="px-3 py-1 text-xs font-medium leading-none text-center text-blue-800 bg-blue-200 rounded-full animate-pulse dark:bg-blue-900 dark:text-blue-200">Đang thực hiện tạo chương trình du lịch cho bạn...</div>
-                    <br />
-                    Vui lòng đợi trong giây lát.
+                <div
+                    class="px-3 py-1 text-xs font-medium leading-none text-center text-blue-800 bg-blue-200 rounded-full animate-pulse dark:bg-blue-900 dark:text-blue-200">
+                    Đang thực hiện tạo chương trình du lịch cho bạn...</div>
+                <br />
+                Vui lòng đợi trong giây lát.
             </div>
         </div>
     </div>

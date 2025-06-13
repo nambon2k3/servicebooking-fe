@@ -8,6 +8,7 @@ import { TourRequestComponent } from "./tour-request/tour-request.component";
 import { TourRequestDetailComponent } from "./tour-request/tour-request-detail/tour-request-detail.component";
 import { ServiceComponent } from "./service/service.component";
 import { UpdateServiceComponent } from "./service/update-service/update-service.component";
+import { AdminComponent } from "../admin/admin.component";
 
 export const CEO_ROUTES: Route[] = [
   {

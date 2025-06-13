@@ -200,7 +200,6 @@ export class ForumPlanDetailComponent {
       (response: any) => {
         this.reviews = response.data.sort((a:any, b: any) => b.id - a.id);
         this.isLoading = false;
-        this.triggerSuccess()
       },
       (error: any) => {
         console.error('Error fetching plan reviews:', error);
