@@ -31,6 +31,26 @@ export class ListPlanComponent implements AfterViewInit{
 
   selectedPlanId: any;
 
+
+  updatePlanStatus(planId: any, status: string) {
+    console.log('Updating plan status:', planId, status);
+    this.isLoading = true;
+    this.planService.updatePlanStatus(planId, status).subscribe({
+      next: (response) => {
+        console.log(response);
+        this.getListPlanByUserId();
+        this.isLoading = false;
+        this.triggerSuccess();
+      },
+      error: (error) => {
+        console.error(error);
+        this.isLoading = false;
+        this.triggerError();
+      }
+    });
+  }
+
+
   openConfirmModal(planId: any) {
     if (this.confirmModal) {
       this.confirmModal.show();

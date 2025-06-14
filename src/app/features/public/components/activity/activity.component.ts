@@ -5,6 +5,8 @@ import { CommonModule } from '@angular/common';
 import { Router } from '@angular/router';
 import { ActivityService } from '../../services/activity.service'; // Import your activity service
 import { FormsModule } from '@angular/forms';
+import { UserStorageService } from '../../../../core/services/user-storage/user-storage.service';
+import { HotelService } from '../../services/hotel.service';
 
 @Component({
   selector: 'app-activity',
@@ -13,6 +15,42 @@ import { FormsModule } from '@angular/forms';
   imports: [CommonModule, FormsModule, FooterComponent],
 })
 export class ActivitiesComponent implements OnInit {
+  bookingActivity(arg0: number) {
+    const userId = this.userStorageService.getUserId() || 1;
+
+    this.hotelService.addRoom(arg0, userId, 1).subscribe({
+      next: (response: any) => {
+        this.triggerSuccess();
+      },
+      error: (err: any) => {
+        this.triggerError();
+        console.error('Error fetching hotel details', err);
+      },
+    });
+  }
+
+
+    showSuccess: boolean = false;
+  showError: boolean = false;
+
+  triggerSuccess() {
+    this.showSuccess = true;
+    // Hide warning after 3 seconds
+    setTimeout(() => {
+      this.showSuccess = false;
+    }, 4000);
+  }
+
+  triggerError() {
+    this.showError = true;
+
+
+    // Hide warning after 3 seconds
+    setTimeout(() => {
+      this.showError = false;
+    }, 4000);
+  }
+
   activities: Activity[] = [];
   filteredActivities: Activity[] = [];
   searchQuery: string = '';
@@ -23,7 +61,11 @@ export class ActivitiesComponent implements OnInit {
   pageSize: number = 9;
   errorMessage: string | null = null;
 
-  constructor(private activityService: ActivityService) {}
+  constructor(
+    private activityService: ActivityService, 
+    private userStorageService: UserStorageService,
+    private hotelService: HotelService
+  ) { }
 
   ngOnInit() {
     this.loadActivities();
